@@ -1,0 +1,63 @@
+/* ==========================================================================
+   pagination.css — пагинация каталога
+   Переиспользуемый блок: и женская, и мужская коллекции.
+
+   Разметка (наполняет filters.js):
+     <nav class="pagination">
+       <ul class="pagination__list">
+         <li><button class="pagination__link is-active">1</button></li>
+       </ul>
+     </nav>
+   ========================================================================== */
+
+.pagination {
+  margin-top: var(--space-32);
+}
+
+.pagination__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+}
+
+.pagination__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--control-height);
+  min-height: var(--control-height);
+  padding-inline: var(--space-8);
+  font-size: var(--fs-16);
+  color: var(--color-dark);
+  background-color: var(--color-beige-light);
+  border-radius: var(--radius-circle);
+  transition: background-color var(--transition-fast) var(--transition-timing);
+}
+
+.pagination__link:hover {
+  background-color: var(--color-beige);
+}
+
+/* Текущая страница */
+.pagination__link.is-active {
+  color: var(--color-white);
+  background-color: var(--color-pink);
+}
+
+/* Стрелки ‹ › */
+.pagination__arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--control-height);
+  min-height: var(--control-height);
+  font-size: var(--fs-20);
+  color: var(--color-dark);
+}
+
+/* Недоступная стрелка: первая или последняя страница */
+.pagination__arrow[disabled] {
+  opacity: 0.4;
+}

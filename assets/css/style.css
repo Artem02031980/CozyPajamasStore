@@ -3,22 +3,33 @@
 
      <link rel="stylesheet" href="assets/css/style.css" />
 
-   Здесь ТОЛЬКО @import: ни одного правила. Порядок важен —
-   base (токены → корень → сброс → типографика) → каркас → утилиты →
-   секции в порядке следования по макету → страницы.
+   Здесь ТОЛЬКО @import: ни одного правила.
+
+   Порядок — от общего к частному, утилиты последними:
+     base (токены → сброс → типографика) → каркас → блоки → секции →
+     страницы → утилиты.
+
+   Почему утилиты в конце: служебные классы (.is-hidden, .text-display,
+   .animate-*) должны побеждать оформление блоков, секций и страниц.
+   Если подключить их раньше, любое правило той же специфичности,
+   написанное позже, перекроет утилиту.
    ========================================================================== */
 
 /* 1. База */
 @import url('base/variables.css');
-@import url('base/root.css');
 @import url('base/reset.css');
 @import url('base/typography.css');
 
 /* 2. Каркас страницы */
 @import url('layout.css');
 
-/* 3. Утилиты и анимации */
-@import url('utilities.css');
+/* 3. Переиспользуемые блоки — в порядке появления на странице */
+@import url('blocks/button.css');
+@import url('blocks/product-card.css');
+@import url('blocks/filters.css');
+@import url('blocks/pagination.css');
+@import url('blocks/modal.css');
+@import url('blocks/cart.css');
 
 /* 4. Секции — порядок совпадает с порядком в разметке index.html:
       header → hero → товарные секции → feedback → footer */
@@ -35,3 +46,6 @@
 /* 5. Страницы */
 @import url('pages/product.css');
 @import url('pages/thanks.css');
+
+/* 6. Утилиты и анимации — строго последними */
+@import url('utilities.css');

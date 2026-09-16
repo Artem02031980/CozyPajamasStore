@@ -1,0 +1,93 @@
+/* ==========================================================================
+   product-card.css — карточка товара
+   Переиспользуемый блок: используется в четырёх секциях главной
+   (goods-new, goods-women, goods-men, goods-other) и в результатах подбора.
+   Поэтому живёт в blocks/, а не в файле секции.
+
+   Разметка:
+     <article class="product-card">
+       <a class="product-card__link" href="…">
+         <div class="product-card__media"><img class="product-card__image" …></div>
+         <h3 class="product-card__title">…</h3>
+       </a>
+       <p class="product-card__price">…</p>
+     </article>
+   ========================================================================== */
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-white);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.product-card__link {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+/* Фото товара: одинаковая пропорция у всех карточек, чтобы сетка не «плясала» */
+.product-card__media {
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background-color: var(--color-beige-light);
+  border-radius: var(--radius-md);
+}
+
+.product-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-base) var(--transition-timing);
+}
+
+.product-card:hover .product-card__image {
+  transform: scale(1.04);
+}
+
+.product-card__title {
+  font-size: var(--fs-18);
+  line-height: var(--lh-snug);
+  color: var(--color-pink);
+}
+
+/* Плашка цены — бежевая, из макета */
+.product-card__price {
+  align-self: flex-start;
+  margin-top: var(--space-8);
+  padding: var(--space-4) var(--space-12);
+  font-size: var(--fs-16);
+  color: var(--color-dark);
+  background-color: var(--color-beige);
+  border-radius: var(--radius-xs);
+}
+
+/* Старая цена рядом с новой */
+.product-card__price--old {
+  color: var(--color-dark);
+  text-decoration: line-through;
+  background-color: transparent;
+  padding: 0;
+  opacity: 0.6;
+}
+
+/* ==========================================================================
+   Раскладка страницы товара «галерея + информация»
+   Относится к блоку .product (страница товара), поэтому живёт здесь,
+   а не в layout.css: каркас не должен знать про внутренности блока.
+   ========================================================================== */
+
+.product__layout {
+  display: grid;
+  gap: var(--space-24);
+}
+
+@media (min-width: 768px) {
+  .product__layout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-32);
+    align-items: start;
+  }
+}

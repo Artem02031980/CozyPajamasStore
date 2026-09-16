@@ -1,0 +1,138 @@
+/* ==========================================================================
+   cart.css — корзина
+   Переиспользуемый блок: модальное окно корзины на главной и на страницах
+   товаров, а также состав заказа на страницах благодарности.
+
+   Данные приходят из cart.js через render.js, здесь только внешний вид.
+
+   Разметка (наполняет render.js):
+     <ul class="cart__list">
+       <li class="cart__item">
+         <img class="cart__image" …>
+         <div class="cart__info">
+           <p class="cart__title">…</p>
+           <p class="cart__meta">Размер: M</p>
+         </div>
+         <div class="quantity">…</div>
+         <p class="cart__price">…</p>
+         <button class="cart__remove">Удалить</button>
+       </li>
+     </ul>
+   ========================================================================== */
+
+.cart__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.cart__item {
+  display: grid;
+  grid-template-columns: 80px minmax(0, 1fr) auto;
+  gap: var(--space-16);
+  align-items: center;
+  padding-bottom: var(--space-16);
+  border-bottom: var(--border-width-thin) solid var(--color-beige-light);
+}
+
+.cart__image {
+  width: 80px;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  background-color: var(--color-beige-light);
+  border-radius: var(--radius-sm);
+}
+
+.cart__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.cart__title {
+  font-size: var(--fs-16);
+  color: var(--color-pink);
+}
+
+.cart__meta {
+  font-size: var(--fs-14);
+  opacity: 0.6;
+}
+
+.cart__price {
+  font-size: var(--fs-16);
+  white-space: nowrap;
+}
+
+.cart__remove {
+  font-size: var(--fs-14);
+  color: var(--color-dark);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  opacity: 0.6;
+}
+
+.cart__remove:hover {
+  opacity: 1;
+}
+
+/* Счётчик количества: − 2 + */
+.quantity {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.quantity__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  font-size: var(--fs-16);
+  color: var(--color-dark);
+  background-color: var(--color-beige-light);
+  border-radius: var(--radius-circle);
+}
+
+.quantity__value {
+  min-width: var(--icon-size);
+  font-size: var(--fs-16);
+  text-align: center;
+}
+
+/* Итоги и оформление заказа */
+.cart__summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  margin-top: var(--space-24);
+}
+
+.cart__row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-16);
+  font-size: var(--fs-16);
+}
+
+.cart__total {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-16);
+  padding-top: var(--space-8);
+  font-size: var(--fs-20);
+  border-top: var(--border-width-thin) solid var(--color-beige);
+}
+
+.cart__checkout {
+  margin-top: var(--space-24);
+}
+
+/* Пустая корзина */
+.cart__empty {
+  padding-block: var(--space-32);
+  font-size: var(--fs-16);
+  text-align: center;
+  opacity: 0.6;
+}

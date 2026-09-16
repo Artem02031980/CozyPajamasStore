@@ -1,0 +1,125 @@
+/* ==========================================================================
+   filters.css — фильтры каталога
+   Переиспользуемый блок: женская и мужская коллекции используют один
+   и тот же набор фильтров, поэтому стили живут здесь, а не дублируются
+   в goods-women.css и goods-men.css.
+
+   Группы из макета: тип изделия, возраст, палитра цветов, 4 диапазона цен.
+
+   Разметка (наполняет render.js):
+     <form class="filters">
+       <div class="filters__group">
+         <h3 class="filters__title">Тип</h3>
+         <ul class="filters__list">
+           <li><button class="filters__chip" type="button">Пижама</button></li>
+         </ul>
+       </div>
+     </form>
+   ========================================================================== */
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+}
+
+.filters__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.filters__title {
+  font-size: var(--fs-18);
+  line-height: var(--lh-snug);
+}
+
+.filters__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+
+/* Чипс фильтра: неактивный — на бежевом, активный — розовый */
+.filters__chip {
+  padding: var(--space-8) var(--space-16);
+  font-size: var(--fs-14);
+  color: var(--color-dark);
+  background-color: var(--color-beige-light);
+  border-radius: var(--radius-pill);
+  transition: background-color var(--transition-fast) var(--transition-timing);
+}
+
+.filters__chip:hover {
+  background-color: var(--color-beige);
+}
+
+.filters__chip.is-active {
+  color: var(--color-white);
+  background-color: var(--color-pink);
+}
+
+/* Палитра цветов — кружки */
+.filters__colors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+
+.filters__color {
+  width: var(--icon-size-lg);
+  height: var(--icon-size-lg);
+  border: var(--border-width-thin) solid transparent;
+  border-radius: var(--radius-circle);
+  transition: border-color var(--transition-fast) var(--transition-timing);
+}
+
+.filters__color:hover {
+  border-color: var(--color-beige);
+}
+
+/* Активный цвет обведён, чтобы было видно выбор */
+.filters__color.is-active {
+  border-color: var(--color-dark);
+}
+
+/* Кнопка сброса фильтров */
+.filters__reset {
+  align-self: flex-start;
+  font-size: var(--fs-14);
+  color: var(--color-dark);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  opacity: 0.7;
+}
+
+.filters__reset:hover {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   Раскладка «фильтры + товары»
+   Общая для goods-women, goods-men и goods-other, поэтому объявлена здесь,
+   рядом с блоком фильтров, а не в файлах секций.
+
+   Разметка:
+     <div class="goods__layout">
+       <aside class="filters">…</aside>
+       <div class="goods__content">…</div>
+     </div>
+   ========================================================================== */
+
+.goods__layout {
+  display: grid;
+  gap: var(--space-24);
+}
+
+@media (min-width: 1024px) {
+  .goods__layout {
+    /* 280px — ширина колонки фильтров по макету; значение разовое,
+       поэтому задано числом, а не токеном */
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: var(--space-32);
+    align-items: start;
+  }
+}
