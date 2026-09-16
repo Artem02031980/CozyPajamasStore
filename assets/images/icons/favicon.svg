@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Магазин уютных пижам">
+  <title>Магазин уютных пижам</title>
+
+  <!-- Фон: Pink-light -->
+  <rect width="32" height="32" rx="7" fill="#F4D9E8" />
+
+  <!-- Пижамная рубашка: Pink. Плечи, рукава, корпус с ровным низом -->
+  <path
+    d="M11.2 5.6 L14.8 8.6 H17.2 L20.8 5.6 L25.8 8 V17.4 L22.6 18.2 V26.4 H9.4 V18.2 L6.2 17.4 V8 Z"
+    fill="#CD74A2"
+  />
+
+  <!-- Воротник: Beige-light -->
+  <path d="M14.8 8.6 L16 11.8 L17.2 8.6 H14.8 Z" fill="#E9E2D0" />
+
+  <!-- Пуговицы: Beige-light -->
+  <circle cx="16" cy="14.6" r="1.05" fill="#E9E2D0" />
+  <circle cx="16" cy="19.2" r="1.05" fill="#E9E2D0" />
+</svg>

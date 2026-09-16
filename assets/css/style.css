@@ -1,0 +1,37 @@
+/* ==========================================================================
+   style.css — ЕДИНСТВЕННЫЙ файл стилей, который подключается в HTML:
+
+     <link rel="stylesheet" href="assets/css/style.css" />
+
+   Здесь ТОЛЬКО @import: ни одного правила. Порядок важен —
+   base (токены → корень → сброс → типографика) → каркас → утилиты →
+   секции в порядке следования по макету → страницы.
+   ========================================================================== */
+
+/* 1. База */
+@import url('base/variables.css');
+@import url('base/root.css');
+@import url('base/reset.css');
+@import url('base/typography.css');
+
+/* 2. Каркас страницы */
+@import url('layout.css');
+
+/* 3. Утилиты и анимации */
+@import url('utilities.css');
+
+/* 4. Секции — порядок совпадает с порядком в разметке index.html:
+      header → hero → товарные секции → feedback → footer */
+@import url('sections/header.css');
+@import url('sections/hero.css');
+@import url('sections/goods-new.css');
+@import url('sections/goods-women.css');
+@import url('sections/goods-men.css');
+@import url('sections/goods-print.css');
+@import url('sections/goods-other.css');
+@import url('sections/feedback.css');
+@import url('sections/footer.css');
+
+/* 5. Страницы */
+@import url('pages/product.css');
+@import url('pages/thanks.css');

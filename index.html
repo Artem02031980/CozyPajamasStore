@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Магазин уютных пижам</title>
+    <meta
+      name="description"
+      content="Магазин уютных пижам: новая коллекция, женские и мужские пижамы, принты и другие товары."
+    />
+
+    <!-- Дополнительные meta -->
+    <meta name="robots" content="all" />
+    <meta name="author" content="Магазин уютных пижам" />
+    <!-- Цвет адресной строки мобильного браузера -->
+    <meta name="theme-color" content="#ffffff" />
+
+    <!-- Open Graph: превью ссылки в соцсетях, мессенджерах и на досках -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:site_name" content="Магазин уютных пижам" />
+    <meta property="og:title" content="Магазин уютных пижам" />
+    <meta
+      property="og:description"
+      content="Магазин уютных пижам: новая коллекция, женские и мужские пижамы, принты и другие товары."
+    />
+    <!-- TODO: заменить на полный адрес сайта, когда появится домен -->
+    <meta property="og:url" content="https://example.com/" />
+    <!-- TODO: размер превью 1200×630 px; путь относительный, для соцсетей нужен абсолютный -->
+    <meta property="og:image" content="assets/images/shared/og-preview.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Магазин уютных пижам" />
+
+    <!-- Twitter/X использует те же данные, но со своим набором тегов -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Магазин уютных пижам" />
+    <meta
+      name="twitter:description"
+      content="Магазин уютных пижам: новая коллекция, женские и мужские пижамы, принты и другие товары."
+    />
+    <meta name="twitter:image" content="assets/images/shared/og-preview.jpg" />
+
+    <!-- Иконка вкладки в стиле макета (розовая пижама) -->
+    <link rel="icon" type="image/svg+xml" href="assets/images/icons/favicon.svg" />
+
+    <!-- Шрифты: Roboto Slab Regular (400) и Bold (700), кириллица -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap"
+    />
+
+    <!-- Единственный подключаемый CSS: внутри только @import -->
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body>
+    <div class="root">
+      <header class="header"></header>
+
+      <main class="main">
+        <!-- Секция 1. Hero: фон-небо с облаками, заголовок, кнопка «Скорее к покупкам !» -->
+        <section class="hero"></section>
+
+        <!-- Секция 2. Новая коллекция — 6 карточек товара -->
+        <section class="goods-new"></section>
+
+        <!-- Секция 3. Женская коллекция — фильтры, сетка карточек, пагинация -->
+        <section class="goods-women"></section>
+
+        <!-- Секция 4. Мужская коллекция — фильтры, сетка карточек, пагинация -->
+        <section class="goods-men"></section>
+        
+        <!-- Секция 5. Сервис «ПРИНТ» -->
+        <section class="goods-print"></section>
+
+        <!-- Секция 6. Другие товары -->
+        <section class="goods-other"></section>
+
+        <!-- Секция 7. «Отключитесь от всех тревог…» — блок обратной связи -->
+        <section class="feedback"></section>
+      </main>
+
+      <footer class="footer"></footer>
+    </div>
+
+    <!-- Единственный подключаемый скрипт: точка входа с импортами модулей -->
+    <script type="module" src="assets/js/script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,214 @@
+/* ==========================================================================
+   typography.css — типографика проекта
+   Шрифт (Roboto Slab), размеры по шкале из variables.css, заголовки,
+   текст, ссылки и текстовые утилиты.
+
+   Правило: размеры здесь назначаются ТОЛЬКО через токены --fs-*.
+   Компоненты не подбирают кегль самостоятельно — они либо используют
+   тег (h1–h6, p), либо класс .text-*.
+   ========================================================================== */
+
+/* ==========================================================================
+   1. Базовый текст страницы
+   Основной размер — 16px (--fs-16), это же значение по умолчанию в браузере,
+   поэтому body его только документирует и задаёт шрифт с цветом.
+   ========================================================================== */
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--fs-16);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-base);
+  color: var(--color-dark);
+}
+
+/* ==========================================================================
+   2. Заголовки
+   Размеры взяты из стандартной шкалы:
+     h1 — 48px, h2 — 36px, h3 — 30px, h4 — 24px, h5 — 20px.
+   Для h6 в шкале отдельной ступени нет, поэтому он равен h5 (20px).
+   Крупные промо-заголовки (60 и 72px) — не уровни h1–h6, а классы
+   .text-display и .text-display-lg: они нужны баннеру и hero.
+   ========================================================================== */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-weight: var(--fw-regular);
+  color: var(--color-dark);
+  text-wrap: balance; /* заголовок переносится по словам, без «висячих» слов */
+}
+
+h1,
+.h1 {
+  font-size: var(--fs-48);
+  line-height: var(--lh-tight);
+}
+
+h2,
+.h2 {
+  font-size: var(--fs-36);
+  line-height: var(--lh-tight);
+}
+
+h3,
+.h3 {
+  font-size: var(--fs-30);
+  line-height: var(--lh-snug);
+}
+
+h4,
+.h4 {
+  font-size: var(--fs-24);
+  line-height: var(--lh-snug);
+}
+
+h5,
+.h5 {
+  font-size: var(--fs-20);
+  line-height: var(--lh-snug);
+}
+
+h6,
+.h6 {
+  font-size: var(--fs-20);
+  line-height: var(--lh-snug);
+}
+
+/* ==========================================================================
+   3. Текст
+   ========================================================================== */
+
+p {
+  /* Размер задан явно, хотя совпадает с унаследованным от body:
+     так абзац не изменится, если body когда-нибудь получит другой кегль */
+  font-size: var(--fs-16);
+  line-height: var(--lh-base);
+}
+
+/* Отбивка между соседними абзацами */
+p + p {
+  margin-top: var(--space-16);
+}
+
+/* Лид-абзац — вводный текст под заголовком */
+.text-lead {
+  font-size: var(--fs-18);
+  line-height: var(--lh-snug);
+}
+
+.text-small {
+  font-size: var(--fs-14);
+  line-height: var(--lh-base);
+}
+
+.text-xs {
+  font-size: var(--fs-12);
+  line-height: var(--lh-base);
+}
+
+.text-muted {
+  color: var(--color-dark);
+  opacity: 0.6;
+}
+
+/* Капслочная подпись с разрядкой: «ПРИНТ», «ОПИСАНИЕ», «ХАРАКТЕРИСТИКИ» */
+.text-overline {
+  font-size: var(--fs-14);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+}
+
+/* Крупные промо-заголовки: hero и баннеры */
+.text-display {
+  font-family: var(--font-heading);
+  font-size: var(--fs-60);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+}
+
+.text-display-lg {
+  font-family: var(--font-heading);
+  font-size: var(--fs-72);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+}
+
+/* Насыщенность */
+.text-bold {
+  font-weight: var(--fw-bold);
+}
+
+/* ==========================================================================
+   4. Акцентные цвета текста
+   ========================================================================== */
+
+.text-pink {
+  color: var(--color-pink);
+}
+
+.text-blue {
+  color: var(--color-blue);
+}
+
+.text-dark {
+  color: var(--color-dark);
+}
+
+/* ==========================================================================
+   5. Ссылки
+   Обводка фокуса приходит из reset.css (:focus-visible)
+   ========================================================================== */
+
+a {
+  color: inherit;
+  transition: color var(--transition-fast) var(--transition-timing);
+}
+
+a:hover {
+  color: var(--color-blue);
+}
+
+/* Ссылка с подчёркиванием — когда нужна явная «кликабельность» */
+.link-underline {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* ==========================================================================
+   6. Формы — текстовая часть
+   Внешний вид полей и кнопок задают компоненты
+   ========================================================================== */
+
+input,
+textarea,
+select,
+button {
+  font-family: var(--font-body);
+}
+
+label {
+  font-size: var(--fs-14);
+  line-height: var(--lh-snug);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-dark);
+  opacity: 0.5;
+}
+
+/* ==========================================================================
+   7. Выделение текста мышью
+   ========================================================================== */
+
+::selection {
+  background-color: var(--color-pink-light);
+  color: var(--color-dark);
+}

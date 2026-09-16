@@ -1,0 +1,154 @@
+/* ==========================================================================
+   utilities.css — служебные классы и анимации
+   Здесь только то, что не принадлежит ни одному блоку и используется
+   в разных местах: доступность, состояния, декор.
+
+   Подключается ДО sections/, поэтому состояния (.is-hidden, .no-scroll)
+   намеренно помечены !important: они должны побеждать оформление блока.
+   ========================================================================== */
+
+/* ==========================================================================
+   1. Доступность
+   ========================================================================== */
+
+/* Скрыто визуально, но читается скринридером.
+   Нельзя заменять на display: none — тогда текст исчезнет и для скринридера.
+   Размер 1px и отрицательный отступ — суть самого приёма, не размер из макета. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Показывается только при переходе с клавиатуры (Tab).
+   Используется для ссылки «Перейти к содержимому». */
+.visually-hidden--focusable:focus-visible {
+  position: fixed;
+  top: var(--space-8);
+  left: var(--space-8);
+  z-index: var(--z-toast);
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: var(--space-8) var(--space-16);
+  overflow: visible;
+  clip-path: none;
+  white-space: normal;
+  background-color: var(--color-white);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+}
+
+/* ==========================================================================
+   2. Состояния
+   Переключаются из JavaScript, поэтому имена фиксированные.
+   ========================================================================== */
+
+/* Полностью скрыть элемент (и убрать из потока) */
+.is-hidden {
+  display: none !important;
+}
+
+/* Скрыть, но оставить место: для анимаций появления */
+.is-invisible {
+  visibility: hidden;
+  opacity: 0;
+}
+
+/* Блокировка прокрутки страницы, пока открыто модальное окно */
+.no-scroll {
+  overflow: hidden !important;
+}
+
+/* Активный элемент: текущий пункт меню, выбранный цвет, страница пагинации */
+.is-active {
+  color: var(--color-pink);
+}
+
+/* ==========================================================================
+   3. Анимации декора
+   Кадры общие: облака в hero, искры и бабочки в блоке обратной связи.
+   Отключаются автоматически при prefers-reduced-motion (см. reset.css).
+   ========================================================================== */
+
+/* Медленный дрейф облаков по горизонтали */
+@keyframes float-cloud {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(4%);
+  }
+}
+
+/* Мягкое покачивание вверх-вниз: бабочки, декор */
+@keyframes float-soft {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Мерцание искр и звёздочек */
+@keyframes sparkle {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(0.8);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+/* Появление блока снизу — для контента, который подгружается */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Классы-обёртки над кадрами: навешиваются на декоративные элементы */
+.animate-float {
+  animation: float-soft 4s ease-in-out infinite;
+}
+
+.animate-sparkle {
+  animation: sparkle 2.5s ease-in-out infinite;
+}
+
+/* Элемент, который появляется после подгрузки данных */
+.fade-in-up {
+  animation: fade-in-up var(--transition-slow) var(--transition-timing) both;
+}
+
+/* ==========================================================================
+   4. Мелкие помощники
+   ========================================================================== */
+
+.no-wrap {
+  white-space: nowrap;
+}
+
+.text-center {
+  text-align: center;
+}
