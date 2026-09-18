@@ -77,7 +77,7 @@ button {
   border: none;
   cursor: pointer;
   /* Убираем подсветку тапа на мобильных */
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: var(--color-transparent);
 }
 
 button:disabled {

@@ -51,26 +51,94 @@
   </head>
   <body>
     <div class="root">
-      <header class="header"></header>
+      <!-- Секция 0. Шапка: меню, корзина, соцсети, бургер.
+           Раскрытие меню на мобильном делает JS позже (data-burger / data-nav),
+           сейчас свёрстанное состояние — по макетам figma/header/. -->
+      <header class="header">
+        <div class="header__inner container">
+          <!-- Бургер идёт первым в разметке: на мобильном и планшете
+               он стоит слева, а на десктопе просто скрывается -->
+          <button
+            class="header__burger"
+            type="button"
+            data-burger
+            aria-label="Меню"
+            aria-expanded="false"
+            aria-controls="header-nav"
+          >
+            <span class="header__burger-line"></span>
+            <span class="header__burger-line"></span>
+            <span class="header__burger-line"></span>
+          </button>
+
+          <nav class="header__nav" id="header-nav" data-nav aria-label="Основное меню">
+            <ul class="header__list">
+              <li class="header__item">
+                <a class="header__link header__link--active" href="#goods-new" aria-current="location">Новая коллекция</a>
+              </li>
+              <li class="header__item">
+                <a class="header__link" href="#goods-women">Женские пижамы</a>
+              </li>
+              <li class="header__item">
+                <a class="header__link" href="#goods-men">Мужские пижамы</a>
+              </li>
+              <li class="header__item">
+                <a class="header__link" href="#goods-print">Принты</a>
+              </li>
+              <li class="header__item">
+                <a class="header__link" href="#goods-other">Другие товары</a>
+              </li>
+            </ul>
+          </nav>
+
+          <button class="header__cart" type="button" data-cart-open>
+            <span class="header__cart-text">
+              <span class="header__cart-label">Корзина</span>
+              <span class="header__cart-count" data-cart-counter>0</span>
+            </span>
+          </button>
+
+          <!-- Иконки соцсетей — фоны плашек (background-image), как у корзины:
+               картинка декоративная, в контенте её нет. Поэтому текстовое имя
+               ссылки задаёт aria-label, а не alt у <img>. -->
+          <div class="header__socials">
+            <a
+              class="header__social header__social--instagram"
+              href="https://www.instagram.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+            ></a>
+            <a
+              class="header__social header__social--vk"
+              href="https://vk.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="VK"
+            ></a>
+          </div>
+        </div>
+      </header>
 
       <main class="main">
         <!-- Секция 1. Hero: фон-небо с облаками, заголовок, кнопка «Скорее к покупкам !» -->
         <section class="hero"></section>
 
+        <!-- id секций совпадают с якорями меню в шапке -->
         <!-- Секция 2. Новая коллекция — 6 карточек товара -->
-        <section class="goods-new"></section>
+        <section class="goods-new" id="goods-new"></section>
 
         <!-- Секция 3. Женская коллекция — фильтры, сетка карточек, пагинация -->
-        <section class="goods-women"></section>
+        <section class="goods-women" id="goods-women"></section>
 
         <!-- Секция 4. Мужская коллекция — фильтры, сетка карточек, пагинация -->
-        <section class="goods-men"></section>
-        
+        <section class="goods-men" id="goods-men"></section>
+
         <!-- Секция 5. Сервис «ПРИНТ» -->
-        <section class="goods-print"></section>
+        <section class="goods-print" id="goods-print"></section>
 
         <!-- Секция 6. Другие товары -->
-        <section class="goods-other"></section>
+        <section class="goods-other" id="goods-other"></section>
 
         <!-- Секция 7. «Отключитесь от всех тревог…» — блок обратной связи -->
         <section class="feedback"></section>

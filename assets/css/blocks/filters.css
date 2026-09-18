@@ -69,7 +69,9 @@
 .filters__color {
   width: var(--icon-size-lg);
   height: var(--icon-size-lg);
-  border: var(--border-width-thin) solid transparent;
+  /* Прозрачная рамка вместо отсутствующей: при выборе меняется только цвет,
+     и кружок не «прыгает» по размеру */
+  border: var(--border-width-thin) solid var(--color-transparent);
   border-radius: var(--radius-circle);
   transition: border-color var(--transition-fast) var(--transition-timing);
 }

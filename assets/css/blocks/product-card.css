@@ -68,7 +68,8 @@
 .product-card__price--old {
   color: var(--color-dark);
   text-decoration: line-through;
-  background-color: transparent;
+  /* Снимаем бежевую плашку базового модификатора цены */
+  background-color: var(--color-transparent);
   padding: 0;
   opacity: 0.6;
 }
