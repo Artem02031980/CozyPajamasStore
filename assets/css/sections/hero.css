@@ -1,0 +1,124 @@
+/* До 768 px */
+.hero {
+  background-color: var(--color-pink-light);
+  background-image: url("../../images/hero/bg-hero.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: left center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Первый экран занимает окно целиком, но с вычетом того, что уже занято:
+     высоты липкой шапки и отступов секции из layout.css (padding-block).
+     Без вычитания секция становилась 100vh + паддинг, и на коротких экранах
+     кнопка уезжала под срез. */
+  min-height: calc(100vh - var(--header-height) - 2 * var(--section-padding-y));
+}
+
+.hero__inner {
+  width: 100%;
+  max-width: 1000px;
+}
+
+.hero__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-24);
+  text-align: center;
+}
+
+.hero__title {
+  font-size: var(--fs-30);
+  color: var(--color-white);
+  font-weight: var(--fw-bold);
+}
+
+.hero__text {
+  color: var(--color-white);
+  font-size: var(--fs-18);
+}
+
+.hero__button {
+  background-image: url("../../images/hero/i-hero.svg");
+  background-repeat: no-repeat;
+  background-position: right var(--space-12) center;
+  background-size: 8px 30px;
+  padding-inline: var(--space-24);
+  text-align: left;
+}
+
+/* 480px — крупный телефон.
+   Кегль заголовка здесь не повторяем: он задан в базовом правиле.
+   В блоке остаётся ограничение ширины и шаг размера лид-абзаца. */
+@media (min-width: 480px) {
+  .hero__title {
+    max-width: 600px;
+  }
+
+  .hero__text {
+    /* Было --fs-12: текст уменьшался на 6px при переходе 320 → 480,
+       то есть на широком телефоне лид набирался размером сноски.
+       Теперь размер растёт: 18 → 20, а с 768px снова возвращается к 16. */
+    font-size: var(--fs-20);
+  }
+}
+
+/* 768px — планшет: */
+@media (min-width: 768px) {
+  .hero {
+    display: flex;
+    background-color: var(--color-transparent);
+    background-image: none;
+    min-height: auto;
+    max-height: auto;
+    padding-block: var(--space-20);
+  }
+
+  .hero__inner {
+    background-color: var(--color-pink-light);
+    background-image: url("../../images/hero/bg-hero.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: right center;
+    padding-block: var(--space-64);
+  }
+
+  .hero__content {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .hero__text {
+    max-width: 430px;
+    font-size: var(--fs-16);
+  }
+}
+
+/* 1024 — маленький десктоп */
+@media (min-width: 1024px) {
+  .hero {
+    padding-block: var(--space-24);
+  }
+  .hero__inner {
+    border-radius: var(--radius-md);
+  }
+}
+
+/* 1280px — десктоп */
+@media (min-width: 1280px) {
+  .hero {
+    padding-block: var(--space-32);
+  }
+  .hero__title {
+    font-size: var(--fs-36);
+  }
+
+  .hero__button {
+    font-size: var(--fs-24);
+  }
+
+  .hero__inner {
+    padding: var(--space-80) var(--space-48);
+  }
+}

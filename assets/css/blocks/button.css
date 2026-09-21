@@ -58,3 +58,17 @@
 .button--block {
   width: 100%;
 }
+
+/* Мягкая — светлая серо-голубая плашка с тёмным текстом, углы не «пилюлей»,
+   а скруглением 8px. Такой кнопка сделана в макете hero: на тёмно-синем небе
+   розовая акцентная кнопка выбивалась бы, а серо-голубая читается как облако.
+   Радиус переопределяем: базовый .button задаёт --radius-pill. */
+.button--soft {
+  color: var(--color-dark);
+  background-color: var(--color-grey-blue);
+  border-radius: var(--radius-sm);
+}
+
+.button--soft:hover {
+  background-color: var(--color-dark);
+}
