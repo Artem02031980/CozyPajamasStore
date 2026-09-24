@@ -10,15 +10,14 @@
          <div class="product-card__media"><img class="product-card__image" …></div>
          <h3 class="product-card__title">…</h3>
        </a>
+       <p class="product-card__subtitle">…</p>
        <p class="product-card__price">…</p>
      </article>
    ========================================================================== */
 
 .product-card {
   display: flex;
-  flex-direction: column;
-  background-color: var(--color-white);
-  border-radius: var(--radius-md);
+  flex-direction: column; 
   overflow: hidden;
 }
 
@@ -30,21 +29,23 @@
 
 /* Фото товара: одинаковая пропорция у всех карточек, чтобы сетка не «плясала» */
 .product-card__media {
+  border-radius: var(--radius-sm);
   aspect-ratio: 3 / 4;
   overflow: hidden;
-  background-color: var(--color-beige-light);
-  border-radius: var(--radius-md);
+  background-color: var(--color-beige-light);  
 }
 
 .product-card__image {
+  display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: 100%;  
+  object-fit:contain;
+  object-position: center;
   transition: transform var(--transition-base) var(--transition-timing);
 }
 
 .product-card:hover .product-card__image {
-  transform: scale(1.04);
+  transform: scale(1.1);
 }
 
 .product-card__title {
@@ -54,7 +55,7 @@
 }
 
 /* Плашка цены — бежевая, из макета */
-.product-card__price {
+.product-card__price {  
   align-self: flex-start;
   margin-top: var(--space-8);
   padding: var(--space-4) var(--space-12);
@@ -62,6 +63,20 @@
   color: var(--color-dark);
   background-color: var(--color-beige);
   border-radius: var(--radius-xs);
+}
+
+/* Состав товара: «Брюки + Сорочка». Стоит под названием, как и в макете,
+   и относится к карточке, а не к секции — поэтому элемент блока, а не
+   goods-new: карточку используют четыре секции, стиль должен ехать с ней */
+.product-card__subtitle {
+  font-size: var(--fs-16);
+  line-height: var(--lh-snug);
+  color: var(--color-dark);
+  text-align: center;
+}
+
+.goods-new .product-card__price::after {
+  content: '\00A0\20BD';
 }
 
 /* Старая цена рядом с новой */
