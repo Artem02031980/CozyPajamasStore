@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
@@ -154,7 +154,7 @@
                     <div class="product-card__media">
                       <img
                         class="product-card__image"
-                        src="assets/images/goods-new/new_01.png"
+                        src="assets/images/products/new/new_01.png"
                         alt="Светло-голубая женская пижама с кружевом"
                         width="414"
                         height="1159"
@@ -174,7 +174,7 @@
                     <div class="product-card__media">
                       <img
                         class="product-card__image"
-                        src="assets/images/goods-new/new_02.png"
+                        src="assets/images/products/new/new_02.png"
                         alt="Мужская пижама в розово-серую клетку"
                         width="412"
                         height="1136"
@@ -194,7 +194,7 @@
                     <div class="product-card__media">
                       <img
                         class="product-card__image"
-                        src="assets/images/goods-new/new_03.png"
+                        src="assets/images/products/new/new_03.png"
                         alt="Белая кружевная сорочка-пеньюар"
                         width="576"
                         height="1160"
@@ -214,7 +214,7 @@
                     <div class="product-card__media">
                       <img
                         class="product-card__image"
-                        src="assets/images/goods-new/new_04.png"
+                        src="assets/images/products/new/new_04.png"
                         alt="Мужская пижама с розово-белым мраморным принтом"
                         width="423"
                         height="1154"
@@ -234,7 +234,7 @@
                     <div class="product-card__media">
                       <img
                         class="product-card__image"
-                        src="assets/images/goods-new/new_05.png"
+                        src="assets/images/products/new/new_05.png"
                         alt="Розовая женская пижама в клетку с поясом"
                         width="386"
                         height="1160"
@@ -254,7 +254,7 @@
                     <div class="product-card__media">
                       <img
                         class="product-card__image"
-                        src="assets/images/goods-new/new_06.png"
+                        src="assets/images/products/new/new_06.png"
                         alt="Мужская серо-голубая пижама в клетку"
                         width="384"
                         height="1140"
@@ -270,11 +270,663 @@
           </div>
         </section>
 
-        <!-- Секция 3. Женская коллекция — фильтры, сетка карточек, пагинация -->
-        <section class="goods-women" id="goods-women"></section>
+        <!-- Секция 3. Женская коллекция — фильтры, сетка карточек, пагинация.
+             Названия, состав и цены взяты из макета. Логики пока нет: фильтры
+             и пагинация — только разметка под будущий JS (см. data-атрибуты). -->
+        <section class="goods-women" id="goods-women">
+          <div class="goods-women__inner container">
+            <h2 class="goods-women__title">Женская коллекция</h2>
 
-        <!-- Секция 4. Мужская коллекция — фильтры, сетка карточек, пагинация -->
-        <section class="goods-men" id="goods-men"></section>
+            <!-- На мобильном фильтры свёрнуты в эту кнопку; раскрытие сделает JS
+                 (data-filters-toggle), он же снимет .is-hidden с формы фильтров -->
+            <button
+              class="goods-women__filters-toggle"
+              type="button"
+              data-filters-toggle
+              aria-expanded="false"
+              aria-controls="goods-women-filters"
+            >
+              Установить фильтры
+            </button>
+
+            <div class="goods__layout">
+              <form class="filters is-hidden" id="goods-women-filters">
+                <div class="filters__group">
+                  <h3 class="filters__title">Тип изделия</h3>
+                  <ul class="filters__list filters__list--women">
+                    <li><button class="filters__chip" type="button">Пижама</button></li>
+                    <li><button class="filters__chip" type="button">Пеньюар</button></li>
+                    <li><button class="filters__chip" type="button">Халатик</button></li>
+                    <li><button class="filters__chip" type="button">Сорочка</button></li>
+                    <li><button class="filters__chip" type="button">Майка</button></li>
+                    <li><button class="filters__chip" type="button">Брюки</button></li>
+                    <li><button class="filters__chip" type="button">Свитшот</button></li>
+                    <li><button class="filters__chip" type="button">Футболка</button></li>
+                    <li><button class="filters__chip" type="button">Топ</button></li>
+                  </ul>
+                </div>
+
+                <div class="filters__group">
+                  <h3 class="filters__title">Возраст</h3>
+                  <ul class="filters__list filters__list--women">
+                    <li><button class="filters__chip" type="button">Для юных дам</button></li>
+                    <li><button class="filters__chip" type="button">Для девушек</button></li>
+                    <li><button class="filters__chip" type="button">Для мудрого возраста</button></li>
+                  </ul>
+                </div>
+
+                <div class="filters__group">
+                  <h3 class="filters__title">Палитра цветов</h3>
+                  <ul class="filters__colors">
+                    <li>
+                      <button
+                        class="filters__color"
+                        type="button"
+                        style="background-color: #000000"
+                        aria-label="Чёрный"
+                      ></button>
+                    </li>
+                    <li>
+                      <button
+                        class="filters__color"
+                        type="button"
+                        style="background-color: #ffffff"
+                        aria-label="Белый"
+                      ></button>
+                    </li>
+                    <li>
+                      <button
+                        class="filters__color"
+                        type="button"
+                        style="background-color: #cccccc"
+                        aria-label="Серый"
+                      ></button>
+                    </li>
+                    <li>
+                      <button
+                        class="filters__color"
+                        type="button"
+                        style="background-color: #fe0000"
+                        aria-label="Красный"
+                      ></button>
+                    </li>
+                    <li>
+                      <button
+                        class="filters__color"
+                        type="button"
+                        style="background-color: #000aff"
+                        aria-label="Синий"
+                      ></button>
+                    </li>
+                    <li>
+                      <button
+                        class="filters__color"
+                        type="button"
+                        style="background-color: #33ff00"
+                        aria-label="Зелёный"
+                      ></button>
+                    </li>
+                    <li>
+                      <button
+                        class="filters__color"
+                        type="button"
+                        style="background-color: #ffd600"
+                        aria-label="Жёлтый"
+                      ></button>
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="filters__group">
+                  <h3 class="filters__title">Цена</h3>
+                  <ul class="filters__list filters__list--women">
+                    <li><button class="filters__chip" type="button">до 4999₽</button></li>
+                    <li><button class="filters__chip" type="button">5000 - 9999₽</button></li>
+                    <li><button class="filters__chip" type="button">10000 - 14999₽</button></li>
+                    <li><button class="filters__chip" type="button">15000 - 19999₽</button></li>
+                  </ul>
+                </div>
+
+                <button class="filters__reset" type="button">Сбросить фильтры</button>
+              </form>
+
+              <div class="goods__content">
+                <!-- Контейнер отрисовки: скрипт будет создавать карточки здесь,
+                     поэтому девять текущих — это первая страница, а не жёсткий набор -->
+                <ul class="goods-women__grid" data-goods-grid>
+                  <li class="goods-women__item">
+                    <article class="product-card">
+                      <!-- href — заглушка: здесь будет адрес страницы товара -->
+                      <a class="product-card__link" href="product-pages/">
+                        <div class="product-card__media">
+                          <img
+                            class="product-card__image"
+                            src="assets/images/products/women/w01.png"
+                            alt="Жёлтая полупрозрачная пижама в белый горошек"
+                            width="294"
+                            height="1034"
+                          />
+                        </div>
+                        <h3 class="product-card__title">Солнце</h3>
+                      </a>
+                      <p class="product-card__subtitle">Брюки + Сорочка</p>
+                      <p class="product-card__price">7699₽</p>
+                    </article>
+                  </li>
+
+                  <li class="goods-women__item">
+                    <article class="product-card">
+                      <!-- href — заглушка: здесь будет адрес страницы товара -->
+                      <a class="product-card__link" href="product-pages/">
+                        <div class="product-card__media">
+                          <img
+                            class="product-card__image"
+                            src="assets/images/products/women/w02.png"
+                            alt="Бело-голубая пижама в полоску, рубашка на пуговицах"
+                            width="349"
+                            height="1135"
+                          />
+                        </div>
+                        <h3 class="product-card__title">Русская душа</h3>
+                      </a>
+                      <p class="product-card__subtitle">Брюки + Сорочка</p>
+                      <p class="product-card__price">3999₽</p>
+                    </article>
+                  </li>
+
+                  <li class="goods-women__item">
+                    <article class="product-card">
+                      <!-- href — заглушка: здесь будет адрес страницы товара -->
+                      <a class="product-card__link" href="product-pages/">
+                        <div class="product-card__media">
+                          <img
+                            class="product-card__image"
+                            src="assets/images/products/women/w03.png"
+                            alt="Пижама с розовым цветочным принтом и красным поясом"
+                            width="385"
+                            height="1159"
+                          />
+                        </div>
+                        <h3 class="product-card__title">Клубичные поля</h3>
+                      </a>
+                      <p class="product-card__subtitle">Брюки + Сорочка + Майка</p>
+                      <p class="product-card__price">12199₽</p>
+                    </article>
+                  </li>
+
+                  <li class="goods-women__item">
+                    <article class="product-card">
+                      <!-- href — заглушка: здесь будет адрес страницы товара -->
+                      <a class="product-card__link" href="product-pages/">
+                        <div class="product-card__media">
+                          <img
+                            class="product-card__image"
+                            src="assets/images/products/women/w04.png"
+                            alt="Бежевая пижама с мелким принтом, рубашка с планкой"
+                            width="365"
+                            height="1152"
+                          />
+                        </div>
+                        <h3 class="product-card__title">Пшеничное поле</h3>
+                      </a>
+                      <p class="product-card__subtitle">Брюки + Сорочка</p>
+                      <p class="product-card__price">6599₽</p>
+                    </article>
+                  </li>
+
+                  <li class="goods-women__item">
+                    <article class="product-card">
+                      <!-- href — заглушка: здесь будет адрес страницы товара -->
+                      <a class="product-card__link" href="product-pages/">
+                        <div class="product-card__media">
+                          <img
+                            class="product-card__image"
+                            src="assets/images/products/women/w05.png"
+                            alt="Розовая полупрозрачная пижама с цветами"
+                            width="471"
+                            height="1113"
+                          />
+                        </div>
+                        <h3 class="product-card__title">Розовые поля</h3>
+                      </a>
+                      <p class="product-card__subtitle">Брюки + Халатик + Топик</p>
+                      <p class="product-card__price">12999₽</p>
+                    </article>
+                  </li>
+
+                  <li class="goods-women__item">
+                    <article class="product-card">
+                      <!-- href — заглушка: здесь будет адрес страницы товара -->
+                      <a class="product-card__link" href="product-pages/">
+                        <div class="product-card__media">
+                          <img
+                            class="product-card__image"
+                            src="assets/images/products/women/w06.png"
+                            alt="Чёрная пижама: футболка с длинным рукавом и брюки с поясом"
+                            width="346"
+                            height="1148"
+                          />
+                        </div>
+                        <h3 class="product-card__title">Тёмная ночь V</h3>
+                      </a>
+                      <p class="product-card__subtitle">Брюки + Свитшот</p>
+                      <p class="product-card__price">4199₽</p>
+                    </article>
+                  </li>
+
+                  <li class="goods-women__item">
+                    <article class="product-card">
+                      <!-- href — заглушка: здесь будет адрес страницы товара -->
+                      <a class="product-card__link" href="product-pages/">
+                        <div class="product-card__media">
+                          <img
+                            class="product-card__image"
+                            src="assets/images/products/women/w07.png"
+                            alt="Белая пижама с принтом роз и отложным воротником"
+                            width="456"
+                            height="1428"
+                          />
+                        </div>
+                        <h3 class="product-card__title">Мамино счастье VI</h3>
+                      </a>
+                      <p class="product-card__subtitle">Брюки + Сорочка</p>
+                      <p class="product-card__price">2799₽</p>
+                    </article>
+                  </li>
+
+                  <li class="goods-women__item">
+                    <article class="product-card">
+                      <!-- href — заглушка: здесь будет адрес страницы товара -->
+                      <a class="product-card__link" href="product-pages/">
+                        <div class="product-card__media">
+                          <img
+                            class="product-card__image"
+                            src="assets/images/products/women/w08.png"
+                            alt="Розовая атласная пижама в белый горошек, бант на кармане"
+                            width="623"
+                            height="1403"
+                          />
+                        </div>
+                        <h3 class="product-card__title">Спокойный сон III</h3>
+                      </a>
+                      <p class="product-card__subtitle">Брюки + Халатик</p>
+                      <p class="product-card__price">6999₽</p>
+                    </article>
+                  </li>
+
+                  <li class="goods-women__item">
+                    <article class="product-card">
+                      <!-- href — заглушка: здесь будет адрес страницы товара -->
+                      <a class="product-card__link" href="product-pages/">
+                        <div class="product-card__media">
+                          <img
+                            class="product-card__image"
+                            src="assets/images/products/women/w09.png"
+                            alt="Бело-розовая пижама в клетку, рубашка с карманом"
+                            width="343"
+                            height="1112"
+                          />
+                        </div>
+                        <h3 class="product-card__title">Нетленная классика II</h3>
+                      </a>
+                      <p class="product-card__subtitle">Брюки + Сорочка</p>
+                      <p class="product-card__price">4599₽</p>
+                    </article>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <nav class="pagination" aria-label="Страницы женской коллекции">
+              <ul class="pagination__list">
+                <li>
+                  <button class="pagination__link is-active" type="button" aria-current="page">1</button>
+                </li>
+                <li><button class="pagination__link" type="button">2</button></li>
+                <li><button class="pagination__link" type="button">3</button></li>
+                <li><button class="pagination__link" type="button">4</button></li>
+                <li><button class="pagination__link" type="button">5</button></li>
+                <li><button class="pagination__link" type="button">6</button></li>
+                <li>
+                  <button class="pagination__arrow" type="button" aria-label="Предыдущая страница" disabled>
+                    ‹
+                  </button>
+                </li>
+                <li>
+                  <button class="pagination__arrow" type="button" aria-label="Следующая страница">›</button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </section>
+
+        <!-- Секция 4. Мужская коллекция — фильтры, сетка карточек, пагинация.
+             Секция повторяет женскую: те же блоки, отличается цвет (синий
+             вместо розового) и данные. Логики пока нет — фильтры и пагинация
+             только разметка под будущий JS (см. data-атрибуты). -->
+        <section class="goods-men" id="goods-men">
+          <div class="goods-men__inner container">
+            <h2 class="goods-men__title">Мужская коллекция</h2>
+
+            <!-- На мобильном фильтры свёрнуты в эту кнопку; раскрытие сделает JS
+                 (data-filters-toggle), он же снимет .is-hidden с формы фильтров -->
+            <button
+              class="goods-men__filters-toggle"
+              type="button"
+              data-filters-toggle
+              aria-expanded="false"
+              aria-controls="goods-men-filters"
+            >
+              Установить фильтры
+            </button>
+
+            <div class="goods__layout">
+              <form class="filters is-hidden" id="goods-men-filters">
+                <div class="filters__group">
+                  <h3 class="filters__title">Тип изделия</h3>
+                  <ul class="filters__list filters__list--men">
+                    <li><button class="filters__chip" type="button">Халат</button></li>
+                    <li><button class="filters__chip" type="button">Сорочка</button></li>
+                    <li><button class="filters__chip" type="button">Майка</button></li>
+                    <li><button class="filters__chip" type="button">Брюки</button></li>
+                    <li><button class="filters__chip" type="button">Свитшот</button></li>
+                    <li><button class="filters__chip" type="button">Футболка</button></li>
+                  </ul>
+                </div>
+
+                <div class="filters__group">
+                  <h3 class="filters__title">Возраст</h3>
+                  <ul class="filters__list filters__list--men">
+                    <li><button class="filters__chip" type="button">Для молодых людей</button></li>
+                    <li><button class="filters__chip" type="button">Для мужчин</button></li>
+                    <li><button class="filters__chip" type="button">Для мудрого возраста</button></li>
+                  </ul>
+                </div>
+
+                <div class="filters__group">
+                  <h3 class="filters__title">Палитра цветов</h3>
+                  <ul class="filters__colors">
+                    <li>
+                      <button
+                        class="filters__color"
+                        type="button"
+                        style="background-color: #000000"
+                        aria-label="Чёрный"
+                      ></button>
+                    </li>
+                    <li>
+                      <button
+                        class="filters__color"
+                        type="button"
+                        style="background-color: #ffffff"
+                        aria-label="Белый"
+                      ></button>
+                    </li>
+                    <li>
+                      <button
+                        class="filters__color"
+                        type="button"
+                        style="background-color: #cccccc"
+                        aria-label="Серый"
+                      ></button>
+                    </li>
+                    <li>
+                      <button
+                        class="filters__color"
+                        type="button"
+                        style="background-color: #fe0000"
+                        aria-label="Красный"
+                      ></button>
+                    </li>
+                    <li>
+                      <button
+                        class="filters__color"
+                        type="button"
+                        style="background-color: #000aff"
+                        aria-label="Синий"
+                      ></button>
+                    </li>
+                    <li>
+                      <button
+                        class="filters__color"
+                        type="button"
+                        style="background-color: #33ff00"
+                        aria-label="Зелёный"
+                      ></button>
+                    </li>
+                    <li>
+                      <button
+                        class="filters__color"
+                        type="button"
+                        style="background-color: #ffd600"
+                        aria-label="Жёлтый"
+                      ></button>
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="filters__group">
+                  <h3 class="filters__title">Цена</h3>
+                  <ul class="filters__list filters__list--men">
+                    <li><button class="filters__chip" type="button">до 4999₽</button></li>
+                    <li><button class="filters__chip" type="button">5000 - 9999₽</button></li>
+                    <li><button class="filters__chip" type="button">10000 - 14999₽</button></li>
+                    <li><button class="filters__chip" type="button">15000 - 19999₽</button></li>
+                  </ul>
+                </div>
+
+                <button class="filters__reset" type="button">Сбросить фильтры</button>
+              </form>
+
+              <div class="goods__content">
+                <!-- Контейнер отрисовки: скрипт будет создавать карточки здесь,
+                     поэтому девять текущих — это первая страница, а не жёсткий набор -->
+                <ul class="goods-men__grid" data-goods-grid>
+                  <li class="goods-men__item">
+                    <article class="product-card">
+                      <!-- href — заглушка: здесь будет адрес страницы товара -->
+                      <a class="product-card__link" href="product-pages/">
+                        <div class="product-card__media">
+                          <img
+                            class="product-card__image"
+                            src="assets/images/products/men/1.png"
+                            alt="Мужская пижама в мятно-голубую клетку с белой майкой"
+                            width="303"
+                            height="953"
+                          />
+                        </div>
+                        <h3 class="product-card__title">Мятный вечер</h3>
+                      </a>
+                      <p class="product-card__subtitle">Брюки + Сорочка + Майка</p>
+                      <p class="product-card__price">5499₽</p>
+                    </article>
+                  </li>
+
+                  <li class="goods-men__item">
+                    <article class="product-card">
+                      <!-- href — заглушка: здесь будет адрес страницы товара -->
+                      <a class="product-card__link" href="product-pages/">
+                        <div class="product-card__media">
+                          <img
+                            class="product-card__image"
+                            src="assets/images/products/men/2.png"
+                            alt="Мужская пижама в синюю клетку с белым поясом"
+                            width="303"
+                            height="955"
+                          />
+                        </div>
+                        <h3 class="product-card__title">Синий туман</h3>
+                      </a>
+                      <p class="product-card__subtitle">Брюки + Сорочка</p>
+                      <p class="product-card__price">4999₽</p>
+                    </article>
+                  </li>
+
+                  <li class="goods-men__item">
+                    <article class="product-card">
+                      <!-- href="#" — заглушка: здесь будет адрес страницы товара -->
+                      <a class="product-card__link" href="product-pages/">
+                        <div class="product-card__media">
+                          <img
+                            class="product-card__image"
+                            src="assets/images/products/men/3.png"
+                            alt="Мужская пижама в коричневую клетку с белой майкой"
+                            width="378"
+                            height="1128"
+                          />
+                        </div>
+                        <h3 class="product-card__title">Тёплая клетка</h3>
+                      </a>
+                      <p class="product-card__subtitle">Брюки + Сорочка + Майка</p>
+                      <p class="product-card__price">6599₽</p>
+                    </article>
+                  </li>
+
+                  <li class="goods-men__item">
+                    <article class="product-card">
+                      <!-- href="#" — заглушка: здесь будет адрес страницы товара -->
+                      <a class="product-card__link" href="product-pages/">
+                        <div class="product-card__media">
+                          <img
+                            class="product-card__image"
+                            src="assets/images/products/men/4.png"
+                            alt="Белый мужской халат с поясом и брюки"
+                            width="351"
+                            height="1129"
+                          />
+                        </div>
+                        <h3 class="product-card__title">Белый халат</h3>
+                      </a>
+                      <p class="product-card__subtitle">Брюки + Халат</p>
+                      <p class="product-card__price">8999₽</p>
+                    </article>
+                  </li>
+
+                  <li class="goods-men__item">
+                    <article class="product-card">
+                      <!-- href="#" — заглушка: здесь будет адрес страницы товара -->
+                      <a class="product-card__link" href="product-pages/">
+                        <div class="product-card__media">
+                          <img
+                            class="product-card__image"
+                            src="assets/images/products/men/5.png"
+                            alt="Серо-голубая мужская пижама с рубашкой на пуговицах"
+                            width="403"
+                            height="1145"
+                          />
+                        </div>
+                        <h3 class="product-card__title">Морская дымка</h3>
+                      </a>
+                      <p class="product-card__subtitle">Брюки + Рубашка</p>
+                      <p class="product-card__price">5699₽</p>
+                    </article>
+                  </li>
+
+                  <li class="goods-men__item">
+                    <article class="product-card">
+                      <!-- href="#" — заглушка: здесь будет адрес страницы товара -->
+                      <a class="product-card__link" href="product-pages/">
+                        <div class="product-card__media">
+                          <img
+                            class="product-card__image"
+                            src="assets/images/products/men/6.png"
+                            alt="Чёрная мужская пижама: рубашка с длинным рукавом и брюки"
+                            width="361"
+                            height="1116"
+                          />
+                        </div>
+                        <h3 class="product-card__title">Полночный силуэт</h3>
+                      </a>
+                      <p class="product-card__subtitle">Брюки + Рубашка</p>
+                      <p class="product-card__price">7999₽</p>
+                    </article>
+                  </li>
+
+                  <li class="goods-men__item">
+                    <article class="product-card">
+                      <!-- href="#" — заглушка: здесь будет адрес страницы товара -->
+                      <a class="product-card__link" href="product-pages/">
+                        <div class="product-card__media">
+                          <img
+                            class="product-card__image"
+                            src="assets/images/products/men/7.png"
+                            alt="Светло-голубой мужской халат с принтом и брюки"
+                            width="446"
+                            height="1111"
+                          />
+                        </div>
+                        <h3 class="product-card__title">Облачный халат</h3>
+                      </a>
+                      <p class="product-card__subtitle">Брюки + Халат</p>
+                      <p class="product-card__price">6799₽</p>
+                    </article>
+                  </li>
+
+                  <li class="goods-men__item">
+                    <article class="product-card">
+                      <!-- href="#" — заглушка: здесь будет адрес страницы товара -->
+                      <a class="product-card__link" href="product-pages/">
+                        <div class="product-card__media">
+                          <img
+                            class="product-card__image"
+                            src="assets/images/products/men/8.png"
+                            alt="Изумрудная мужская пижама с рубашкой и карманом"
+                            width="375"
+                            height="1175"
+                          />
+                        </div>
+                        <h3 class="product-card__title">Изумрудный вечер</h3>
+                      </a>
+                      <p class="product-card__subtitle">Брюки + Сорочка</p>
+                      <p class="product-card__price">7299₽</p>
+                    </article>
+                  </li>
+
+                  <li class="goods-men__item">
+                    <article class="product-card">
+                      <!-- href="#" — заглушка: здесь будет адрес страницы товара -->
+                      <a class="product-card__link" href="product-pages/">
+                        <div class="product-card__media">
+                          <img
+                            class="product-card__image"
+                            src="assets/images/products/men/9.png"
+                            alt="Голубая мужская пижама с отложным воротником и карманом"
+                            width="518"
+                            height="1693"
+                          />
+                        </div>
+                        <h3 class="product-card__title">Голубая классика</h3>
+                      </a>
+                      <p class="product-card__subtitle">Брюки + Сорочка</p>
+                      <p class="product-card__price">8199₽</p>
+                    </article>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <nav class="pagination" aria-label="Страницы мужской коллекции">
+              <ul class="pagination__list">
+                <li>
+                  <button class="pagination__link is-active" type="button" aria-current="page">1</button>
+                </li>
+                <li><button class="pagination__link" type="button">2</button></li>
+                <li><button class="pagination__link" type="button">3</button></li>
+                <li><button class="pagination__link" type="button">4</button></li>
+                <li><button class="pagination__link" type="button">5</button></li>
+                <li><button class="pagination__link" type="button">6</button></li>
+                <li>
+                  <button class="pagination__arrow" type="button" aria-label="Предыдущая страница" disabled>
+                    ‹
+                  </button>
+                </li>
+                <li>
+                  <button class="pagination__arrow" type="button" aria-label="Следующая страница">›</button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </section>
 
         <!-- Секция 5. Сервис «ПРИНТ» -->
         <section class="goods-print" id="goods-print"></section>
