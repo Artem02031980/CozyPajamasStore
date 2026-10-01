@@ -729,7 +729,7 @@
                         <div class="product-card__media">
                           <img
                             class="product-card__image"
-                            src="assets/images/products/men/1.png"
+                            src="assets/images/products/men/01.png"
                             alt="Мужская пижама в мятно-голубую клетку с белой майкой"
                             width="303"
                             height="953"
@@ -749,7 +749,7 @@
                         <div class="product-card__media">
                           <img
                             class="product-card__image"
-                            src="assets/images/products/men/2.png"
+                            src="assets/images/products/men/02.png"
                             alt="Мужская пижама в синюю клетку с белым поясом"
                             width="303"
                             height="955"
@@ -769,7 +769,7 @@
                         <div class="product-card__media">
                           <img
                             class="product-card__image"
-                            src="assets/images/products/men/3.png"
+                            src="assets/images/products/men/03.png"
                             alt="Мужская пижама в коричневую клетку с белой майкой"
                             width="378"
                             height="1128"
@@ -789,7 +789,7 @@
                         <div class="product-card__media">
                           <img
                             class="product-card__image"
-                            src="assets/images/products/men/4.png"
+                            src="assets/images/products/men/04.png"
                             alt="Белый мужской халат с поясом и брюки"
                             width="351"
                             height="1129"
@@ -809,7 +809,7 @@
                         <div class="product-card__media">
                           <img
                             class="product-card__image"
-                            src="assets/images/products/men/5.png"
+                            src="assets/images/products/men/05.png"
                             alt="Серо-голубая мужская пижама с рубашкой на пуговицах"
                             width="403"
                             height="1145"
@@ -829,7 +829,7 @@
                         <div class="product-card__media">
                           <img
                             class="product-card__image"
-                            src="assets/images/products/men/6.png"
+                            src="assets/images/products/men/06.png"
                             alt="Чёрная мужская пижама: рубашка с длинным рукавом и брюки"
                             width="361"
                             height="1116"
@@ -849,7 +849,7 @@
                         <div class="product-card__media">
                           <img
                             class="product-card__image"
-                            src="assets/images/products/men/7.png"
+                            src="assets/images/products/men/07.png"
                             alt="Светло-голубой мужской халат с принтом и брюки"
                             width="446"
                             height="1111"
@@ -869,7 +869,7 @@
                         <div class="product-card__media">
                           <img
                             class="product-card__image"
-                            src="assets/images/products/men/8.png"
+                            src="assets/images/products/men/08.png"
                             alt="Изумрудная мужская пижама с рубашкой и карманом"
                             width="375"
                             height="1175"
@@ -889,7 +889,7 @@
                         <div class="product-card__media">
                           <img
                             class="product-card__image"
-                            src="assets/images/products/men/9.png"
+                            src="assets/images/products/men/09.png"
                             alt="Голубая мужская пижама с отложным воротником и карманом"
                             width="518"
                             height="1693"
@@ -928,11 +928,212 @@
           </div>
         </section>
 
-        <!-- Секция 5. Сервис «ПРИНТ» -->
-        <section class="goods-print" id="goods-print"></section>
+        <!-- Секция 5. Сервис «ПРИНТ» — услуга нанесения принта на пижаму.
+             Кнопка пока ничего не делает: логику корзины напишет JS по
+             атрибутам data-cart-add и data-print-price. -->
+        <section class="goods-print" id="goods-print">
+          <div class="goods-print__inner container">
+            <div class="goods-print__head">
+              <p class="goods-print__overline">Закажи дополнительно</p>
+              <h2 class="goods-print__title">ПРИНТ</h2>
+              <p class="goods-print__lead">на выбранную пижаму!</p>
+            </div>
 
-        <!-- Секция 6. Другие товары -->
-        <section class="goods-other" id="goods-other"></section>
+            <!-- data-cart-add — по этому атрибуту скрипт поймёт, что добавляют
+                 услугу «ПРИНТ»; data-print-price — её цена в рублях,
+                 data-print-free-from — сумма заказа, от которой она бесплатна -->
+            <button
+              class="goods-print__button button button--soft"
+              type="button"
+              data-cart-add="print"
+              data-print-price="500"
+              data-print-free-from="15000"
+            >
+              Добавить услугу в корзину
+            </button>
+
+            <div class="goods-print__features">
+              <!-- Фигура девушки — декор, а не контент: это пример нанесённого
+                   принта, и подпись к нему уже есть в текстовых блоках. Поэтому
+                   она фоном пустого элемента, а не <img>.
+                   Блоки разложены двумя обёртками: до 1280px они стоят одним
+                   столбиком справа от фигуры, с 1280px расходятся по её
+                   сторонам, как в макете. -->
+              <div class="goods-print__figure" aria-hidden="true"></div>
+
+              <div class="goods-print__text">
+                <div class="goods-print__side goods-print__side--left">
+                <article class="goods-print__feature">
+                  <h3 class="goods-print__feature-title">
+                    Просто добавьте услугу в&nbsp;корзину и&nbsp;с&nbsp;вами свяжется наш консультант
+                  </h3>
+                </article>
+
+                <article class="goods-print__feature">
+                  <h3 class="goods-print__feature-title">
+                    Пришли <span class="goods-print__accent">свой дизайн-макет</span> или выбери
+                    из&nbsp;нашего <span class="goods-print__accent">каталога</span>
+                  </h3>
+                </article>
+
+                <article class="goods-print__feature goods-print__feature--price">
+                  <h3 class="goods-print__feature-title">Стоимость стандартного принта</h3>
+                  <p class="goods-print__price">+500₽</p>
+                </article>
+              </div>
+
+              <div class="goods-print__side goods-print__side--right">
+                <article class="goods-print__feature">
+                  <h3 class="goods-print__feature-title">
+                    Множество наших дизайнов и&nbsp;многих других с&nbsp;соблюдением авторских прав
+                  </h3>
+                </article>
+
+                <article class="goods-print__feature">
+                  <h3 class="goods-print__feature-title">
+                    Сгенерируем ваши пожелания с&nbsp;помощью нейросети
+                  </h3>
+                </article>
+
+                <article class="goods-print__feature">
+                  <h3 class="goods-print__feature-title">При заказе товаров от 15000₽</h3>
+                  <p class="goods-print__gift">Принт в подарок!</p>
+                </article>
+              </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Секция 6. Другие товары — слайдер из четырёх товаров и фильтры
+             под ним. Логики пока нет: стрелки и чипсы — разметка под JS
+             (см. data-slider, data-slider-prev, data-slider-next). -->
+        <section class="goods-other" id="goods-other">
+          <div class="goods-other__inner container">
+            <h2 class="goods-other__title">Другие товары</h2>
+
+            <div class="goods-other__slider" data-slider>
+              <button
+                class="goods-other__arrow goods-other__arrow--prev"
+                type="button"
+                data-slider-prev
+                aria-label="Предыдущий товар"
+                disabled
+              >
+                <span class="goods-other__arrow-icon" aria-hidden="true"></span>
+              </button>
+
+              <!-- Лента: до появления скрипта это обычная прокручиваемая
+                   лента с фиксированной шириной карточек, поэтому секция
+                   выглядит рабочей и без JS -->
+              <ul class="goods-other__track">
+                <li class="goods-other__item">
+                  <article class="product-card">
+                    <!-- href — заглушка: здесь будет адрес страницы товара -->
+                    <a class="product-card__link" href="product-pages/">
+                      <div class="product-card__media">
+                        <img
+                          class="product-card__image"
+                          src="assets/images/products/other/01.png"
+                          alt="Бежевый вязаный плед, сложенный в несколько раз"
+                          width="1024"
+                          height="1024"
+                        />
+                      </div>
+                      <h3 class="product-card__title">Тёплый вечер</h3>
+                    </a>
+                    <p class="product-card__subtitle">Плед</p>
+                    <p class="product-card__price">2499₽</p>
+                  </article>
+                </li>
+
+                <li class="goods-other__item">
+                  <article class="product-card">
+                    <!-- href — заглушка: здесь будет адрес страницы товара -->
+                    <a class="product-card__link" href="product-pages/">
+                      <div class="product-card__media">
+                        <img
+                          class="product-card__image"
+                          src="assets/images/products/other/02.png"
+                          alt="Жёлто-горчичная декоративная подушка с ромбовидным узором"
+                          width="1024"
+                          height="1024"
+                        />
+                      </div>
+                      <h3 class="product-card__title">Солнечный акцент</h3>
+                    </a>
+                    <p class="product-card__subtitle">Подушка</p>
+                    <p class="product-card__price">1799₽</p>
+                  </article>
+                </li>
+
+                <li class="goods-other__item">
+                  <article class="product-card">
+                    <!-- href — заглушка: здесь будет адрес страницы товара -->
+                    <a class="product-card__link" href="product-pages/">
+                      <div class="product-card__media">
+                        <img
+                          class="product-card__image"
+                          src="assets/images/products/other/03.png"
+                          alt="Бежевая подушка из рубчатого вельвета с перекрещенными шнурами"
+                          width="1024"
+                          height="1024"
+                        />
+                      </div>
+                      <h3 class="product-card__title">Нежная вафелька</h3>
+                    </a>
+                    <p class="product-card__subtitle">Подушка</p>
+                    <p class="product-card__price">1999₽</p>
+                  </article>
+                </li>
+
+                <li class="goods-other__item">
+                  <article class="product-card">
+                    <!-- href — заглушка: здесь будет адрес страницы товара -->
+                    <a class="product-card__link" href="product-pages/">
+                      <div class="product-card__media">
+                        <img
+                          class="product-card__image"
+                          src="assets/images/products/other/04.png"
+                          alt="Мягкая игрушка медвежонок бежево-голубой с бантом в полоску"
+                          width="1024"
+                          height="1024"
+                        />
+                      </div>
+                      <h3 class="product-card__title">Мишка для объятий</h3>
+                    </a>
+                    <p class="product-card__subtitle">Мягкая игрушка</p>
+                    <p class="product-card__price">2299₽</p>
+                  </article>
+                </li>
+              </ul>
+
+              <button
+                class="goods-other__arrow goods-other__arrow--next"
+                type="button"
+                data-slider-next
+                aria-label="Следующий товар"
+              >
+                <span class="goods-other__arrow-icon" aria-hidden="true"></span>
+              </button>
+            </div>
+
+            <!-- Фильтры под слайдером: сокращают товары в ленте -->
+            <form class="filters goods-other__filters">
+              <div class="filters__group">
+                <h3 class="filters__title">Тип товара</h3>
+                <ul class="filters__list">
+                  <li><button class="filters__chip" type="button">Подушки</button></li>
+                  <li><button class="filters__chip" type="button">Пледы</button></li>
+                  <li><button class="filters__chip" type="button">Мягкие игрушки</button></li>
+                  <li><button class="filters__chip" type="button">Маски для сна</button></li>
+                  <li><button class="filters__chip" type="button">Колпаки для сна</button></li>
+                  <li><button class="filters__chip" type="button">Беруши</button></li>
+                </ul>
+              </div>
+            </form>
+          </div>
+        </section>
 
         <!-- Секция 7. «Отключитесь от всех тревог…» — блок обратной связи -->
         <section class="feedback"></section>
