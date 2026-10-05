@@ -1,13 +1,278 @@
 /* ==========================================================================
    feedback.css — секция «Отключитесь от всех тревог и наслаждайтесь,
    пусть вас обнимает уют!»
-   Макет: 1280.jpg, секция с формой «Задайте вопрос»
-   Блок: .feedback
 
-   Внутри будут: заголовок, форма (поле + кнопка «Отправить сообщение»)
-   и декоративные искры с бабочками (.animate-sparkle и .animate-float
-   объявлены в utilities.css).
+   Состав: заголовок, форма вопроса (поле + кнопка), соцсети и три
+   декоративные звёздочки. Фон — --color-blue-light, тот же, что у футера:
+   в макете это одна сплошная светлая плита.
 
-   Разметку наполняем на этапе вёрстки секции.
-   Общий каркас (контейнер, отступы) — в layout.css.
+   Отступы секции задаёт каркас (layout.css: padding-block и scroll-margin-top
+   у .feedback) — здесь они не дублируются.
+
+   Числа из макета (Pixel Perfect):
+     1280 — форма в строку: поле 327px + кнопка 327px, зазор 35px;
+            соцсети по центру, кружки 65px с зазором 100px;
+     768  — форма в столбик шириной 340px, соцсети по центру;
+     320  — форма в столбик на всю ширину, соцсети слева, звёзд нет.
    ========================================================================== */
+
+/* ==========================================================================
+   1. Секция
+   position: relative нужен для звёздочек: они стоят по углам секции,
+   а не по краям контейнера.
+   ========================================================================== */
+
+.feedback {
+  position: relative;
+  background-color: var(--color-blue-light);
+  /* Искры и звёздочки — декор, по краям секции */
+  overflow: hidden;
+}
+
+.feedback__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-48);
+}
+
+/* ==========================================================================
+   2. Заголовок
+   В макете по центру, тёмный, максимальная ширина — как у строки
+   «Отключитесь от всех тревог и» на 1280
+   ========================================================================== */
+
+.feedback__title {
+  max-width: 690px;
+  /* Длинное слово «наслаждайтесь» на 320 шире строки контейнера:
+     без переноса оно вылезало за экран на 3px */
+  overflow-wrap: break-word;
+  text-align: center;
+}
+
+/* ==========================================================================
+   3. Форма
+   До 768px поле и кнопка стоят в столбик, с 768px — в строку.
+   Размеры из макета: поле 118px на мобильном и 75px в строке;
+   кнопка 50px на мобильном и 75px в строке.
+   ========================================================================== */
+
+.feedback__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  width: 100%;
+}
+
+/* Поле вопроса: в макете белое, без рамки, с серым плейсхолдером.
+   Высота задана явно — в строке на 768px и выше поле и кнопка должны быть
+   одной высоты, и растяжение строки тут не подходит: оно тянет кнопку
+   до высоты поля, а не наоборот. */
+.feedback__input {
+  display: block;
+  width: 100%;
+  height: 118px;
+  padding: var(--space-16);
+  font-size: var(--fs-16);
+  line-height: var(--lh-snug);
+  color: var(--color-dark);
+  background-color: var(--color-white);
+  border-radius: var(--radius-xs);
+  /* Рамки у поля нет: рамка и обводка сняты, состояние показываем
+     отдельным правилом ниже */
+  border: none;
+  outline: none;
+  /* Растягивать поле по вертикали нельзя: оно часть формы в строку,
+     а размер задан макетом */
+  resize: none;
+  transition: filter var(--transition-fast) var(--transition-timing);
+}
+
+/* Подсказка в поле видна, пока на поле не навели курсор и пока в нём
+   не стоит каретка: при наведении и фокусе она исчезает */
+.feedback__input::placeholder {
+  color: var(--color-dark);
+  opacity: 0.5;
+  transition: opacity var(--transition-fast) var(--transition-timing);
+}
+
+.feedback__input:hover::placeholder,
+.feedback__input:focus::placeholder {
+  opacity: 0;
+}
+
+/* Жёлтая обводка с размытием при наведении и в фокусе.
+   Обводка рисуется через filter: drop-shadow, а не через outline,
+   потому что у outline нет размытия. Тень без смещения и с нулевым
+   радиусом даёт ровный контур по форме поля. */
+.feedback__input:hover,
+.feedback__input:focus {
+  filter: drop-shadow(0 0 var(--space-8) var(--color-yellow))
+    drop-shadow(0 0 var(--border-width) var(--color-yellow));
+}
+
+/* Кнопка: каркас, цвет и радиус — из .button и .button--accent.
+   Здесь только размеры из макета, растяжка на всю ширину до 768px
+   и розовый ховер. */
+.feedback__submit {
+  width: 100%;
+}
+
+/* В блоке ховер --accent тёмный, а в этой секции он розовый */
+.feedback__submit.button--accent:hover {
+  background-color: var(--color-pink);
+}
+
+/* ==========================================================================
+   4. Соцсети
+   Все три кружка тёмные, иконки белые. В макете до 768px иконки прижаты
+   влево, дальше — по центру.
+   ========================================================================== */
+
+.feedback__socials {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: var(--space-20);
+}
+
+.feedback__social {
+  display: block;
+  width: 65px;
+  height: 65px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: var(--icon-size) auto;
+  border-radius: var(--radius-circle);
+  /* background-image в списке, потому что при ховере подменяется файл */
+  transition:
+    background-color var(--transition-slow) var(--transition-timing),
+    background-image var(--transition-fast) var(--transition-timing);
+}
+
+.feedback__social--whatsapp {
+  background-color: var(--color-dark);
+  background-image: url('../../images/icons/wapp_white.svg');
+}
+
+.feedback__social--telegram {
+  background-color: var(--color-dark);
+  background-image: url('../../images/icons/tg_white.svg');
+}
+
+.feedback__social--email {
+  background-color: var(--color-dark);
+  background-image: url('../../images/icons/mail_white.svg');
+}
+
+/* Ховер у всех трёх иконок одинаковый: кружок становится жёлтым, а белая
+   иконка меняется на тёмную. Цвет внутри SVG зашит, currentColor на него
+   не действует, поэтому файл именно подменяется — тот же приём, что
+   у корзины в шапке. */
+.feedback__social--whatsapp:hover {
+  background-color: var(--color-yellow);
+  background-image: url('../../images/icons/wapp_dark.svg');
+}
+
+.feedback__social--telegram:hover {
+  background-color: var(--color-yellow);
+  background-image: url('../../images/icons/tg_dark.svg');
+}
+
+.feedback__social--email:hover {
+  background-color: var(--color-yellow);
+  background-image: url('../../images/icons/mail_dark.svg');
+}
+
+/* ==========================================================================
+   5. Звёздочки
+   В макете их три: верх-слева, справа посередине и низ-слева. Стоят
+   относительно секции, а не контейнера. Файл 40×40, в макете рисунок
+   занимает 23×28 — печатаем его 40px с фоном contain.
+   На 320 звёзд нет, поэтому до 768px они скрыты.
+   ========================================================================== */
+
+.feedback::before,
+.feedback::after,
+.feedback__inner::after {
+  content: '';
+  position: absolute;
+  display: none;
+  width: 40px;
+  height: 40px;
+  background-image: url('../../images/icons/elem_star.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.feedback::before {
+  top: var(--space-80);
+  left: var(--space-64);
+}
+
+/* Правая звезда — вторая по высоте, поэтому ::after у секции */
+.feedback::after {
+  top: var(--space-96);
+  right: var(--space-80);
+}
+
+/* Третья — низ-слева, привязана к контейнеру: у секции только два
+   псевдоэлемента, а контейнер уже position: relative от .feedback */
+.feedback__inner::after {
+  bottom: 0;
+  left: var(--space-16);
+}
+
+/* ==========================================================================
+   6. Адаптив. Контрольные ширины: 768px и 1280px.
+   ========================================================================== */
+
+@media (min-width: 768px) {
+  .feedback__form {
+    flex-direction: row;
+    justify-content: center;
+    gap: var(--space-32);
+    /* Кнопка задаёт высоту ряда, поле её принимает — так в макете
+       оба элемента 75px */
+    align-items: stretch;
+  }
+
+  /* Поле и кнопка делят строку ровно пополам: в макете 327px + 327px */
+  .feedback__field,
+  .feedback__submit {
+    flex: 1 1 0;
+    max-width: 327px;
+  }
+
+  .feedback__input {
+    height: 75px;
+    font-size: var(--fs-24);
+  }
+
+  .feedback__submit {
+    width: auto;
+    /* В макете кнопка такой же высоты, как поле, и с кеглем 24px:
+       у базового .button 16px и высота по контенту */
+    font-size: var(--fs-24);
+    padding: var(--space-12) var(--space-24);
+  }
+
+  .feedback__socials {
+    justify-content: center;
+    gap: var(--space-96);
+  }
+
+  /* От 768px звёзды из макета на месте (в 320-м макете их нет) */
+  .feedback::before,
+  .feedback::after,
+  .feedback__inner::after {
+    display: block;
+  }
+}
+
+/* 1280px — зазор между соцсетями из макета: центры через 165px */
+@media (min-width: 1280px) {
+  .feedback__socials {
+    gap: 100px;
+  }
+}

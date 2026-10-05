@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
@@ -1135,11 +1135,70 @@
           </div>
         </section>
 
-        <!-- Секция 7. «Отключитесь от всех тревог…» — блок обратной связи -->
-        <section class="feedback"></section>
+        <!-- Секция 7. «Отключитесь от всех тревог…» — блок обратной связи.
+             Данные никуда не уходят: без скрипта форма уходит на страницу
+             благодарности по action, со скриптом он перехватит submit
+             (data-feedback-form) и сам поведёт на thanks-feedback.html. -->
+        <section class="feedback">
+          <div class="feedback__inner container">
+            <h2 class="feedback__title">
+              Отключитесь от всех тревог и&nbsp;наслаждайтесь, пусть вас обнимает уют!
+            </h2>
+
+            <form
+              class="feedback__form"
+              data-feedback-form
+              action="thanks-feedback.html"
+              method="post"
+            >
+              <div class="feedback__field">
+                <label class="visually-hidden" for="feedback-question">Задайте вопрос</label>
+                <textarea
+                  class="feedback__input"
+                  id="feedback-question"
+                  name="question"
+                  placeholder="Задайте вопрос"
+                  rows="3"
+                ></textarea>
+              </div>
+
+              <button class="feedback__submit button button--accent" type="submit">
+                Отправить сообщение
+              </button>
+            </form>
+
+            <!-- Соцсети — часть секции обратной связи, как в макете: иконки
+                 лежат фоном ссылок, текстовое имя даёт aria-label -->
+            <div class="feedback__socials">
+              <a
+                class="feedback__social feedback__social--whatsapp"
+                href="https://wa.me"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp"
+              ></a>
+              <a
+                class="feedback__social feedback__social--telegram"
+                href="https://t.me"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Telegram"
+              ></a>
+              <a
+                class="feedback__social feedback__social--email"
+                href="mailto:"
+                aria-label="Написать на почту"
+              ></a>
+            </div>
+          </div>
+        </section>
       </main>
 
-      <footer class="footer"></footer>
+      <footer class="footer">
+        <div class="footer__inner container">
+          <p class="footer__copyright">ООО «Магазин уютных пижам» © 2023</p>
+        </div>
+      </footer>
     </div>
 
     <!-- Единственный подключаемый скрипт: точка входа с импортами модулей -->
