@@ -40,17 +40,25 @@
   gap: var(--space-8);
 }
 
-/* Чипс фильтра: неактивный — на бежевом, активный — розовый */
+/* Чипс фильтра: прозрачный фон и рамка 1px, цвет задаёт секция */
 .filters__chip {
   padding: var(--space-8) var(--space-16);
-  font-size: var(--fs-14);    
+  font-size: var(--fs-14);
   border-radius: var(--radius-xs);
-  transition: all var(--transition-fast) var(--transition-timing);
+  /* Перечислены только те свойства, которые действительно меняются:
+     фон при наведении и выборе, цвет текста и рамки.
+     Прежний transition: all тянул за собой лишние перерисовки. */
+  transition:
+    background-color var(--transition-fast) var(--transition-timing),
+    color var(--transition-fast) var(--transition-timing),
+    border-color var(--transition-fast) var(--transition-timing);
 }
 
-.filters__list--women .filters__chip { 
-  color: var(--color-pink);  
-  border: 1px solid var(--color-pink); 
+/* Розовый чипс женской коллекции: цвет текста и рамки из секции,
+   но за основу взят модификатор списка — он один для всего блока */
+.filters__list--women .filters__chip {
+  color: var(--color-pink);
+  border: var(--border-width-thin) solid var(--color-pink);
 }
 
 .filters__chip:hover {
