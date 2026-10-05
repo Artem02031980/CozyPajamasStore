@@ -1,0 +1,146 @@
+/**
+ * utils.js — мелкие помощники, общие для всех модулей.
+ *
+ * Здесь только чистые функции и работа с DOM. Никакой логики корзины,
+ * каталога и фильтров — она живёт в своих модулях.
+ */
+
+/**
+ * Найти один элемент.
+ * @param {string} selector
+ * @param {ParentNode} [scope=document] где искать
+ * @returns {Element|null}
+ */
+export function $(selector, scope = document) {
+  return scope.querySelector(selector);
+}
+
+/**
+ * Найти все элементы. Возвращает настоящий массив, а не NodeList:
+ * с ним работают map, filter и forEach без преобразований.
+ * @param {string} selector
+ * @param {ParentNode} [scope=document]
+ * @returns {Element[]}
+ */
+export function $$(selector, scope = document) {
+  return [...scope.querySelectorAll(selector)];
+}
+
+/**
+ * Подписка на события через делегирование: один обработчик на контейнер
+ * вместо обработчика на каждой карточке или кнопке.
+ *
+ * Нужно потому, что карточки товаров будет создавать JavaScript, и вешать
+ * на каждую свой обработчик — значит заново подписываться после каждой
+ * перерисовки каталога.
+ *
+ * @param {EventTarget} root контейнер, который не перерисовывается
+ * @param {string} type тип события, например 'click'
+ * @param {string} selector селектор цели внутри контейнера
+ * @param {(event: Event, target: Element) => void} handler
+ * @returns {() => void} функция отписки
+ */
+export function delegate(root, type, selector, handler) {
+  const listener = (event) => {
+    const target = event.target instanceof Element ? event.target.closest(selector) : null;
+    if (target) handler(event, target);
+  };
+
+  root.addEventListener(type, listener);
+  return () => root.removeEventListener(type, listener);
+}
+
+/**
+ * Ограничитель частоты вызовов: обработчик выполнится не чаще, чем раз
+ * в wait мс. Нужен для resize и поиска по вводу.
+ * @param {(...args: any[]) => void} fn
+ * @param {number} [wait=200]
+ * @returns {(...args: any[]) => void}
+ */
+export function debounce(fn, wait = 200) {
+  let timerId;
+
+  return (...args) => {
+    clearTimeout(timerId);
+    timerId = setTimeout(() => fn(...args), wait);
+  };
+}
+
+/**
+ * Цена в рублях: 12500 → «12 500 ₽».
+ * Разряды разделяются неразрывным пробелом, чтобы цена не рвалась по строке.
+ * @param {number} value
+ * @returns {string}
+ */
+export function formatPrice(value) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return '';
+
+  return `${Math.round(number).toLocaleString('ru-RU').replace(/\s/g, '\u00a0')}\u00a0₽`;
+}
+
+/**
+ * Склонение существительного: plural(3, 'товар', 'товара', 'товаров') → 'товара'.
+ * @param {number} count
+ * @param {string} one для 1
+ * @param {string} few для 2–4
+ * @param {string} many для 5 и больше
+ * @returns {string}
+ */
+export function plural(count, one, few, many) {
+  const mod10 = count % 10;
+  const mod100 = count % 100;
+
+  if (mod10 === 1 && mod100 !== 11) return one;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return few;
+  return many;
+}
+
+/**
+ * Короткая уникальная строка — для id заказов и подобного.
+ * @param {string} [prefix='id']
+ * @returns {string}
+ */
+export function uid(prefix = 'id') {
+  return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+/**
+ * Ключ позиции корзины: товар плюс размер.
+ * Один товар в разных размерах — это две разные позиции, поэтому ключ
+ * собирается из двух значений.
+ * @param {string} productId
+ * @param {string} [size]
+ * @returns {string}
+ */
+export function variantKey(productId, size = '') {
+  return `${productId}::${size || 'default'}`;
+}
+
+/** Разрешить прокрутку страницы (в CSS это класс .no-scroll). */
+export function unlockScroll() {
+  document.body.classList.remove('no-scroll');
+}
+
+/** Запретить прокрутку страницы, пока открыто модальное окно. */
+export function lockScroll() {
+  document.body.classList.add('no-scroll');
+}
+
+/**
+ * Разобрать JSON без падения: битые данные в localStorage не должны
+ * ломать страницу.
+ * @param {string|null} raw
+ * @param {*} [fallback=null]
+ * @returns {*}
+ */
+export function parseJSON(raw, fallback = null) {
+  if (!raw) return fallback;
+
+  try {
+    return JSON.parse(raw);
+  } catch (error) {
+    console.warn('[utils] Битый JSON, берём значение по умолчанию', error);
+    return fallback;
+  }
+}
