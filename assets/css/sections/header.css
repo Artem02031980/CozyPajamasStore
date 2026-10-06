@@ -392,10 +392,14 @@
 .header__burger {
   /* Кнопку растягивают полоски: их суммарная высота 8 + 3 + 8 + 3 + 8 = 30px.
      Ширину задаём не здесь, а у полоски: полоска — пустой span,
-     её ширина равна ширине фона, и без явного значения она нулевая. */
+     её ширина равна ширине фона, и без явного значения она нулевая.
+     Высота задана явно: при раскрытии меню полоски поворачиваются
+     в крест, и кнопке нужна устойчивая геометрия, иначе она дёрнула бы
+     строку шапки. Высота не анимируется, поэтому переход не мешает. */
   display: inline-flex;
   flex-direction: column;
   flex-shrink: 0;
+  height: 30px;
   gap: 3px;
   color: var(--color-beige);
 }
@@ -407,6 +411,30 @@
   height: 8px;
   background-color: currentColor;
   border-radius: var(--radius-micro);
+  /* Смена иконки: полоски доворачиваются в крест, средняя гаснет.
+     Длительность — как у остальных переходов проекта. */
+  transition: transform var(--transition-fast) var(--transition-timing),
+    opacity var(--transition-fast) var(--transition-timing);
+}
+
+/* Раскрытое меню превращает бургер в крест: остаются две полоски
+   по диагонали, третья гаснет.
+   Состояние берём у соседа, а не у самой кнопки: класс .is-open живёт
+   на меню, так что JS для иконки менять не нужно. Селектор соседа «~»
+   здесь не подошёл бы — бургер стоит в разметке ПЕРЕД меню, а «~»
+   смотрит только вперёд, поэтому используется :has() на общем родителе.
+   Сдвиг 11px = половина расстояния между центрами крайних полосок
+   (8px полоса + 3px зазор): обе приходят в центр фигуры и поворачиваются. */
+.header__inner:has(.header__nav.is-open) .header__burger-line:first-child {
+  transform: translateY(11px) rotate(45deg);
+}
+
+.header__inner:has(.header__nav.is-open) .header__burger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.header__inner:has(.header__nav.is-open) .header__burger-line:last-child {
+  transform: translateY(-11px) rotate(-45deg);
 }
 
 @media (min-width: 1024px) {
