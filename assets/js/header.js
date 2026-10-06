@@ -55,6 +55,13 @@ export function initHeader() {
   const nav = $('[data-nav]');
   if (!burger || !nav) return;
 
+  /* Стартовое состояние задаём явно, а не полагаемся на разметку.
+     Причина: браузер восстанавливает состояние элементов формы при
+     перезагрузке и возврате по истории (у кнопки — это aria-expanded),
+     поэтому страница могла открыться с уже раскрытым меню: без нажатия
+     на бургер. Явный сброс это исключает. */
+  setMenuState(false);
+
   burger.addEventListener('click', () => {
     toggleMenu();
   });
@@ -96,5 +103,14 @@ export function initHeader() {
     if (burger.contains(target)) return;   // по бургеру меню закрывает его собственный обработчик
     if (nav.contains(target)) return;      // внутри меню — обработчики выше
     closeMenu();
+  });
+
+  /* Расширение окна до десктопа закрывает меню.
+     С 1024px бургер скрыт, а меню развёрнуто в строку шапки, поэтому
+     раскрытое состояние становится бессмысленным: снять его пользователю
+     было бы нечем — бургера-то нет. Закрываем на переходе через порог. */
+  const desktop = window.matchMedia?.('(min-width: 1024px)');
+  desktop?.addEventListener?.('change', ({ matches }) => {
+    if (matches) setMenuState(false);
   });
 }
