@@ -78,6 +78,28 @@
   padding: var(--space-24) var(--container-padding-x);
   overflow-y: auto;
   background-color: var(--color-white);
+  /* Меню выезжает сверху вниз — туда, откуда его раскрыл бургер */
+  transform: translateY(-100%);
+  /* Появление меню на мобильном.
+     Анимация, а не transition: пока меню закрыто, у него display: none,
+     и переход по display не сработал бы. Анимация же раскрытия запускается
+     каждый раз заново: элемент в этот момент переходит из display: none
+     и начинает отсчёт с нуля. Закрытие остаётся мгновенным.
+     На планшете анимация и сдвиг снимаются — см. медиазапрос ниже.
+     При prefers-reduced-motion анимации глушит общий сброс в reset.css. */
+  animation: nav-appear var(--transition-slow) var(--transition-timing) both;
+}
+
+@keyframes nav-appear {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* На планшете меню живёт в строке шапки, и виден только активный пункт.
@@ -100,6 +122,12 @@
     padding: 0;
     overflow: visible;
     background-color: var(--color-transparent);
+    /* Сброс обязателен и по паре свойств сразу: базовое правило задаёт
+       translateY(-100%) и анимацию выезда для мобильного. По специфичности
+       (два класса) они перебивают это правило, поэтому без сброса меню
+       на планшете уехало бы за экран и дёргалось при каждом открытии. */
+    transform: none;
+    animation: none;
   }
 }
 
