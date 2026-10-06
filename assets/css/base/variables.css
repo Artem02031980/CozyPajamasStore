@@ -156,11 +156,7 @@
   --transition-fast: 0.2s;
   --transition-base: 0.3s;
   --transition-slow: 0.4s;
-  /* Раскрытие меню: заметно медленнее обычных переходов и с мягким
-     торможением в конце. На --transition-slow появление выглядело резким. */
-  --transition-panel: 0.6s;
   --transition-timing: ease;
-  --dropdown-easing: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 /* ==========================================================================
