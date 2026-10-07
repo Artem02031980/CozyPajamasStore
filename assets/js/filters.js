@@ -93,10 +93,13 @@ const state = new Map();
 
 /**
  * Показывает нужную страницу секции: карточки и кнопки страниц.
+ *
  * @param {string} section
  * @param {number} [page] номер страницы; по умолчанию — текущая
+ * @param {object} [options]
+ * @param {boolean} [options.keepPosition] удержать секцию на том же месте экрана
  */
-export function showPage(section, page) {
+export function showPage(section, page, { keepPosition = false } = {}) {
   const grid = $(`.goods-${section}__grid`);
   const pagination = $(`.goods-${section}__pagination, nav.pagination[data-section="${section}"]`);
   const all = getProducts(section);
@@ -106,6 +109,16 @@ export function showPage(section, page) {
   // Страницу держим в пределах: при смене ширины их число меняется
   const current = Math.min(Math.max(1, page ?? state.get(section)?.page ?? 1), total);
   state.set(section, { page: current, perPage, total });
+
+  /* Положение сетки и прокрутки до перерисовки.
+     Возвращаем их после: на второй странице карточек меньше, страница
+     становится короче, и браузер оставляет прежний scrollY — контент
+     визуально прыгает. Вдобавок сам Chrome подстраивает прокрутку
+     («scroll anchoring»), и его поправка складывалась с нашей: суммарный
+     сдвиг доходил до 1125px. Поэтому запоминаем scrollY и возвращаем
+     его точно, а не только компенсируем разницу положений. */
+  const gridTopBefore = keepPosition && grid ? grid.getBoundingClientRect().top : null;
+  const scrollBefore = keepPosition ? window.scrollY : null;
 
   if (grid) {
     const from = (current - 1) * perPage;
@@ -119,6 +132,28 @@ export function showPage(section, page) {
       // Кнопок на одной странице не бывает — прячем пустую пагинацию
       pagination.classList.toggle('is-hidden', total <= 1);
     }
+  }
+
+  /* Возвращаем прокрутку и положение сетки.
+     Сначала отменяем поправку браузера (возвращаем прежний scrollY),
+     затем сдвигаем на разницу положений сетки — это компенсация того,
+     что страница стала короче.
+
+     scroll-behavior: smooth (задан на html в reset.css) отключаем
+     на время правки: иначе прокрутка превращается в плавную анимацию,
+     не успевает за перерисовкой и страница уезжает рывками. Свойство
+     возвращаем сразу — на переходы по якорям это не влияет, там
+     прокрутку запускает браузер отдельно. */
+  if (keepPosition && grid && gridTopBefore !== null) {
+    const root = document.documentElement;
+    const wasSmooth = root.style.scrollBehavior;
+    root.style.scrollBehavior = 'auto';
+
+    window.scrollTo(0, scrollBefore);
+    const shift = grid.getBoundingClientRect().top - gridTopBefore;
+    if (shift !== 0) window.scrollBy(0, shift);
+
+    root.style.scrollBehavior = wasSmooth;
   }
 }
 
@@ -143,7 +178,10 @@ function initSection(section) {
     const current = state.get(section)?.page ?? 1;
     const step = button.dataset.pageStep;
 
-    showPage(section, step ? current + Number(step) : Number(button.dataset.page));
+    // keepPosition: клик не должен сдвигать страницу под курсором
+    showPage(section, step ? current + Number(step) : Number(button.dataset.page), {
+      keepPosition: true,
+    });
   });
 }
 
