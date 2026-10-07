@@ -9,8 +9,8 @@
  *   utils.js     — мелкие помощники: поиск элементов, делегирование, цена
  *   storage.js   — работа с localStorage
  *   header.js    — бургер и меню в шапке
- *   data.js      — каталог товаров                        (в работе)
- *   render.js    — отрисовка карточек и корзины           (в работе)
+ *   data.js      — каталог товаров
+ *   render.js    — отрисовка карточек из данных
  *   filters.js   — фильтры, сортировка, пагинация         (в работе)
  *   modal.js     — модальные окна                         (в работе)
  *   cart.js      — логика корзины                         (в работе)
@@ -20,6 +20,7 @@
  */
 
 import { initHeader } from './header.js';
+import { renderCatalog } from './render.js';
 
 /**
  * Запуск приложения.
@@ -27,6 +28,7 @@ import { initHeader } from './header.js';
  * разбора разметки — ждать DOMContentLoaded не нужно.
  */
 function init() {
+  renderCatalog();
   initHeader();
 }
 
