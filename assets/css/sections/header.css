@@ -32,12 +32,11 @@
   border-bottom: var(--border-width-thin) solid var(--color-transparent);
 }
 
-/* Прокрутили страницу: снизу появляется мягкая тень цвета beige и рамка
-   того же цвета. Класс ставит header.js — состояние зависит от прокрутки,
-   а не от ширины экрана, поэтому в CSS его не выразить. */
+/* Прокрутили страницу: снизу появляется рамка. Класс ставит header.js —
+   состояние зависит от прокрутки, а не от ширины экрана, поэтому
+   в CSS его не выразить. */
 .header.is-scrolled {
-  border-bottom-color: var(--color-beige);
-  box-shadow: var(--shadow-header);
+  border-bottom-color: var(--color-blue-light);
 }
 
 .header__inner {
