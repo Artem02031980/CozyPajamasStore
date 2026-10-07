@@ -113,4 +113,24 @@ export function initHeader() {
   desktop?.addEventListener?.('change', ({ matches }) => {
     if (matches) setMenuState(false);
   });
+
+  /* Тень и рамка снизу появляются, когда страницу прокрутили.
+     Класс ставим только на смене состояния: scroll срабатывает десятки раз
+     в секунду, и трогать DOM на каждом событии незачем.
+     Проверка при запуске нужна отдельно: страница может открыться уже
+     прокрученной (перезагрузка на середине, возврат по истории). */
+  const header = $('.header');
+  if (header) {
+    let scrolled = null;
+    const updateScrolled = () => {
+      const next = window.scrollY > 0;
+      if (next === scrolled) return;
+      scrolled = next;
+      header.classList.toggle('is-scrolled', next);
+    };
+
+    updateScrolled();
+    // passive: обработчик не отменяет прокрутку, и браузер не ждёт его
+    window.addEventListener('scroll', updateScrolled, { passive: true });
+  }
 }
