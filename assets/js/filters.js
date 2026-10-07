@@ -13,6 +13,10 @@
  * страница пересчитывается заново: иначе на новом числе колонок
  * в последнем ряду оставались бы дыры.
  *
+ * Клик по кнопке страницы возвращает экран к началу секции — человек
+ * сразу видит товары новой страницы, как при переходе по ссылке
+ * пагинации на сайте-образце.
+ *
  * Разметку карточек создаёт render.js — здесь только выбор того,
  * что показать, и кнопки страниц.
  */
@@ -92,14 +96,45 @@ function renderPagination(current, total) {
 const state = new Map();
 
 /**
+ * Прокручивает страницу к началу списка товаров — так же, как это
+ * выглядит при обычном переходе по ссылке.
+ *
+ * На сайте-образце (jackmenn.ru) пагинация сделана ссылками
+ * (/catalog/page/2/): браузер грузит новую страницу сверху, и человек
+ * видит начало товаров новой страницы, а не то место, где он кликнул.
+ * Здесь перерисовка идёт без перезагрузки, поэтому положение экрана
+ * ставим сами — по верхней границе сетки карточек.
+ *
+ * Именно сетка, а не секция: на ширине 1024–1279px фильтры стоят
+ * над товарами (см. goods-women.css), и верх секции оказался бы
+ * заголовком с фильтрами, а карточки — в 800+px ниже экрана.
+ *
+ * Отступ шапки берём из scroll-margin-top (layout.css), а не считаем
+ * в JS: там же лежит высота шапки, и дублировать её незачем.
+ *
+ * @param {HTMLElement} target элемент, к началу которого возвращаем экран
+ */
+function scrollToGoodsStart(target) {
+  const margin = parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
+  const top = Math.max(0, window.scrollY + target.getBoundingClientRect().top - margin);
+
+  const root = document.documentElement;
+  const wasSmooth = root.style.scrollBehavior;
+  // scroll-behavior: smooth из reset.css превратил бы правку в анимацию
+  root.style.scrollBehavior = 'auto';
+  window.scrollTo(0, top);
+  root.style.scrollBehavior = wasSmooth;
+}
+
+/**
  * Показывает нужную страницу секции: карточки и кнопки страниц.
  *
  * @param {string} section
  * @param {number} [page] номер страницы; по умолчанию — текущая
  * @param {object} [options]
- * @param {boolean} [options.keepPosition] удержать секцию на том же месте экрана
+ * @param {boolean} [options.scrollToStart] вернуть экран к началу списка товаров
  */
-export function showPage(section, page, { keepPosition = false } = {}) {
+export function showPage(section, page, { scrollToStart = false } = {}) {
   const grid = $(`.goods-${section}__grid`);
   const pagination = $(`.goods-${section}__pagination, nav.pagination[data-section="${section}"]`);
   const all = getProducts(section);
@@ -109,16 +144,6 @@ export function showPage(section, page, { keepPosition = false } = {}) {
   // Страницу держим в пределах: при смене ширины их число меняется
   const current = Math.min(Math.max(1, page ?? state.get(section)?.page ?? 1), total);
   state.set(section, { page: current, perPage, total });
-
-  /* Положение сетки и прокрутки до перерисовки.
-     Возвращаем их после: на второй странице карточек меньше, страница
-     становится короче, и браузер оставляет прежний scrollY — контент
-     визуально прыгает. Вдобавок сам Chrome подстраивает прокрутку
-     («scroll anchoring»), и его поправка складывалась с нашей: суммарный
-     сдвиг доходил до 1125px. Поэтому запоминаем scrollY и возвращаем
-     его точно, а не только компенсируем разницу положений. */
-  const gridTopBefore = keepPosition && grid ? grid.getBoundingClientRect().top : null;
-  const scrollBefore = keepPosition ? window.scrollY : null;
 
   if (grid) {
     const from = (current - 1) * perPage;
@@ -134,27 +159,19 @@ export function showPage(section, page, { keepPosition = false } = {}) {
     }
   }
 
-  /* Возвращаем прокрутку и положение сетки.
-     Сначала отменяем поправку браузера (возвращаем прежний scrollY),
-     затем сдвигаем на разницу положений сетки — это компенсация того,
-     что страница стала короче.
+  /* Клик по кнопке страницы: экран возвращается к началу списка товаров —
+     человек сразу видит первую строку карточек новой страницы, как при
+     переходе по ссылке пагинации на сайте-образце.
 
-     scroll-behavior: smooth (задан на html в reset.css) отключаем
-     на время правки: иначе прокрутка превращается в плавную анимацию,
-     не успевает за перерисовкой и страница уезжает рывками. Свойство
-     возвращаем сразу — на переходы по якорям это не влияет, там
-     прокрутку запускает браузер отдельно. */
-  if (keepPosition && grid && gridTopBefore !== null) {
-    const root = document.documentElement;
-    const wasSmooth = root.style.scrollBehavior;
-    root.style.scrollBehavior = 'auto';
+     Прежний вариант — удержать экран на месте — убран: на второй странице
+     карточек меньше, страница становится короче, и сетка уезжала вверх
+     под курсором (замер показывал сдвиг до 1125px). */
+  if (scrollToStart && grid) scrollToGoodsStart(grid);
 
-    window.scrollTo(0, scrollBefore);
-    const shift = grid.getBoundingClientRect().top - gridTopBefore;
-    if (shift !== 0) window.scrollBy(0, shift);
-
-    root.style.scrollBehavior = wasSmooth;
-  }
+  /* Перерисовка без прокрутки (смена ширины окна) экран не двигает:
+     браузер оставляет прежний scrollY, а Chrome вдобавок сам правит
+     прокрутку («scroll anchoring»). Компенсировать это не нужно —
+     состав страницы при смене ширины сохраняется. */
 }
 
 /**
@@ -177,11 +194,14 @@ function initSection(section) {
 
     const current = state.get(section)?.page ?? 1;
     const step = button.dataset.pageStep;
+    const next = step ? current + Number(step) : Number(button.dataset.page);
 
-    // keepPosition: клик не должен сдвигать страницу под курсором
-    showPage(section, step ? current + Number(step) : Number(button.dataset.page), {
-      keepPosition: true,
-    });
+    // Страница та же — ничего не делаем: не дёргаем экран зря
+    if (next === current) return;
+
+    // scrollToStart: как переход по ссылке на новую страницу каталога —
+    // экран возвращается к началу товаров (см. scrollToGoodsStart)
+    showPage(section, next, { scrollToStart: true });
   });
 }
 
