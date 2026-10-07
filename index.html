@@ -273,33 +273,18 @@
               </form>
 
               <div class="goods__content">
-                <!-- Контейнер отрисовки: скрипт будет создавать карточки здесь,
-                     поэтому девять текущих — это первая страница, а не жёсткий набор -->
+                <!-- Контейнер отрисовки: карточки создаёт filters.js — по шесть
+                     на страницу (на мобильном по пять), поэтому в разметке пусто -->
                 <ul class="goods-women__grid" data-goods-grid>
 
                 </ul>
               </div>
             </div>
 
-            <nav class="pagination" aria-label="Страницы женской коллекции">
-              <ul class="pagination__list">
-                <li>
-                  <button class="pagination__link is-active" type="button" aria-current="page">1</button>
-                </li>
-                <li><button class="pagination__link" type="button">2</button></li>
-                <li><button class="pagination__link" type="button">3</button></li>
-                <li><button class="pagination__link" type="button">4</button></li>
-                <li><button class="pagination__link" type="button">5</button></li>
-                <li><button class="pagination__link" type="button">6</button></li>
-                <li>
-                  <button class="pagination__arrow" type="button" aria-label="Предыдущая страница" disabled>
-                    ‹
-                  </button>
-                </li>
-                <li>
-                  <button class="pagination__arrow" type="button" aria-label="Следующая страница">›</button>
-                </li>
-              </ul>
+            <!-- Кнопки страниц наполняет filters.js: их число зависит
+                 от количества товаров и от ширины экрана -->
+            <nav class="pagination" data-section="women" aria-label="Страницы женской коллекции">
+              <ul class="pagination__list"></ul>
             </nav>
           </div>
         </section>
@@ -423,33 +408,18 @@
               </form>
 
               <div class="goods__content">
-                <!-- Контейнер отрисовки: скрипт будет создавать карточки здесь,
-                     поэтому девять текущих — это первая страница, а не жёсткий набор -->
+                <!-- Контейнер отрисовки: карточки создаёт filters.js — по шесть
+                     на страницу (на мобильном по пять), поэтому в разметке пусто -->
                 <ul class="goods-men__grid" data-goods-grid>
 
                 </ul>
               </div>
             </div>
 
-            <nav class="pagination" aria-label="Страницы мужской коллекции">
-              <ul class="pagination__list">
-                <li>
-                  <button class="pagination__link is-active" type="button" aria-current="page">1</button>
-                </li>
-                <li><button class="pagination__link" type="button">2</button></li>
-                <li><button class="pagination__link" type="button">3</button></li>
-                <li><button class="pagination__link" type="button">4</button></li>
-                <li><button class="pagination__link" type="button">5</button></li>
-                <li><button class="pagination__link" type="button">6</button></li>
-                <li>
-                  <button class="pagination__arrow" type="button" aria-label="Предыдущая страница" disabled>
-                    ‹
-                  </button>
-                </li>
-                <li>
-                  <button class="pagination__arrow" type="button" aria-label="Следующая страница">›</button>
-                </li>
-              </ul>
+            <!-- Кнопки страниц наполняет filters.js: их число зависит
+                 от количества товаров и от ширины экрана -->
+            <nav class="pagination" data-section="men" aria-label="Страницы мужской коллекции">
+              <ul class="pagination__list"></ul>
             </nav>
           </div>
         </section>

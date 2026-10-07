@@ -10,7 +10,7 @@
  * вид не должен измениться от того, что карточки стали данными.
  */
 
-import { getProducts, SECTIONS } from './data.js';
+import { getProducts } from './data.js';
 import { formatPrice, $ } from './utils.js';
 
 /**
@@ -43,7 +43,6 @@ export function renderCard(product) {
             alt="${alt}"
             width="${width}"
             height="${height}"
-            loading="lazy"
           />
         </div>
         <h3 class="${titleClass}">${title}</h3>
@@ -61,10 +60,11 @@ export function renderCard(product) {
  * поэтому имя собирается из названия секции, а не пишется руками.
  *
  * @param {string} section
+ * @param {import('./data.js').Product[]} [products] что рисовать; по умолчанию все товары секции
  * @returns {string}
  */
-export function renderCards(section) {
-  return getProducts(section)
+export function renderCards(section, products = getProducts(section)) {
+  return products
     .map((product) => `
               <li class="goods-${section}__item">
                 ${renderCard(product)}
@@ -95,7 +95,15 @@ function findGrid(section) {
 }
 
 /**
- * Рисует карточки во всех секциях каталога.
+ * Секции, которые рисуются целиком, без постраничного показа.
+ * Женская и мужская коллекции сюда не входят: у них пагинация,
+ * и их сетки наполняет filters.js — иначе эти две секции были бы
+ * нарисованы дважды и первая отрисовка затирала бы вторую.
+ */
+const PLAIN_SECTIONS = ['new', 'other'];
+
+/**
+ * Рисует карточки в секциях без пагинации.
  *
  * Вызывается один раз при запуске. Пустая секция — это не ошибка,
  * но и молчать о ней нельзя: скорее всего, разошлись классы.
@@ -105,7 +113,7 @@ function findGrid(section) {
 export function renderCatalog() {
   let filled = 0;
 
-  for (const section of SECTIONS) {
+  for (const section of PLAIN_SECTIONS) {
     const grid = findGrid(section);
     if (!grid) {
       console.warn(`[render] не найдена сетка для секции «${section}»`);
@@ -118,7 +126,7 @@ export function renderCatalog() {
       continue;
     }
 
-    grid.innerHTML = renderCards(section);
+    grid.innerHTML = renderCards(section, products);
     filled += 1;
   }
 

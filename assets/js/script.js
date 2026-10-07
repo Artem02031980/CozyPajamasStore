@@ -11,7 +11,7 @@
  *   header.js    — бургер и меню в шапке
  *   data.js      — каталог товаров
  *   render.js    — отрисовка карточек из данных
- *   filters.js   — фильтры, сортировка, пагинация         (в работе)
+ *   filters.js   — постраничный показ каталога            (фильтры и сортировка — дальше)
  *   modal.js     — модальные окна                         (в работе)
  *   cart.js      — логика корзины                         (в работе)
  *   checkout.js  — оформление заказа                      (в работе)
@@ -21,6 +21,7 @@
 
 import { initHeader } from './header.js';
 import { renderCatalog } from './render.js';
+import { initFilters } from './filters.js';
 
 /**
  * Запуск приложения.
@@ -28,7 +29,11 @@ import { renderCatalog } from './render.js';
  * разбора разметки — ждать DOMContentLoaded не нужно.
  */
 function init() {
+  /* Порядок важен: сначала секции без пагинации, потом женская и мужская.
+     initFilters сам рисует первую страницу этих двух секций, поэтому
+     renderCatalog их не трогает — иначе одна отрисовка затирала бы другую. */
   renderCatalog();
+  initFilters();
   initHeader();
 }
 
