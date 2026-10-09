@@ -126,32 +126,49 @@ const EXPECTED = { women: 'rgb(205, 116, 162)', men: 'rgb(147, 179, 214)' };
 const outlineWomen = outlineOf('#goods-women [data-goods-sort]');
 const outlineMen = outlineOf('#goods-men [data-goods-sort]');
 
-/* 10. Кружки палитры: у выбранного цвета кольцо, у фокуса обводка,
-   и это разные вещи. Раньше выбор пытались показать через border-color,
-   но шорткат `border: 1px solid` в блоке перебивал правило по специфичности
+/* 10. Кружки палитры: выбор и фокус — обе состояния обводкой, различаются
+   толщиной. Раньше выбор пытались показать через border-color, но шорткат
+   `border: 1px solid` в блоке перебивал правило по специфичности
    (0-2-0 против 0-1-0), и выбранный цвет на цветных кружках не отличался
-   от невыбранного. Здесь это ловится: idle без кольца, is-active с кольцом. */
+   от невыбранного.
+   Толщина фокуса — 5px, выбора — 3px: в покое обводки нет вовсе, у каждого
+   состояния своя толщина, поэтому видно и выбор, и фокус одновременно. */
 const swatchOf = (section, label) =>
   document.querySelector(`#goods-${section}-filters .filters__color[aria-label="${label}"]`);
 
 const swatchState = (section, label) => {
   const el = swatchOf(section, label);
-  const idleRing = getComputedStyle(el).boxShadow;
-  el.classList.add('is-active');
-  const activeRing = getComputedStyle(el).boxShadow;
-  el.focus();
   const cs = getComputedStyle(el);
-  const out = {
-    idleRing,
-    activeRing,
-    focusVisible: el.matches(':focus-visible'),
-    focusOutline: cs.outlineColor,
-    focusOutlineWidth: cs.outlineWidth,
-    selectedAndFocused: activeRing !== 'none' && cs.outlineColor === EXPECTED[section],
+  const idle = { outlineStyle: cs.outlineStyle, outlineWidth: cs.outlineWidth };
+
+  el.focus();
+  const focusCs = getComputedStyle(el);
+  const focused = {
+    visible: el.matches(':focus-visible'),
+    style: focusCs.outlineStyle,
+    width: focusCs.outlineWidth,
+    color: focusCs.outlineColor,
+    opacity: focusCs.opacity,
   };
   el.blur();
+
+  el.classList.add('is-active');
+  const activeCs = getComputedStyle(el);
+  const selected = {
+    style: activeCs.outlineStyle,
+    width: activeCs.outlineWidth,
+    color: activeCs.outlineColor,
+  };
   el.classList.remove('is-active');
-  return out;
+
+  return {
+    idle,
+    focused,
+    selected,
+    colorOk: focused.color === EXPECTED[section],
+    widthOk: focused.width === '5px',
+    statesDiffer: focused.width !== selected.width,
+  };
 };
 
 const swatches = {
