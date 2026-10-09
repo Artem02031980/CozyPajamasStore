@@ -256,6 +256,30 @@
                         aria-label="Жёлтый"
                       ></button>
                     </li>
+                    <li>
+                      <button
+                        class="filters__color"
+                        type="button"
+                        style="background-color: #f4a7cd"
+                        aria-label="Розовый"
+                      ></button>
+                    </li>
+                    <li>
+                      <button
+                        class="filters__color"
+                        type="button"
+                        style="background-color: #dbcbb2"
+                        aria-label="Бежевый"
+                      ></button>
+                    </li>
+                    <li>
+                      <button
+                        class="filters__color"
+                        type="button"
+                        style="background-color: #a8d5c8"
+                        aria-label="Мятный"
+                      ></button>
+                    </li>
                   </ul>
                 </div>
 
@@ -273,6 +297,22 @@
               </form>
 
               <div class="goods__content">
+                <!-- Сортировка: порядок отбора меняет filters.js, значение
+                     option совпадает с ключом в filters-query.js -->
+                <div class="goods__toolbar">
+                  <label class="goods__sort" for="goods-women-sort">
+                    <span class="goods__sort-label">Сортировать</span>
+                    <select class="goods__sort-select" id="goods-women-sort" data-goods-sort>
+                      <option value="default">По порядку каталога</option>
+                      <option value="price-asc">Сначала дешёвые</option>
+                      <option value="price-desc">Сначала дорогие</option>
+                      <option value="title-asc">По названию</option>
+                    </select>
+                  </label>
+                  <!-- Сколько товаров нашлось: наполняет filters.js -->
+                  <p class="goods__count" data-goods-count aria-live="polite"></p>
+                </div>
+
                 <!-- Контейнер отрисовки: карточки создаёт filters.js — по шесть
                      на страницу (на мобильном по пять), поэтому в разметке пусто -->
                 <ul class="goods-women__grid" data-goods-grid>
@@ -314,7 +354,8 @@
                 <div class="filters__group">
                   <h3 class="filters__title">Тип изделия</h3>
                   <ul class="filters__list filters__list--men">
-                    <li><button class="filters__chip" type="button">Халат</button></li>
+                    <li><button class="filters__chip" type="button">Пижама</button></li>
+                    <li><button class="filters__chip" type="button">Халатик</button></li>
                     <li><button class="filters__chip" type="button">Сорочка</button></li>
                     <li><button class="filters__chip" type="button">Майка</button></li>
                     <li><button class="filters__chip" type="button">Брюки</button></li>
@@ -326,8 +367,8 @@
                 <div class="filters__group">
                   <h3 class="filters__title">Возраст</h3>
                   <ul class="filters__list filters__list--men">
-                    <li><button class="filters__chip" type="button">Для молодых людей</button></li>
-                    <li><button class="filters__chip" type="button">Для мужчин</button></li>
+                    <li><button class="filters__chip" type="button">Для юных дам</button></li>
+                    <li><button class="filters__chip" type="button">Для девушек</button></li>
                     <li><button class="filters__chip" type="button">Для мудрого возраста</button></li>
                   </ul>
                 </div>
@@ -391,6 +432,30 @@
                         aria-label="Жёлтый"
                       ></button>
                     </li>
+                    <li>
+                      <button
+                        class="filters__color"
+                        type="button"
+                        style="background-color: #f4a7cd"
+                        aria-label="Розовый"
+                      ></button>
+                    </li>
+                    <li>
+                      <button
+                        class="filters__color"
+                        type="button"
+                        style="background-color: #dbcbb2"
+                        aria-label="Бежевый"
+                      ></button>
+                    </li>
+                    <li>
+                      <button
+                        class="filters__color"
+                        type="button"
+                        style="background-color: #a8d5c8"
+                        aria-label="Мятный"
+                      ></button>
+                    </li>
                   </ul>
                 </div>
 
@@ -408,6 +473,22 @@
               </form>
 
               <div class="goods__content">
+                <!-- Сортировка: порядок отбора меняет filters.js, значение
+                     option совпадает с ключом в filters-query.js -->
+                <div class="goods__toolbar">
+                  <label class="goods__sort" for="goods-men-sort">
+                    <span class="goods__sort-label">Сортировать</span>
+                    <select class="goods__sort-select" id="goods-men-sort" data-goods-sort>
+                      <option value="default">По порядку каталога</option>
+                      <option value="price-asc">Сначала дешёвые</option>
+                      <option value="price-desc">Сначала дорогие</option>
+                      <option value="title-asc">По названию</option>
+                    </select>
+                  </label>
+                  <!-- Сколько товаров нашлось: наполняет filters.js -->
+                  <p class="goods__count" data-goods-count aria-live="polite"></p>
+                </div>
+
                 <!-- Контейнер отрисовки: карточки создаёт filters.js — по шесть
                      на страницу (на мобильном по пять), поэтому в разметке пусто -->
                 <ul class="goods-men__grid" data-goods-grid>
