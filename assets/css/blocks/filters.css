@@ -169,8 +169,17 @@
   transition: border-color var(--transition-fast) var(--transition-timing);
 }
 
-.goods__sort-select:hover,
+.goods__sort-select:hover {
+  border-color: var(--color-dark);
+}
+
+/* Обводка фокуса приходит из reset.css — там она синяя для всего сайта.
+   Секции перекрашивают её под свой акцент (см. goods-women.css и
+   goods-men.css): у женской коллекции розовый, у мужской синий.
+   Обводку оставляем как есть, только меняем цвет: убрать её нельзя —
+   по ней ориентируются те, кто ходит по странице с клавиатуры. */
 .goods__sort-select:focus-visible {
+  outline-color: var(--color-blue);
   border-color: var(--color-dark);
 }
 

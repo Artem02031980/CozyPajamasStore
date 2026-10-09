@@ -102,9 +102,41 @@ steps.push({
   emptyText: grid.querySelector('.goods__empty')?.textContent.replace(/\s+/g, ' ').trim() ?? null,
 });
 
+/* 9. Обводка фокуса у сортировки: у каждой коллекции свой цвет.
+   Чтобы :focus-visible сработал, нужен настоящий ввод с клавиатуры —
+   харнесс нажимает Tab перед запуском запроса (--press-tab 1).
+   Программный .focus() этот псевдокласс не включает, и проверка молча
+   показала бы цвет без фокуса. */
+const outlineOf = (selector) => {
+  const el = document.querySelector(selector);
+  el.focus();
+  const cs = getComputedStyle(el);
+  const out = {
+    visible: el.matches(':focus-visible'),
+    color: cs.outlineColor,
+    width: cs.outlineWidth,
+    style: cs.outlineStyle,
+  };
+  el.blur();
+  return out;
+};
+
+// Ожидаемые цвета: --color-pink #cd74a2 и --color-blue #93b3d6
+const EXPECTED = { women: 'rgb(205, 116, 162)', men: 'rgb(147, 179, 214)' };
+const outlineWomen = outlineOf('#goods-women [data-goods-sort]');
+const outlineMen = outlineOf('#goods-men [data-goods-sort]');
+
 return {
   perPage: steps[0].cards,
   resetButton: Boolean(form.querySelector('.filters__reset')),
   sortValue: sort?.value,
+  outline: {
+    women: outlineWomen,
+    men: outlineMen,
+    womenExpected: EXPECTED.women,
+    menExpected: EXPECTED.men,
+    womenOk: outlineWomen.visible && outlineWomen.color === EXPECTED.women,
+    menOk: outlineMen.visible && outlineMen.color === EXPECTED.men,
+  },
   steps,
 };

@@ -56,6 +56,61 @@ const productTags = new Set(both.flatMap((p) => [...p.types, ...p.ages, ...p.col
 const orphan = [...productTags].filter((tag) => !chipLabels.includes(tag) && !colorLabels.includes(tag));
 eq(orphan, [], 'каждый тег товара имеет чипс или кружок в разметке');
 
+/* Теги проверяем против чипсов СВОЕЙ секции, а не всей страницы.
+   У женской и мужской коллекций наборы формулировок разные («Для юных дам»
+   против «Для молодых людей»), и общая проверка пропустила бы мужской тег
+   с женской подписью: чипс на странице есть, но не в этой секции — и фильтр
+   молча не сработал бы. */
+const labelsIn = (sectionClass) => {
+  const formHtml = html.match(
+    new RegExp(`<form[^>]*id="goods-${sectionClass}-filters"[\\s\\S]*?</form>`),
+  )?.[0] ?? '';
+  /* Группы берём по отдельности: чипсы типов, возрастов и цены лежат
+     в разных <div class="filters__group">, и проверять их надо порознь —
+     иначе диапазон цены попадёт в проверку возрастов. */
+  const groups = [...formHtml.matchAll(
+    /<div class="filters__group">([\s\S]*?)<\/div>/g,
+  )].map((m) => m[1]);
+  const chipsIn = (group = '') =>
+    [...group.matchAll(/class="filters__chip"[^>]*>([^<]+)</g)].map((m) => m[1].trim());
+
+  return {
+    chips: chipsIn(formHtml),
+    types: chipsIn(groups[0]),
+    ages: chipsIn(groups[1]),
+    colors: [...formHtml.matchAll(/aria-label="([^"]+)"/g)].map((m) => m[1]),
+  };
+};
+
+for (const [section, list] of [['women', women], ['men', men]]) {
+  const own = labelsIn(section);
+  const wrong = [];
+  for (const p of list) {
+    for (const tag of [...p.types, ...p.ages]) {
+      if (!own.chips.includes(tag)) wrong.push(`${p.id}: ${tag}`);
+    }
+    for (const color of p.colors) {
+      if (!own.colors.includes(color)) wrong.push(`${p.id}: цвет ${color}`);
+    }
+  }
+  eq(wrong, [], `теги секции ${section} совпадают с чипсами этой же секции`);
+
+  /* У каждого чипса возраста должны быть товары: в макете возрастов ровно
+     три, все три осмысленные. Пустой чипс возраста — признак того, что тег
+     в данных переименовали, а разметку не тронули.
+
+     Чипсы цены в проверку не входят: это готовые диапазоны из макета,
+     и пустой диапазон («15000 - 19999₽») — норма. Чипсы типов, которых нет
+     в каталоге («Пеньюар», «Футболка»), тоже оставлены как в макете,
+     поэтому у типов проверяем только одностороннюю связь. */
+  const emptyAgeChips = own.ages.filter((chip) => !list.some((p) => p.ages.includes(chip)));
+  eq(emptyAgeChips, [], `в секции ${section} каждый чипс возраста обеспечен товарами`);
+
+  const unlabeledTypes = [...new Set(list.flatMap((p) => p.types))]
+    .filter((type) => !own.types.includes(type));
+  eq(unlabeledTypes, [], `в секции ${section} каждый тип из данных имеет свой чипс`);
+}
+
 // ─────────────── фильтры ───────────────
 
 const withTypes = (types) => ({ ...emptyFilters(), types });
