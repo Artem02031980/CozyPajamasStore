@@ -126,6 +126,39 @@ const EXPECTED = { women: 'rgb(205, 116, 162)', men: 'rgb(147, 179, 214)' };
 const outlineWomen = outlineOf('#goods-women [data-goods-sort]');
 const outlineMen = outlineOf('#goods-men [data-goods-sort]');
 
+/* 10. Кружки палитры: у выбранного цвета кольцо, у фокуса обводка,
+   и это разные вещи. Раньше выбор пытались показать через border-color,
+   но шорткат `border: 1px solid` в блоке перебивал правило по специфичности
+   (0-2-0 против 0-1-0), и выбранный цвет на цветных кружках не отличался
+   от невыбранного. Здесь это ловится: idle без кольца, is-active с кольцом. */
+const swatchOf = (section, label) =>
+  document.querySelector(`#goods-${section}-filters .filters__color[aria-label="${label}"]`);
+
+const swatchState = (section, label) => {
+  const el = swatchOf(section, label);
+  const idleRing = getComputedStyle(el).boxShadow;
+  el.classList.add('is-active');
+  const activeRing = getComputedStyle(el).boxShadow;
+  el.focus();
+  const cs = getComputedStyle(el);
+  const out = {
+    idleRing,
+    activeRing,
+    focusVisible: el.matches(':focus-visible'),
+    focusOutline: cs.outlineColor,
+    focusOutlineWidth: cs.outlineWidth,
+    selectedAndFocused: activeRing !== 'none' && cs.outlineColor === EXPECTED[section],
+  };
+  el.blur();
+  el.classList.remove('is-active');
+  return out;
+};
+
+const swatches = {
+  women: swatchState('women', 'Розовый'),
+  men: swatchState('men', 'Синий'),
+};
+
 return {
   perPage: steps[0].cards,
   resetButton: Boolean(form.querySelector('.filters__reset')),
@@ -138,5 +171,6 @@ return {
     womenOk: outlineWomen.visible && outlineWomen.color === EXPECTED.women,
     menOk: outlineMen.visible && outlineMen.color === EXPECTED.men,
   },
+  swatches,
   steps,
 };
