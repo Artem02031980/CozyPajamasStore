@@ -317,11 +317,17 @@ function initSection(section) {
   }
 
   /* Раскрытие фильтров на мобильном: форма лежит с .is-hidden, кнопка её
-     показывает. Клик по самой форме всплывает сюда же, поэтому проверяем,
-     что нажали именно на кнопку. */
+     показывает. С 768px фильтры развёрнуты всегда — там секционные стили
+     перебивают .is-hidden через display: flex !important, а сама кнопка
+     скрыта. Поэтому обработчик работает только до 768px: иначе клик по
+     невидимой кнопке дёргал бы класс вхолостую. */
   const toggle = $(`#goods-${section} [data-filters-toggle]`);
-  if (toggle) {
+  const narrow = window.matchMedia?.('(max-width: 767px)');
+
+  if (toggle && narrow) {
     toggle.addEventListener('click', () => {
+      if (!narrow.matches) return;
+
       const opened = form.classList.toggle('is-hidden') === false;
       toggle.setAttribute('aria-expanded', String(opened));
       toggle.textContent = opened ? 'Скрыть фильтры' : 'Установить фильтры';
