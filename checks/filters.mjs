@@ -182,6 +182,29 @@ selectProducts(women, emptyFilters(), 'price-desc');
 eq(titles(women), before, 'исходный порядок товаров не меняется сортировкой');
 eq(titles(getProducts('women')), before, 'порядок в data.js не меняется сортировкой');
 
+// ─────────────── «Новая коллекция»: чередование и пары ───────────────
+
+/* Фон карточек задаётся по позиции (goods-new.css: нечётные розовые,
+   чётные серо-голубые), а цвет названия — тегом titleColor в данных.
+   Проверка следит за двумя вещами сразу: тег совпадает с позицией,
+   и каждая пижама стоит на фоне своей коллекции. Без неё порядок карточек
+   можно перепутать молча: вид останется аккуратным, но мужские пижамы
+   окажутся на розовом, а женские на голубом — так это и произошло. */
+const newItems = getProducts('new');
+eq(newItems.length, 6, 'в новой коллекции шесть товаров');
+
+const colourOf = (product) => product.titleColor === 'blue' ? 'blue' : 'pink';
+const expectedColour = (position) => (position % 2 === 0 ? 'blue' : 'pink');
+const looksMale = (product) => product.alt.toLowerCase().includes('мужск');
+
+eq(newItems.map((p) => colourOf(p)), newItems.map((_, i) => expectedColour(i + 1)),
+  'цвет названия чередуется по позиции: розовый-голубой');
+eq(newItems.map(looksMale), [false, true, false, true, false, true],
+  'женские пижамы на розовых позициях 1/3/5, мужские на голубых 2/4/6');
+eq(newItems.map((p) => p.id),
+  ['goods-new-01', 'goods-new-02', 'goods-new-03', 'goods-new-04', 'goods-new-05', 'goods-new-06'],
+  'порядок товаров новой коллекции закреплён');
+
 // ─────────────── сводка по чипсам ───────────────
 
 const coverageTypes = [...new Set(both.flatMap((p) => p.types))]

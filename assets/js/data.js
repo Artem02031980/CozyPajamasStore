@@ -40,7 +40,12 @@
 
 /** @type {Product[]} */
 export const PRODUCTS = [
-  /* ------------------------------------------------- Новая коллекция — 6 товаров */
+  /* ------------------------------------------------- Новая коллекция — 6 товаров
+     Порядок задан по коллекциям: сначала три женские пижамы, потом три
+     мужские. Только так они совпадают с чередованием фона из
+     sections/goods-new.css — нечётные позиции розовые, чётные серо-голубые.
+     Переставите товар иначе — пижама окажется на чужом фоне; за этим следит
+     проверка checks/filters.mjs. */
   {
     id: 'goods-new-01',
     section: 'new',
@@ -52,6 +57,7 @@ export const PRODUCTS = [
     width: 414,
     height: 1159,
   },
+
   {
     id: 'goods-new-02',
     section: 'new',
@@ -64,6 +70,7 @@ export const PRODUCTS = [
     width: 412,
     height: 1136,
   },
+
   {
     id: 'goods-new-03',
     section: 'new',
@@ -75,6 +82,7 @@ export const PRODUCTS = [
     width: 576,
     height: 1160,
   },
+
   {
     id: 'goods-new-04',
     section: 'new',
@@ -87,6 +95,7 @@ export const PRODUCTS = [
     width: 423,
     height: 1154,
   },
+
   {
     id: 'goods-new-05',
     section: 'new',
@@ -98,6 +107,7 @@ export const PRODUCTS = [
     width: 386,
     height: 1160,
   },
+
   {
     id: 'goods-new-06',
     section: 'new',
