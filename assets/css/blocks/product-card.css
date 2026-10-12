@@ -12,6 +12,8 @@
        </a>
        <p class="product-card__subtitle">…</p>
        <p class="product-card__price">…</p>
+       <button class="product-card__button button button--pink button--block"
+               data-cart-add="…">В корзину</button>
      </article>
    ========================================================================== */
 
@@ -73,6 +75,27 @@
   line-height: var(--lh-snug);
   color: var(--color-dark);
   text-align: center;
+}
+
+/* Кнопка «В корзину».
+   Каркас, цвет и скругление берёт у .button--pink и .button--block.
+   Здесь только отступ сверху и компактная высота: в карточке кнопка
+   не должна быть крупнее самой карточки, а в макете её нет вовсе —
+   это новая деталь, и она намеренно сделана невысокой.
+   margin-top: auto прижимает кнопку к низу карточки, чтобы в ряду
+   из нескольких карточек кнопки стояли на одной линии. */
+.product-card__button {
+  margin-top: auto;
+  padding-block: var(--space-8);
+  font-size: var(--fs-14);
+}
+
+/* Сетка карточек: колонка, поэтому кнопка занимает всю ширину карточки */
+.goods-new__item .product-card,
+.goods-women__item .product-card,
+.goods-men__item .product-card,
+.goods-other__item .product-card {
+  height: 100%;
 }
 
 .goods-new .product-card__price::after {

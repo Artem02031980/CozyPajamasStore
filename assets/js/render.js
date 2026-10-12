@@ -49,6 +49,14 @@ export function renderCard(product) {
       </a>
       <p class="product-card__subtitle">${subtitle}</p>
       <p class="product-card__price">${formatPrice(price)}</p>
+      <!-- Кнопка «В корзину». Не внутри ссылки: клик по ней не должен
+           уводить на страницу товара. Размер выбирается на странице товара,
+           поэтому здесь позиция добавляется без размера -->
+      <button
+        class="product-card__button button button--pink button--block"
+        type="button"
+        data-cart-add="${product.id}"
+      >В корзину</button>
     </article>`;
 }
 

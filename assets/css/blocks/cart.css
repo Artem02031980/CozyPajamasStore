@@ -136,3 +136,54 @@
   text-align: center;
   opacity: 0.6;
 }
+
+/* Кнопка «Вернуться к покупкам» в пустой корзине: внутри .cart__empty
+   стоит opacity 0.6 — снимаем её, иначе кнопка выглядит неактивной */
+.cart__continue {
+  margin-top: var(--space-16);
+  opacity: 1;
+}
+
+/* Пояснение под итогами: про бесплатную услугу или про то, сколько
+   до неё осталось. Не часть итогов, поэтому отдельным классом */
+.cart__note {
+  font-size: var(--fs-14);
+  line-height: var(--lh-snug);
+  color: var(--color-dark);
+  opacity: 0.6;
+}
+
+/* Очистка корзины: действие редкое и разрушительное, поэтому тихая
+   подпись под кнопкой оформления, а не вторая кнопка рядом */
+.cart__clear {
+  display: block;
+  margin: var(--space-12) auto 0;
+  font-size: var(--fs-14);
+  color: var(--color-dark);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  opacity: 0.6;
+}
+
+.cart__clear:hover {
+  opacity: 1;
+}
+
+/* Плашка услуги «ПРИНТ» на месте фотографии: у услуги картинки нет,
+   а место в списке должно быть занято, иначе строки «пляшут» по высоте */
+.cart__image--service {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.04em;
+  color: var(--color-dark);
+  background-color: var(--color-yellow);
+}
+
+/* Состав заказа на странице благодарности: без кнопок количества,
+   поэтому колонки другие */
+.cart__list--order .cart__item {
+  grid-template-columns: minmax(0, 1fr) auto;
+}

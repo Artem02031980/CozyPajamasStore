@@ -11,9 +11,12 @@
  *   header.js    — бургер и меню в шапке
  *   data.js      — каталог товаров
  *   render.js    — отрисовка карточек из данных
- *   filters.js   — постраничный показ каталога            (фильтры и сортировка — дальше)
- *   modal.js     — модальные окна                         (в работе)
- *   cart.js      — логика корзины                         (в работе)
+ *   filters-query.js — отбор и сортировка товаров
+ *   filters.js   — фильтры, сортировка и постраничный показ каталога
+ *   cart.js      — логика корзины: состав, количество, итоги
+ *   render-cart.js — разметка корзины
+ *   cart-ui.js   — кнопки корзины, окно, счётчик в шапке
+ *   modal.js     — модальные окна: ESC, фокус, блокировка прокрутки
  *   checkout.js  — оформление заказа                      (в работе)
  *   thanks.js    — страница благодарности                 (в работе)
  *   feedback.js  — форма обратной связи                   (в работе)
@@ -22,6 +25,8 @@
 import { initHeader } from './header.js';
 import { renderCatalog } from './render.js';
 import { initFilters } from './filters.js';
+import { initModal } from './modal.js';
+import { initCart } from './cart-ui.js';
 
 /**
  * Запуск приложения.
@@ -35,6 +40,8 @@ function init() {
   renderCatalog();
   initFilters();
   initHeader();
+  initModal();
+  initCart();
 }
 
 init();

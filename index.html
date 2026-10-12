@@ -700,6 +700,36 @@
       </footer>
     </div>
 
+    <!-- ====================================================================
+         Модальное окно корзины.
+         Открывает: кнопка «Корзина» в шапке и кнопки data-cart-add.
+         Наполняет: render-cart.js. Поведение: modal.js (ESC, клик по фону,
+         ловушка фокуса, блокировка прокрутки).
+         ==================================================================== -->
+    <div
+      class="modal is-hidden"
+      data-modal="cart"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cart-title"
+      aria-hidden="true"
+    >
+      <div class="modal__overlay" data-modal-close></div>
+
+      <div class="modal__dialog">
+        <div class="modal__head">
+          <h2 class="modal__title" id="cart-title">Корзина</h2>
+          <button class="modal__close" type="button" data-modal-close aria-label="Закрыть корзину">
+            ×
+          </button>
+        </div>
+
+        <!-- Позиции и итоги рисует render-cart.js: в разметке только пустые
+             контейнеры, чтобы состав корзины жил в одном месте — в JS -->
+        <div class="cart" data-cart-body></div>
+      </div>
+    </div>
+
     <!-- Единственный подключаемый скрипт: точка входа с импортами модулей -->
     <script type="module" src="assets/js/script.js"></script>
   </body>
