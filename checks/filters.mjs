@@ -239,6 +239,25 @@ const sizeMismatch = newItems.filter((p) => {
 eq(sizeMismatch.map((p) => p.id), [],
   'ширина и высота в данных совпадают с файлами картинок');
 
+/* Цвет кнопки задаёт тег titleColor, и он должен быть у каждого товара
+   секции с фильтрами: без тега кнопка получает класс button--pink, у
+   которого своё правило :hover с тёмным фоном, и розовая кнопка при
+   наведении чернеет. Секции красятся по покупателю: женская розовая,
+   мужская серо-голубая — как соответствующие карточки «Новой коллекции». */
+const SECTION_COLOUR = { women: 'pink', men: 'blue' };
+for (const [section, colour] of Object.entries(SECTION_COLOUR)) {
+  const list = getProducts(section);
+  eq([...new Set(list.map((p) => p.titleColor))], [colour],
+    `у всех товаров секции ${section} задан цвет карточки «${colour}»`);
+}
+
+eq([...new Set([...women, ...men].map((p) => p.titleColor))].sort(), ['blue', 'pink'],
+  'в каталоге встречаются оба цвета кнопок');
+
+// «Другие товары» без тега: там кнопка остаётся базовой розовой
+eq(getProducts('other').filter((p) => p.titleColor).map((p) => p.id), [],
+  'в «Других товарах» цвет не задан — кнопки остаются как были');
+
 // ─────────────── сводка по чипсам ───────────────
 
 const coverageTypes = [...new Set(both.flatMap((p) => p.types))]

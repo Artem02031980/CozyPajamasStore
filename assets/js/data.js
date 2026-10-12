@@ -130,6 +130,7 @@ export const PRODUCTS = [
   /* ---------------------------------------------- Женская коллекция — 9 товаров */
   {
     id: 'goods-women-01',
+    titleColor: 'pink',
     section: 'women',
     title: 'Солнце',
     subtitle: 'Брюки + Сорочка',
@@ -144,6 +145,7 @@ export const PRODUCTS = [
   },
   {
     id: 'goods-women-02',
+    titleColor: 'pink',
     section: 'women',
     title: 'Русская душа',
     subtitle: 'Брюки + Сорочка',
@@ -158,6 +160,7 @@ export const PRODUCTS = [
   },
   {
     id: 'goods-women-03',
+    titleColor: 'pink',
     section: 'women',
     title: 'Клубичные поля',
     subtitle: 'Брюки + Сорочка + Майка',
@@ -172,6 +175,7 @@ export const PRODUCTS = [
   },
   {
     id: 'goods-women-04',
+    titleColor: 'pink',
     section: 'women',
     title: 'Пшеничное поле',
     subtitle: 'Брюки + Сорочка',
@@ -186,6 +190,7 @@ export const PRODUCTS = [
   },
   {
     id: 'goods-women-05',
+    titleColor: 'pink',
     section: 'women',
     title: 'Розовые поля',
     subtitle: 'Брюки + Халатик + Топик',
@@ -200,6 +205,7 @@ export const PRODUCTS = [
   },
   {
     id: 'goods-women-06',
+    titleColor: 'pink',
     section: 'women',
     title: 'Тёмная ночь V',
     subtitle: 'Брюки + Свитшот',
@@ -214,6 +220,7 @@ export const PRODUCTS = [
   },
   {
     id: 'goods-women-07',
+    titleColor: 'pink',
     section: 'women',
     title: 'Мамино счастье VI',
     subtitle: 'Брюки + Сорочка',
@@ -228,6 +235,7 @@ export const PRODUCTS = [
   },
   {
     id: 'goods-women-08',
+    titleColor: 'pink',
     section: 'women',
     title: 'Спокойный сон III',
     subtitle: 'Брюки + Халатик',
@@ -242,6 +250,7 @@ export const PRODUCTS = [
   },
   {
     id: 'goods-women-09',
+    titleColor: 'pink',
     section: 'women',
     title: 'Нетленная классика II',
     subtitle: 'Брюки + Сорочка',
@@ -258,6 +267,7 @@ export const PRODUCTS = [
   /* ----------------------------------------------- Мужская коллекция — 9 товаров */
   {
     id: 'goods-men-01',
+    titleColor: 'blue',
     section: 'men',
     title: 'Мятный вечер',
     subtitle: 'Брюки + Сорочка + Майка',
@@ -272,6 +282,7 @@ export const PRODUCTS = [
   },
   {
     id: 'goods-men-02',
+    titleColor: 'blue',
     section: 'men',
     title: 'Синий туман',
     subtitle: 'Брюки + Сорочка',
@@ -286,6 +297,7 @@ export const PRODUCTS = [
   },
   {
     id: 'goods-men-03',
+    titleColor: 'blue',
     section: 'men',
     title: 'Тёплая клетка',
     subtitle: 'Брюки + Сорочка + Майка',
@@ -300,6 +312,7 @@ export const PRODUCTS = [
   },
   {
     id: 'goods-men-04',
+    titleColor: 'blue',
     section: 'men',
     title: 'Белый халат',
     subtitle: 'Брюки + Халат',
@@ -314,6 +327,7 @@ export const PRODUCTS = [
   },
   {
     id: 'goods-men-05',
+    titleColor: 'blue',
     section: 'men',
     title: 'Морская дымка',
     subtitle: 'Брюки + Рубашка',
@@ -328,6 +342,7 @@ export const PRODUCTS = [
   },
   {
     id: 'goods-men-06',
+    titleColor: 'blue',
     section: 'men',
     title: 'Полночный силуэт',
     subtitle: 'Брюки + Рубашка',
@@ -342,6 +357,7 @@ export const PRODUCTS = [
   },
   {
     id: 'goods-men-07',
+    titleColor: 'blue',
     section: 'men',
     title: 'Облачный халат',
     subtitle: 'Брюки + Халат',
@@ -356,6 +372,7 @@ export const PRODUCTS = [
   },
   {
     id: 'goods-men-08',
+    titleColor: 'blue',
     section: 'men',
     title: 'Изумрудный вечер',
     subtitle: 'Брюки + Сорочка',
@@ -370,6 +387,7 @@ export const PRODUCTS = [
   },
   {
     id: 'goods-men-09',
+    titleColor: 'blue',
     section: 'men',
     title: 'Голубая классика',
     subtitle: 'Брюки + Сорочка',
