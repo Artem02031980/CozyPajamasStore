@@ -97,6 +97,32 @@
   border-radius: var(--radius-xs);
 }
 
+/* Кнопки «Новой коллекции»: цвет по чётности карточки, как фон и название.
+   Модификаторы расставляет render.js по тегу titleColor, а он у этой секции
+   есть у всех шести товаров — поэтому цвета заданы здесь, а не через
+   button--pink, который остаётся кнопкам остальных секций.
+   При наведении фон светлеет, а текст становится тёмным: на светлом фоне
+   белый текст не читается. */
+.product-card__button--pink {
+  color: var(--color-white);
+  background-color: var(--color-pink);
+}
+
+.product-card__button--pink:hover {
+  color: var(--color-dark);
+  background-color: var(--color-pink-light);
+}
+
+.product-card__button--blue {
+  color: var(--color-white);
+  background-color: var(--color-blue);
+}
+
+.product-card__button--blue:hover {
+  color: var(--color-dark);
+  background-color: var(--color-blue-light);
+}
+
 /* Сетка карточек: карточка занимает всю высоту ячейки, чтобы кнопки
    в одном ряду стояли на одной линии */
 .goods-new__item .product-card,

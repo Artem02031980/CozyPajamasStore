@@ -27,10 +27,22 @@ import { formatPrice, $ } from './utils.js';
 export function renderCard(product) {
   const { title, subtitle, price, image, alt, width, height, titleColor } = product;
 
-  /* Модификатор цвета заголовка — по БЭМ: отдельный класс, а не инлайн-стиль */
-  const titleClass = titleColor
-    ? `product-card__title product-card__title--${titleColor}`
+  /* Модификатор цвета названия — по БЭМ: отдельный класс, а не инлайн-стиль.
+     Розовый — базовый цвет из блока, поэтому класс ставим только голубому. */
+  const titleClass = titleColor === 'blue'
+    ? 'product-card__title product-card__title--blue'
     : 'product-card__title';
+
+  /* Цвет кнопки. У «Новой коллекции» он чередуется по позиции, как фон
+     карточки, поэтому приходит тем же тегом titleColor.
+     Класс button--pink здесь не добавляется: у него своё правило :hover
+     (фон --color-dark), и вдвоём с модификатором карточки они спорят —
+     при равной специфичности выигрывал более ранний файл, и розовая кнопка
+     при наведении чернела. Модификатор карточки задаёт и покой, и наведение.
+     У остальных секций тега нет — кнопка остаётся button--pink. */
+  const buttonModifier = titleColor
+    ? `product-card__button--${titleColor}`
+    : 'button--pink';
 
   return `
     <article class="product-card">
@@ -54,7 +66,7 @@ export function renderCard(product) {
            поэтому здесь позиция добавляется без размера.
            Класса button--block нет намеренно: кнопка по ширине надписи -->
       <button
-        class="product-card__button button button--pink"
+        class="product-card__button button ${buttonModifier}"
         type="button"
         data-cart-add="${product.id}"
       >В корзину</button>

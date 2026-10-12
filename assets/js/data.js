@@ -30,7 +30,10 @@
  * @property {string} alt         описание фото для скринридера
  * @property {number} width       ширина исходника в px
  * @property {number} height      высота исходника в px
- * @property {string} [titleColor] цвет заголовка: 'blue' — если задан
+ * @property {string} [titleColor] цвет карточки: 'blue' — если задан.
+ *                                В «Новой коллекции» задаёт и цвет названия,
+ *                                и цвет кнопки «В корзину» — карточки идут
+ *                                парами: розовая с розовой, голубая с голубой
  *
  * Теги фильтров есть только у секций с фильтрами (women и men): в «Новой
  * коллекции» и «Других товарах» фильтров нет, и выдумывать им типы незачем.
@@ -50,6 +53,7 @@ export const PRODUCTS = [
     id: 'goods-new-01',
     section: 'new',
     title: 'Нежное счастье',
+    titleColor: 'pink',
     subtitle: 'Брюки + Сорочка',
     price: 9399,
     image: 'assets/images/products/new/new_01.png',
@@ -75,6 +79,7 @@ export const PRODUCTS = [
     id: 'goods-new-03',
     section: 'new',
     title: 'Спокойная ночь IV',
+    titleColor: 'pink',
     subtitle: 'Пеньюар',
     price: 14199,
     image: 'assets/images/products/new/new_02.png',
@@ -100,6 +105,7 @@ export const PRODUCTS = [
     id: 'goods-new-05',
     section: 'new',
     title: 'Розовые перекрестки',
+    titleColor: 'pink',
     subtitle: 'Брюки + Халатик',
     price: 4999,
     image: 'assets/images/products/new/new_06.png',
