@@ -92,7 +92,7 @@
   align-self: center;
   min-height: 0;
   margin-top: 10px;
-  padding: 6px var(--space-16) 4px;
+  padding: 6px var(--space-16);
   font-size: var(--fs-14);
   border-radius: var(--radius-xs);
 }
