@@ -182,28 +182,62 @@ selectProducts(women, emptyFilters(), 'price-desc');
 eq(titles(women), before, 'исходный порядок товаров не меняется сортировкой');
 eq(titles(getProducts('women')), before, 'порядок в data.js не меняется сортировкой');
 
-// ─────────────── «Новая коллекция»: чередование и пары ───────────────
+// ─────────────── «Новая коллекция»: чередование, пары и картинки ───────
 
-/* Фон карточек задаётся по позиции (goods-new.css: нечётные розовые,
-   чётные серо-голубые), а цвет названия — тегом titleColor в данных.
-   Проверка следит за двумя вещами сразу: тег совпадает с позицией,
-   и каждая пижама стоит на фоне своей коллекции. Без неё порядок карточек
-   можно перепутать молча: вид останется аккуратным, но мужские пижамы
-   окажутся на розовом, а женские на голубом — так это и произошло. */
+/* Фон карточек задан по позиции (goods-new.css: нечётные розовые, чётные
+   серо-голубые), цвет названия — тегом titleColor, а какую пижаму видно —
+   полем image. Все три должны сходиться, иначе пижама окажется на чужом
+   фоне или под чужой подписью.
+
+   Почему проверка смотрит и на файл: пол в наборе картинок идёт
+   Ж Ж М М М Ж, а на экране нужен Ж М Ж М Ж М. Привязка «товар → файл»
+   задана вручную, и одна ошибка в ней уже была — две карточки получили
+   одну картинку, а подписи разошлись с изображениями. Здесь это ловится. */
 const newItems = getProducts('new');
 eq(newItems.length, 6, 'в новой коллекции шесть товаров');
 
-const colourOf = (product) => product.titleColor === 'blue' ? 'blue' : 'pink';
-const expectedColour = (position) => (position % 2 === 0 ? 'blue' : 'pink');
-const looksMale = (product) => product.alt.toLowerCase().includes('мужск');
+/** Пол человека на картинке — установлен просмотром файлов. */
+const FILE_SEX = {
+  'new_01.png': 'F', 'new_02.png': 'F', 'new_06.png': 'F',
+  'new_03.png': 'M', 'new_04.png': 'M', 'new_05.png': 'M',
+};
 
+/** Пол, который ждёт позиция: 1/3/5 розовые (женские), 2/4/6 голубые. */
+const EXPECTED_SEX = ['F', 'M', 'F', 'M', 'F', 'M'];
+
+const fileName = (product) => product.image.split('/').pop();
+const colourOf = (product) => (product.titleColor === 'blue' ? 'blue' : 'pink');
+const expectedColour = (position) => (position % 2 === 0 ? 'blue' : 'pink');
+
+/* Все шесть файлов должны быть задействованы и не повторяться.
+   Сравниваем отсортированные списки: порядок файлов по позициям —
+   не то, что здесь проверяется (он проверяется ниже, по полу). */
+eq([...newItems.map(fileName)].sort(), Object.keys(FILE_SEX).slice().sort(),
+  'каждый файл новой коллекции использован ровно один раз');
+eq(newItems.map((p) => FILE_SEX[fileName(p)]), EXPECTED_SEX,
+  'файлы разложены по позициям: женские на 1/3/5, мужские на 2/4/6');
 eq(newItems.map((p) => colourOf(p)), newItems.map((_, i) => expectedColour(i + 1)),
   'цвет названия чередуется по позиции: розовый-голубой');
-eq(newItems.map(looksMale), [false, true, false, true, false, true],
-  'женские пижамы на розовых позициях 1/3/5, мужские на голубых 2/4/6');
-eq(newItems.map((p) => p.id),
-  ['goods-new-01', 'goods-new-02', 'goods-new-03', 'goods-new-04', 'goods-new-05', 'goods-new-06'],
-  'порядок товаров новой коллекции закреплён');
+
+/* Подпись должна описывать то, что на картинке: у женских файлов слова
+   «Мужская» быть не должно, у мужских — должно. */
+const sexWords = newItems.map((p, i) => {
+  const saysMale = p.alt.toLowerCase().includes('мужск');
+  return EXPECTED_SEX[i] === 'M' ? saysMale : !saysMale;
+});
+eq(sexWords, [true, true, true, true, true, true],
+  'подписи совпадают с полом на картинке');
+
+/* Размеры в данных должны совпадать с файлами: они были сдвинуты вместе
+   с привязкой картинок, и width/height не совпадали с реальными. */
+const sizeMismatch = newItems.filter((p) => {
+  const bytes = readFileSync(new URL(`../assets/images/products/new/${fileName(p)}`, import.meta.url));
+  const isPng = bytes.slice(0, 8).toString('hex') === '89504e470d0a1a0a';
+  if (!isPng) return false;
+  return bytes.readUInt32BE(16) !== p.width || bytes.readUInt32BE(20) !== p.height;
+});
+eq(sizeMismatch.map((p) => p.id), [],
+  'ширина и высота в данных совпадают с файлами картинок');
 
 // ─────────────── сводка по чипсам ───────────────
 
