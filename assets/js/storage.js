@@ -76,6 +76,11 @@ export function clearCart() {
 
 /**
  * Прочитать последний заказ.
+ *
+ * Массив заказом не считается: typeof [] тоже 'object', и без отдельной
+ * проверки в хранилище вместо заказа вернулся бы список. Читающая сторона
+ * ждёт объект с полями, и падала бы уже на них.
+ *
  * @returns {object|null}
  */
 export function readOrder() {
@@ -83,7 +88,9 @@ export function readOrder() {
   if (!store) return null;
 
   const value = parseJSON(store.getItem(KEYS.order), null);
-  return value && typeof value === 'object' ? value : null;
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+
+  return value;
 }
 
 /**

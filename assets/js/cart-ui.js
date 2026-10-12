@@ -145,15 +145,6 @@ export function initCart() {
     if (target.closest('[data-cart-clear]')) {
       event.preventDefault();
       cart.clear();
-      return;
-    }
-
-    // 5. Оформить заказ: пока заказ оформляется на странице товара,
-    //    здесь только подсказка — куда идти дальше
-    if (target.closest('[data-cart-checkout]')) {
-      event.preventDefault();
-      const note = $('[data-cart-checkout-note]');
-      if (note) note.classList.remove('is-hidden');
     }
   });
 

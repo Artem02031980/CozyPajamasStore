@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Спасибо за заказ — Магазин уютных пижам</title>
+    <meta name="description" content="Заказ оформлен. Номер заказа, состав и итоговая сумма." />
+    <link rel="icon" href="assets/images/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+
+  <body class="page" data-page="thanks-cart">
+    <main class="thanks">
+      <div class="thanks__inner container">
+        <p class="thanks__overline">Заказ оформлен</p>
+        <h1 class="thanks__title" data-thanks-greeting>Спасибо за заказ!</h1>
+
+        <!-- Номер, дату и состав наполняет thanks.js из localStorage.
+             Если заказа нет (страницу открыли напрямую), показывается
+             блок «Заказа нет» ниже. -->
+        <div class="thanks__body is-hidden" data-thanks-body>
+          <p class="thanks__number" data-thanks-number></p>
+          <p class="thanks__date" data-thanks-date></p>
+          <p class="thanks__summary" data-thanks-summary></p>
+
+          <div class="cart thanks__order" data-thanks-items></div>
+
+          <p class="thanks__note">
+            Мы позвоним, чтобы подтвердить заказ и уточнить доставку.
+            Если что-то не так — назовите номер заказа.
+          </p>
+        </div>
+
+        <div class="thanks__empty is-hidden" data-thanks-empty>
+          <p>Заказа пока нет — эта страница открывается после оформления.</p>
+        </div>
+
+        <a class="button button--outline thanks__back" href="index.html">Вернуться в каталог</a>
+      </div>
+    </main>
+
+    <!-- Единственный подключаемый скрипт: точка входа с импортами модулей -->
+    <script type="module" src="assets/js/script.js"></script>
+  </body>
+</html>

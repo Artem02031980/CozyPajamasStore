@@ -105,7 +105,83 @@ export function renderCartSummary(totals, gap) {
 }
 
 /**
- * Вся корзина: список позиций и итоги, либо пустое состояние.
+ * Форма оформления внутри окна корзины.
+ *
+ * Собирается здесь, а не в разметке, по той же причине, что и позиции:
+ * показывать её имеет смысл только когда в корзине что-то есть.
+ * Проверяет и отправляет её checkout.js — по data-атрибутам.
+ *
+ * @returns {string}
+ */
+function renderCheckoutForm() {
+  return `
+      <form
+        class="checkout"
+        data-checkout-form
+        data-checkout-redirect="thanks-cart.html"
+        novalidate
+      >
+        <h3 class="checkout__title">Оформление</h3>
+
+        <div class="checkout__actions">
+          <button class="button button--accent button--block" type="submit" data-cart-checkout>
+            Оформить заказ
+          </button>
+          <button class="cart__clear" type="button" data-cart-clear>Очистить корзину</button>
+        </div>
+
+        <div class="checkout__row">
+          <label class="checkout__field">
+            <span class="checkout__label">Имя</span>
+            <input
+              class="checkout__input"
+              type="text"
+              name="name"
+              autocomplete="name"
+              placeholder="Как к вам обращаться"
+              data-checkout-field
+              aria-describedby="checkout-error-name"
+            />
+            <span class="checkout__error" id="checkout-error-name" data-checkout-error="name"></span>
+          </label>
+
+          <label class="checkout__field">
+            <span class="checkout__label">Телефон</span>
+            <input
+              class="checkout__input"
+              type="tel"
+              name="phone"
+              autocomplete="tel"
+              placeholder="+7 900 000-00-00"
+              data-checkout-field
+              aria-describedby="checkout-error-phone"
+            />
+            <span class="checkout__error" id="checkout-error-phone" data-checkout-error="phone"></span>
+          </label>
+        </div>
+
+        <label class="checkout__field">
+          <span class="checkout__label">Почта <span class="checkout__optional">— не обязательно</span></span>
+          <input
+            class="checkout__input"
+            type="email"
+            name="email"
+            autocomplete="email"
+            placeholder="Для чека и связи"
+            data-checkout-field
+            aria-describedby="checkout-error-email"
+          />
+          <span class="checkout__error" id="checkout-error-email" data-checkout-error="email"></span>
+        </label>
+
+        <!-- Общая ошибка формы: пустая корзина и подобное -->
+        <p class="checkout__error checkout__error--form" data-checkout-error="cart" role="alert"></p>
+      </form>`;
+}
+
+/**
+ * Вся корзина: список позиций, итоги и форма оформления — либо пустое
+ * состояние.
  *
  * @param {Array<object>} lines позиции с данными товара
  * @param {object} totals
@@ -129,10 +205,7 @@ export function renderCart(lines, totals, gap) {
         ${lines.map(renderCartItem).join('\n')}
       </ul>
       ${renderCartSummary(totals, gap)}
-      <button class="button button--accent button--block cart__checkout" type="button" data-cart-checkout>
-        Оформить заказ
-      </button>
-      <button class="cart__clear" type="button" data-cart-clear>Очистить корзину</button>`;
+      ${renderCheckoutForm()}`;
 }
 
 /**
@@ -140,10 +213,10 @@ export function renderCart(lines, totals, gap) {
  * количества и удаления — заказ уже оформлен, менять в нём нечего.
  *
  * @param {Array<object>} lines
- * @param {object} totals
+ * @param {number} total итог заказа
  * @returns {string}
  */
-export function renderOrderLines(lines, totals) {
+export function renderOrderLines(lines, total) {
   return `
       <ul class="cart__list cart__list--order">
         ${lines.map((line) => `
@@ -157,7 +230,7 @@ export function renderOrderLines(lines, totals) {
       </ul>
       <div class="cart__total">
         <span>Итого</span>
-        <span>${formatPrice(totals.total)}</span>
+        <span>${formatPrice(total)}</span>
       </div>`;
 }
 

@@ -1,0 +1,106 @@
+/* ==========================================================================
+   checkout.css — форма оформления заказа
+   Переиспользуемый блок: сейчас стоит внутри окна корзины. Поля и ошибки
+   сделаны отдельным блоком, а не стилями секции обратной связи: у той
+   формы своя раскладка (одна строка с кнопкой), а здесь колонка с полями.
+
+   Разметка (наполняет render-cart.js):
+     <form class="checkout" data-checkout-form>
+       <label class="checkout__field">
+         <span class="checkout__label">Имя</span>
+         <input class="checkout__input" name="name" data-checkout-field>
+         <span class="checkout__error" data-checkout-error="name"></span>
+       </label>
+     </form>
+   ========================================================================== */
+
+.checkout {
+  margin-top: var(--space-24);
+  padding-top: var(--space-24);
+  border-top: var(--border-width-thin) solid var(--color-beige-light);
+}
+
+.checkout__title {
+  margin-bottom: var(--space-16);
+  font-size: var(--fs-20);
+  line-height: var(--lh-snug);
+}
+
+/* Кнопки идут перед полями: человек видит, куда нажимать, и уже под ними —
+   что нужно заполнить. Порядок задан в разметке, здесь только отступ. */
+.checkout__actions {
+  margin-bottom: var(--space-24);
+}
+
+.checkout__row {
+  display: grid;
+  gap: var(--space-12);
+}
+
+.checkout__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-bottom: var(--space-12);
+}
+
+.checkout__label {
+  font-size: var(--fs-14);
+  color: var(--color-dark);
+}
+
+.checkout__optional {
+  opacity: 0.6;
+}
+
+.checkout__input {
+  width: 100%;
+  min-height: var(--control-height);
+  padding: var(--space-12) var(--space-16);
+  font-family: inherit;
+  font-size: var(--fs-16);
+  color: var(--color-dark);
+  background-color: var(--color-white);
+  border: var(--border-width-thin) solid var(--color-beige);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--transition-fast) var(--transition-timing);
+}
+
+.checkout__input::placeholder {
+  color: var(--color-dark);
+  opacity: 0.4;
+}
+
+.checkout__input:hover {
+  border-color: var(--color-dark);
+}
+
+/* Фокус: цвет обводки из reset.css, здесь только рамка поля */
+.checkout__input:focus {
+  border-color: var(--color-blue);
+}
+
+/* Ошибка поля: рамка красная и текст под полем. Красный — единственный
+   цвет в проекте, которого нет в палитре макета: ошибку нельзя показать
+   ни розовым, ни синим, их не отличить от обычного состояния */
+.checkout__input.is-invalid {
+  border-color: #fe0000;
+}
+
+.checkout__error {
+  min-height: 1.2em;
+  font-size: var(--fs-12);
+  line-height: var(--lh-snug);
+  color: #fe0000;
+}
+
+/* Общая ошибка формы (например, пустая корзина): по центру и заметнее */
+.checkout__error--form {
+  text-align: center;
+}
+
+@media (min-width: 480px) {
+  .checkout__row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

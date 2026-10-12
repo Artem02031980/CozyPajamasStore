@@ -30,6 +30,7 @@
 @import url('blocks/pagination.css');
 @import url('blocks/modal.css');
 @import url('blocks/cart.css');
+@import url('blocks/checkout.css');
 
 /* 4. Секции — порядок совпадает с порядком в разметке index.html:
       header → hero → товарные секции → feedback → footer */

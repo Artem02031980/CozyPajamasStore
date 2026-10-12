@@ -1,0 +1,83 @@
+/* ==========================================================================
+   thanks.css — страница благодарности (thanks-cart.html)
+   Отдельная страница без шапки и подвала: после заказа человеку нужен
+   только номер заказа, состав и путь назад в каталог.
+
+   Стили страницы, а не блока: классы .thanks__* встречаются только здесь.
+   Состав заказа оформляет blocks/cart.css — он общий с корзиной.
+   ========================================================================== */
+
+.thanks {
+  padding-block: var(--section-padding-y);
+}
+
+.thanks__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 640px;
+  text-align: center;
+}
+
+.thanks__overline {
+  margin-bottom: var(--space-8);
+  font-size: var(--fs-14);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+.thanks__title {
+  margin-bottom: var(--space-16);
+  font-size: var(--fs-30);
+  line-height: var(--lh-snug);
+}
+
+.thanks__body {
+  width: 100%;
+}
+
+.thanks__number {
+  font-size: var(--fs-20);
+  color: var(--color-pink);
+}
+
+.thanks__date,
+.thanks__summary {
+  font-size: var(--fs-16);
+  opacity: 0.7;
+}
+
+/* Состав заказа: слева, потому что строки позиций читаются как список,
+   а не как абзац — по центру они «пляшут» */
+.thanks__order {
+  margin-top: var(--space-24);
+  text-align: left;
+}
+
+.thanks__note {
+  margin-top: var(--space-24);
+  font-size: var(--fs-14);
+  line-height: var(--lh-snug);
+  opacity: 0.7;
+}
+
+.thanks__empty {
+  margin-bottom: var(--space-24);
+  font-size: var(--fs-16);
+  opacity: 0.7;
+}
+
+.thanks__back {
+  margin-top: var(--space-32);
+}
+
+/* Строка позиции в составе заказа: без картинки и кнопок, поэтому
+   колонки только «название» и «сумма» */
+.thanks__order .cart__item {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.thanks__order .cart__title {
+  color: var(--color-dark);
+}
