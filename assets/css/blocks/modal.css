@@ -42,7 +42,7 @@
   padding: var(--space-24);
   overflow-y: auto;
   background-color: var(--color-white);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
 }
 

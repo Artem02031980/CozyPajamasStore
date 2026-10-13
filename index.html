@@ -518,9 +518,12 @@
 
             <!-- data-cart-add — по этому атрибуту скрипт поймёт, что добавляют
                  услугу «ПРИНТ»; data-print-price — её цена в рублях,
-                 data-print-free-from — сумма заказа, от которой она бесплатна -->
+                 data-print-free-from — сумма заказа, от которой она бесплатна.
+                 Цвет кнопки задаёт секция (goods-print.css), а не button--soft:
+                 у того в блоке свой фон и своё наведение, и вместе они
+                 спорили бы по специфичности. -->
             <button
-              class="goods-print__button button button--soft"
+              class="goods-print__button button"
               type="button"
               data-cart-add="print"
               data-print-price="500"

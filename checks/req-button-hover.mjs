@@ -47,12 +47,32 @@ const COLOURS = {
 const DARK_TEXT = '#4c4c4c';
 const WHITE_TEXT = '#ffffff';
 
+/** Цвета элементов, которые видно и без наведения. */
+const staticColours = () => {
+  const readStatic = (selector) => {
+    const el = document.querySelector(selector);
+    if (!el) return { нет: selector };
+    const cs = getComputedStyle(el);
+    return { фон: hex(cs.backgroundColor), текст: hex(cs.color) };
+  };
+
+  return {
+    кнопкаПринта: readStatic('.goods-print__button'),
+    ценаПринта: readStatic('.goods-print__price'),
+    подарокПринта: readStatic('.goods-print__gift'),
+    кнопкаДругихТоваров: readStatic('.goods-other__item .product-card__button'),
+    диалогОкна: readStatic('.modal__dialog'),
+  };
+};
+
 return {
   кнопки: [1, 2, 3, 4, 5, 6].map((n) => ({
     n,
     ...read(`.goods-new__item:nth-child(${n}) .product-card__button`),
   })),
   кнопкаЖенскойСекции: read('.goods-women__item .product-card__button'),
+  кнопкаМужскойСекции: read('.goods-men__item .product-card__button'),
+  статичные: staticColours(),
   ожидание: { COLOURS, DARK_TEXT, WHITE_TEXT },
   проверка: [1, 2, 3, 4, 5, 6].map((n) => {
     const el = document.querySelector(`.goods-new__item:nth-child(${n}) .product-card__button`);

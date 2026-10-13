@@ -125,8 +125,20 @@
   border-top: var(--border-width-thin) solid var(--color-beige);
 }
 
+/* Кнопка оформления заказа: розовая, при наведении синяя, скругление
+   меньше «пилюли» базовой кнопки. Класс button--accent в разметке не нужен:
+   цвет задаётся здесь, и спорить с правилами button.css по специфичности
+   не приходится. */
 .cart__checkout {
   margin-top: var(--space-24);
+  color: var(--color-white);
+  background-color: var(--color-pink);
+  border-radius: var(--radius-sm);
+}
+
+.cart__checkout:hover {
+  color: var(--color-white);
+  background-color: var(--color-blue);
 }
 
 /* Пустая корзина */
@@ -138,10 +150,21 @@
 }
 
 /* Кнопка «Вернуться к покупкам» в пустой корзине: внутри .cart__empty
-   стоит opacity 0.6 — снимаем её, иначе кнопка выглядит неактивной */
+   стоит opacity 0.6 — снимаем её, иначе кнопка выглядит неактивной.
+   Цвет рамки и текста розовый, при наведении синий; модификатор
+   button--outline из разметки убран, чтобы не перебивать эти правила. */
 .cart__continue {
   margin-top: var(--space-16);
+  color: var(--color-pink);
+  background-color: var(--color-transparent);
+  border: var(--border-width-thin) solid var(--color-pink);
+  border-radius: var(--radius-sm);
   opacity: 1;
+}
+
+.cart__continue:hover {
+  color: var(--color-blue);
+  border-color: var(--color-blue);
 }
 
 /* Пояснение под итогами: про бесплатную услугу или про то, сколько

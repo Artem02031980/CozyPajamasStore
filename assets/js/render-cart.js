@@ -124,7 +124,7 @@ function renderCheckoutForm() {
         <h3 class="checkout__title">Оформление</h3>
 
         <div class="checkout__actions">
-          <button class="button button--accent button--block" type="submit" data-cart-checkout>
+          <button class="button button--block cart__checkout" type="submit" data-cart-checkout>
             Оформить заказ
           </button>
           <button class="cart__clear" type="button" data-cart-clear>Очистить корзину</button>
@@ -194,7 +194,7 @@ export function renderCart(lines, totals, gap) {
       <div class="cart__empty">
         <p>В корзине пока пусто.</p>
         <p class="cart__note">Выберите пижаму в каталоге — она появится здесь.</p>
-        <button class="button button--outline cart__continue" type="button" data-modal-close>
+        <button class="button cart__continue" type="button" data-modal-close>
           Вернуться к покупкам
         </button>
       </div>`;
