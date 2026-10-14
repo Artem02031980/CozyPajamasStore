@@ -92,8 +92,27 @@
   opacity: 0.7;
 }
 
+/* Кнопка возврата на обеих страницах благодарности: «Вернуться в каталог»
+   и «Вернуться к форме».
+   Оформление взято у «Вернуться к покупкам» из пустой корзины
+   (blocks/cart.css, .cart__continue): рамка 1px розовая, текст розовый,
+   при наведении и рамка, и текст синие, скругление --radius-sm вместо
+   «пилюли» базовой кнопки.
+   Модификатор button--outline в разметке не ставится: у него свои цвет
+   рамки (бежевый) и радиус, и он спорил бы с этим правилом. По той же
+   причине стили живут здесь, а не в blocks/button.css: правило из
+   pages/thanks.css подключается позже и надёжно перекрывает базовое. */
 .thanks__back {
   margin-top: var(--space-32);
+  color: var(--color-pink);
+  background-color: var(--color-transparent);
+  border: var(--border-width-thin) solid var(--color-pink);
+  border-radius: var(--radius-sm);
+}
+
+.thanks__back:hover {
+  color: var(--color-blue);
+  border-color: var(--color-blue);
 }
 
 /* Строка позиции в составе заказа: без картинки и кнопок, поэтому

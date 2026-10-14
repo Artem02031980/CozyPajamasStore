@@ -154,6 +154,28 @@ try {
     document.dispatchEvent(new CustomEvent('cart:change'));
     await frame();
 
+    /* Образец оформления кнопок возврата — «Вернуться к покупкам» в пустой
+       корзине. Снимаем мерку именно сейчас, пока корзина пуста: после
+       оформления заказа в ней уже лежат товары, и кнопки нет. Проверять
+       оформление по CSS-файлу нельзя — нужен живой computed-стиль. */
+    press(document.querySelector('[data-cart-open]'));
+    await frame();
+    await frame();
+
+    const sample = document.querySelector('.cart__continue');
+    out.continueLook = sample ? (() => {
+      const cs = getComputedStyle(sample);
+      return {
+        text: sample.textContent.trim(),
+        color: cs.color,
+        background: cs.backgroundColor,
+        border: cs.borderTopWidth + ' ' + cs.borderTopStyle + ' ' + cs.borderTopColor,
+        radius: cs.borderRadius,
+        padding: cs.padding,
+        font: cs.fontSize + ' / ' + cs.fontFamily.split(',')[0],
+      };
+    })() : null;
+
     // Дорогая пижама (12199 × 2 = 24398) и услуга «ПРИНТ»: порог 15000
     // перекрыт, значит услуга должна стать бесплатной
     localStorage.setItem('cozy-pajamas:cart', JSON.stringify([
@@ -162,8 +184,6 @@ try {
     document.dispatchEvent(new CustomEvent('cart:change'));
     await frame();
     press(document.querySelector('[data-cart-add="print"]'));
-    await frame();
-    press(document.querySelector('[data-cart-open]'));
     await frame();
 
     out.totalBefore = document.querySelector('[data-cart-total]')?.textContent.trim();
@@ -220,7 +240,6 @@ try {
     const realSubmit = new Event('submit', { bubbles: true, cancelable: true });
     form.dispatchEvent(realSubmit);
     out.realSubmitPrevented = realSubmit.defaultPrevented;
-
     return out;
   })()`);
 
@@ -278,6 +297,19 @@ try {
       bodyHidden: document.querySelector('[data-thanks-body]')?.classList.contains('is-hidden'),
       emptyHidden: document.querySelector('[data-thanks-empty]')?.classList.contains('is-hidden'),
       backLink: document.querySelector('.thanks__back')?.getAttribute('href'),
+      backLook: (() => {
+        const el = document.querySelector('.thanks__back');
+        if (!el) return null;
+        const cs = getComputedStyle(el);
+        return {
+          color: cs.color,
+          background: cs.backgroundColor,
+          border: cs.borderTopWidth + ' ' + cs.borderTopStyle + ' ' + cs.borderTopColor,
+          radius: cs.borderRadius,
+          padding: cs.padding,
+          font: cs.fontSize + ' / ' + cs.fontFamily.split(',')[0],
+        };
+      })(),
     };
   })()`);
 
@@ -299,6 +331,25 @@ try {
   ok(thanks.bodyHidden === false && thanks.emptyHidden === true,
     'показан заказ, а не пустое состояние');
   ok(thanks.backLink === 'index.html', 'есть ссылка назад в каталог', String(thanks.backLink));
+
+  /* Кнопка возврата должна выглядеть как «Вернуться к покупкам» в пустой
+     корзине: рамка и текст розовые, при наведении синие, скругление 8px,
+     а не «пилюля» базовой кнопки. Ширина не сравнивается — текст разный. */
+  const look = ({ color, background, border, radius, padding, font } = {}) =>
+    JSON.stringify({ color, background, border, radius, padding, font });
+
+  ok(Boolean(home.continueLook), 'образец найден: «Вернуться к покупкам» в пустой корзине');
+  ok(has(home.continueLook?.text, 'Вернуться к покупкам'), 'образец — нужная кнопка',
+    String(home.continueLook?.text));
+  ok(look(thanks.backLook) === look(home.continueLook),
+    'кнопка «Вернуться в каталог» выглядит как «Вернуться к покупкам»',
+    JSON.stringify(thanks.backLook) + ' против ' + JSON.stringify(home.continueLook));
+  ok(thanks.backLook?.radius === '8px', 'у кнопки возврата радиус 8px, а не «пилюля»',
+    String(thanks.backLook?.radius));
+  ok(thanks.backLook?.color === 'rgb(205, 116, 162)', 'текст кнопки возврата розовый',
+    String(thanks.backLook?.color));
+  ok(thanks.backLook?.border === '1px solid rgb(205, 116, 162)',
+    'рамка кнопки возврата розовая, толщиной 1px', String(thanks.backLook?.border));
 
   // ── 3. Та же страница без заказа ────────────────────────────────────
 
@@ -338,3 +389,6 @@ try {
   await sleep(400);
   rmSync(profile, { recursive: true, force: true });
 }
+
+
+

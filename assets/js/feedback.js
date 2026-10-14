@@ -94,6 +94,32 @@ function showError(form, message) {
 }
 
 /**
+ * Очищает поле вопроса.
+ *
+ * Возвращаясь на главную по кнопке «назад» или по ссылке, человек видел
+ * в поле текст прошлого вопроса: браузер сам восстанавливает значения форм
+ * при возврате на страницу, а у нас рядом с восстановленным текстом стояла
+ * бы ещё и подпись «Напишите вопрос — поле пустое». Поэтому поле всегда
+ * начинается пустым — и по разметке, и после возврата.
+ *
+ * @param {HTMLFormElement} form
+ */
+function resetField(form) {
+  const field = $('[data-feedback-field]', form);
+  if (!field) return;
+
+  field.value = '';
+  field.classList.remove('is-invalid');
+  field.setAttribute('aria-invalid', 'false');
+
+  const box = $('[data-feedback-error]', form);
+  if (box) {
+    box.textContent = '';
+    box.classList.add('is-hidden');
+  }
+}
+
+/**
  * Куда идти после отправки.
  *
  * Адрес задаётся атрибутом data-feedback-redirect у формы: страница товара
@@ -115,6 +141,17 @@ function redirectFrom(form) {
  * обработчик обслуживает все формы с этим атрибутом.
  */
 export function initFeedback() {
+  /* Поле начинается пустым: браузер восстанавливает значения форм при
+     возврате на страницу, и после «назад» в поле оставался прошлый вопрос.
+     Очистку делаем и на pageshow — возврат из кеша страницы (bfcache)
+     события load не вызывает, модуль при этом уже выполнен. */
+  const clearFields = () => {
+    document.querySelectorAll('[data-feedback-form]').forEach(resetField);
+  };
+
+  clearFields();
+  window.addEventListener('pageshow', clearFields);
+
   document.addEventListener('submit', (event) => {
     const form = event.target;
     if (!(form instanceof HTMLElement) || !form.matches('[data-feedback-form]')) return;
