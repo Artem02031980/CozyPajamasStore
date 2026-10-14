@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Спасибо за вопрос — Магазин уютных пижам</title>
+    <meta name="description" content="Вопрос отправлен. Мы ответим на него по почте или в мессенджере." />
+    <link rel="icon" href="assets/images/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+
+  <body class="page" data-page="thanks-feedback">
+    <main class="thanks">
+      <div class="thanks__inner container">
+        <p class="thanks__overline">Вопрос отправлен</p>
+        <h1 class="thanks__title">Спасибо за вопрос!</h1>
+
+        <!-- Вопрос и время отправки наполняет thanks.js из localStorage.
+             Если сообщения нет (страницу открыли напрямую или форма ушла
+             без скрипта), показывается блок «Сообщения нет» ниже. -->
+        <div class="thanks__body is-hidden" data-thanks-body>
+          <p class="thanks__summary" data-thanks-date></p>
+
+          <!-- Текст вопроса печатает thanks.js через textContent:
+               это то, что написал человек, и разметкой оно быть не должно.
+               Переносы строк сохраняет white-space: pre-line в thanks.css -->
+          <p class="thanks__question" data-thanks-question></p>
+
+          <p class="thanks__note">
+            Мы ответим на почту или в мессенджер — тем способом, который вы
+            указали. Обычно это занимает один рабочий день.
+          </p>
+
+          <!-- Предупреждение о том, что проект учебный: красным, чтобы его
+               нельзя было не заметить -->
+          <p class="thanks__note thanks__note--alert">
+            Данный проект является учебным, поэтому сообщение никуда не отправлялось😊
+          </p>
+        </div>
+
+        <div class="thanks__empty is-hidden" data-thanks-empty>
+          <p>
+            Сообщения нет — эта страница открывается после отправки формы
+            «Задайте вопрос». Напишите нам ещё раз, и всё получится.
+          </p>
+        </div>
+
+        <a class="button button--outline thanks__back" href="index.html#feedback">
+          Вернуться к форме
+        </a>
+      </div>
+    </main>
+
+    <!-- Единственный подключаемый скрипт: точка входа с импортами модулей -->
+    <script type="module" src="assets/js/script.js"></script>
+  </body>
+</html>

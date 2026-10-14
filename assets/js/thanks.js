@@ -1,17 +1,22 @@
 /**
- * thanks.js — страница благодарности после оформления заказа.
+ * thanks.js — страницы благодарности.
  *
- * Читает сохранённый заказ (storage.js) и показывает его состав.
- * Заказ хранит снимок названий и цен, поэтому страница не зависит
- * от текущего каталога: заказ за прошлый день покажется таким, каким
- * его оформили.
+ * Их две, и обе читают своё из хранилища (storage.js):
  *
- * Если заказа нет — человек открыл страницу напрямую, — показываем
- * приглашение вернуться в каталог, а не пустой экран.
+ *   thanks-cart.html     — состав оформленного заказа;
+ *   thanks-feedback.html — вопрос из формы обратной связи.
+ *
+ * Разметку различает атрибут на <body>: data-page="thanks-cart" или
+ * "thanks-feedback". Обе страницы хранят снимок данных, поэтому не зависят
+ * от текущего каталога: заказ за прошлый день покажется таким, каким его
+ * оформили.
+ *
+ * Если данных нет — человек открыл страницу напрямую или отправил форму
+ * без скрипта, — показываем понятный текст и путь назад, а не пустой экран.
  */
 
 import { $, formatPrice, plural } from './utils.js';
-import { readOrder } from './storage.js';
+import { readOrder, readMessage } from './storage.js';
 import { renderOrderLines } from './render-cart.js';
 
 /**
@@ -80,4 +85,39 @@ export function initThanks() {
 
   const items = $('[data-thanks-items]');
   if (items) items.innerHTML = renderOrderLines(toLines(order.items), order.totals.total);
+}
+
+/**
+ * Показывает вопрос из формы обратной связи.
+ *
+ * Сообщение хранится как есть — показываем его в <p> через textContent,
+ * а не через innerHTML: это текст от человека, и разметкой он быть
+ * не должен. Переносы строк сохраняет CSS (white-space: pre-line).
+ */
+export function initThanksFeedback() {
+  const body = $('[data-thanks-body]');
+  const empty = $('[data-thanks-empty]');
+  if (!body) return;
+
+  const message = readMessage();
+  const hasMessage = Boolean(message && String(message.question ?? '').trim());
+
+  // Пустое состояние и сообщение взаимоисключающие: показываем что-то одно
+  body.classList.toggle('is-hidden', !hasMessage);
+  empty?.classList.toggle('is-hidden', hasMessage);
+
+  if (!hasMessage) return;
+
+  const date = $('[data-thanks-date]');
+  if (date) {
+    const created = new Date(message.createdAt);
+    date.textContent = Number.isNaN(created.getTime())
+      ? 'Вопрос отправлен'
+      : `Отправлено ${created.toLocaleDateString('ru-RU', {
+        day: 'numeric', month: 'long', year: 'numeric',
+      })}, ${created.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}`;
+  }
+
+  const question = $('[data-thanks-question]');
+  if (question) question.textContent = String(message.question).trim();
 }

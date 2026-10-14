@@ -644,8 +644,11 @@
         <!-- Секция 7. «Отключитесь от всех тревог…» — блок обратной связи.
              Данные никуда не уходят: без скрипта форма уходит на страницу
              благодарности по action, со скриптом он перехватит submit
-             (data-feedback-form) и сам поведёт на thanks-feedback.html. -->
-        <section class="feedback">
+             (data-feedback-form) и сам поведёт на thanks-feedback.html.
+             novalidate: короткий вопрос отсекает feedback.js, а не браузер —
+             иначе вместо понятной подписи под полем появлялся бы системный
+             пузырь, который не перевести и не оформить. -->
+        <section class="feedback" id="feedback">
           <div class="feedback__inner container">
             <h2 class="feedback__title">
               Отключитесь от всех тревог и&nbsp;наслаждайтесь, пусть вас обнимает уют!
@@ -656,6 +659,7 @@
               data-feedback-form
               action="thanks-feedback.html"
               method="post"
+              novalidate
             >
               <div class="feedback__field">
                 <label class="visually-hidden" for="feedback-question">Задайте вопрос</label>
@@ -665,7 +669,19 @@
                   name="question"
                   placeholder="Задайте вопрос"
                   rows="3"
+                  maxlength="1000"
+                  aria-describedby="feedback-error"
+                  data-feedback-field
                 ></textarea>
+
+                <!-- Текст ошибки. Пока вопроса нет — пусто и скрыто,
+                     наполняет feedback.js -->
+                <p
+                  class="feedback__error is-hidden"
+                  id="feedback-error"
+                  data-feedback-error
+                  role="alert"
+                ></p>
               </div>
 
               <button class="feedback__submit button button--accent" type="submit">

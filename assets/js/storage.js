@@ -6,9 +6,11 @@
  * заменить хранилище, не обходя весь проект.
  *
  * Ключи:
- *   cozy-pajamas:cart  — текущая корзина, массив позиций
- *   cozy-pajamas:order — последний оформленный заказ, его читает страница
- *                        благодарности
+ *   cozy-pajamas:cart    — текущая корзина, массив позиций
+ *   cozy-pajamas:order   — последний оформленный заказ, его читает страница
+ *                          благодарности
+ *   cozy-pajamas:message — последний вопрос из формы обратной связи, его
+ *                          читает thanks-feedback.html
  */
 
 import { parseJSON } from './utils.js';
@@ -17,6 +19,7 @@ import { parseJSON } from './utils.js';
 export const KEYS = {
   cart: 'cozy-pajamas:cart',
   order: 'cozy-pajamas:order',
+  message: 'cozy-pajamas:message',
 };
 
 /**
@@ -117,5 +120,51 @@ export function clearOrder() {
     store.removeItem(KEYS.order);
   } catch (error) {
     console.error('[storage] Не удалось удалить заказ', error);
+  }
+}
+
+/**
+ * Прочитать последний вопрос из формы обратной связи.
+ *
+ * Массив сообщением не считается — по той же причине, что и у заказа:
+ * typeof [] тоже 'object', и без проверки читающая сторона получила бы
+ * список вместо объекта с полями.
+ *
+ * @returns {object|null} { question, createdAt }
+ */
+export function readMessage() {
+  const store = storage();
+  if (!store) return null;
+
+  const value = parseJSON(store.getItem(KEYS.message), null);
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+
+  return value;
+}
+
+/**
+ * Сохранить вопрос — его покажет страница благодарности.
+ * @param {object} message
+ */
+export function writeMessage(message) {
+  const store = storage();
+  if (!store) return;
+
+  try {
+    store.setItem(KEYS.message, JSON.stringify(message));
+  } catch (error) {
+    console.error('[storage] Не удалось сохранить сообщение', error);
+  }
+}
+
+/** Удалить сохранённое сообщение. */
+export function clearMessage() {
+  const store = storage();
+  if (!store) return;
+
+  try {
+    store.removeItem(KEYS.message);
+  } catch (error) {
+    console.error('[storage] Не удалось удалить сообщение', error);
   }
 }

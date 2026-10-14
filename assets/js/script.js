@@ -18,12 +18,13 @@
  *   cart-ui.js     — кнопки корзины, окно, счётчик в шапке
  *   modal.js       — модальные окна: ESC, фокус, блокировка прокрутки
  *   checkout.js    — форма оформления заказа
- *   thanks.js      — показ заказа на странице благодарности
- *   feedback.js    — форма обратной связи                  (в работе)
+ *   thanks.js      — показ заказа и вопроса на страницах благодарности
+ *   feedback.js    — форма обратной связи
  *
  * Какая страница что запускает, решает атрибут data-page на <body>:
- *   home          — каталог, фильтры, корзина, оформление
- *   thanks-cart   — показ оформленного заказа
+ *   home             — каталог, фильтры, корзина, оформление, форма вопроса
+ *   thanks-cart      — показ оформленного заказа
+ *   thanks-feedback  — показ вопроса из формы обратной связи
  */
 
 import { initHeader } from './header.js';
@@ -32,10 +33,11 @@ import { initFilters } from './filters.js';
 import { initModal } from './modal.js';
 import { initCart } from './cart-ui.js';
 import { initCheckout } from './checkout.js';
-import { initThanks } from './thanks.js';
+import { initThanks, initThanksFeedback } from './thanks.js';
+import { initFeedback } from './feedback.js';
 
 /**
- * Каталог: секции, фильтры, корзина и оформление.
+ * Каталог: секции, фильтры, корзина, оформление и форма вопроса.
  * Скрипт подключён с type="module", поэтому браузер выполняет его после
  * разбора разметки — ждать DOMContentLoaded не нужно.
  */
@@ -49,13 +51,21 @@ function initHome() {
   initModal();
   initCart();
   initCheckout();
+  initFeedback();
 }
 
-/** Страница благодарности: показывает сохранённый заказ. */
-function initThanksPage() {
+/** Страница благодарности за заказ: показывает сохранённый заказ. */
+function initThanksCartPage() {
   initHeader();
   initModal();
   initThanks();
+}
+
+/** Страница благодарности за вопрос: показывает сохранённое сообщение. */
+function initThanksFeedbackPage() {
+  initHeader();
+  initModal();
+  initThanksFeedback();
 }
 
 /**
@@ -68,7 +78,12 @@ function init() {
   const page = document.body.dataset.page ?? 'home';
 
   if (page === 'thanks-cart') {
-    initThanksPage();
+    initThanksCartPage();
+    return;
+  }
+
+  if (page === 'thanks-feedback') {
+    initThanksFeedbackPage();
     return;
   }
 
