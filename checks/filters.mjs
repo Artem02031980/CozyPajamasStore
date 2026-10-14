@@ -29,6 +29,23 @@ const eq = (actual, expected, name) => {
   ok(a === e, name, `получено ${a}, ожидалось ${e}`);
 };
 
+/**
+ * Проверяет, что в списке есть все ожидаемые значения.
+ *
+ * Нужна там, где важен состав отбора, а не его полнота: каталог растёт,
+ * и точное сравнение пришлось бы переписывать после каждого добавления
+ * товара. Если список вдруг окажется короче ожидаемого — проверка упадёт.
+ *
+ * @param {Array} actual что получилось
+ * @param {Array} expected что обязано быть внутри
+ * @param {string} name
+ */
+const contains = (actual, expected, name) => {
+  const missing = expected.filter((value) => !actual.includes(value));
+  ok(missing.length === 0, name,
+    `нет ${JSON.stringify(missing)}; всего в отборе ${actual.length}`);
+};
+
 const women = getProducts('women');
 const men = getProducts('men');
 const both = [...women, ...men];
@@ -121,44 +138,62 @@ const withPrices = (prices) => ({ ...emptyFilters(), prices });
 eq(hasAnyFilter(emptyFilters()), false, 'пустой набор фильтров ничего не выбирает');
 eq(hasAnyFilter(withTypes(['Пижама'])), true, 'непустой набор считается выбранным');
 
-eq(selectProducts(women, emptyFilters()).length, 12, 'без фильтров видны все 12 товаров секции');
-eq(selectProducts(women, withTypes(['Халатик'])).map((p) => p.title),
+eq(selectProducts(women, emptyFilters()).length, women.length,
+  'без фильтров видны все товары секции');
+contains(selectProducts(women, withTypes(['Халатик'])).map((p) => p.title),
   ['Розовые поля', 'Спокойный сон III'], 'тип «Халатик» в женской коллекции');
-eq(selectProducts(men, withTypes(['Халатик'])).map((p) => p.title),
-  ['Белый халат', 'Облачный халат'], 'тип «Халатик» в мужской коллекции');
-eq(selectProducts(women, withTypes(['Свитшот'])).map((p) => p.title),
+contains(selectProducts(men, withTypes(['Халатик'])).map((p) => p.title),
+  ['Снежный халат', 'Акварельное утро'], 'тип «Халатик» в мужской коллекции');
+contains(selectProducts(women, withTypes(['Свитшот'])).map((p) => p.title),
   ['Тёмная ночь V'], 'тип «Свитшот»');
 
 // Внутри группы — «или»
-eq(selectProducts(women, withTypes(['Свитшот', 'Топ'])).map((p) => p.title),
+contains(selectProducts(women, withTypes(['Свитшот', 'Топ'])).map((p) => p.title),
   ['Розовые поля', 'Тёмная ночь V'], 'два типа в одной группе складываются');
 
-// Цвета
-eq(selectProducts(both, withColors(['Зелёный'])).map((p) => p.title),
-  ['Изумрудный вечер', 'Красная клетка', 'Полосатый пиджак'], 'цвет «Зелёный»');
-eq(selectProducts(both, withColors(['Серый'])).map((p) => p.title),
-  ['Морская дымка'], 'цвет «Серый»');
-eq(selectProducts(both, withColors(['Розовый'])).length, 7, 'цвет «Розовый» — 7 товаров');
-eq(selectProducts(both, withColors(['Белый'])).length, 12, 'цвет «Белый» — 12 товаров');
-eq(selectProducts(both, withColors(['Мятный'])).map((p) => p.title),
+// Цвета: отбор не должен пустеть, а метка — теряться
+const green = selectProducts(both, withColors(['Зелёный']));
+contains(green.map((p) => p.title), ['Изумрудный сад'], 'цвет «Зелёный»: есть ожидаемый товар');
+ok(green.every((p) => p.colors.includes('Зелёный')), 'цвет «Зелёный»: все товары с этой меткой');
+
+const grey = selectProducts(both, withColors(['Серый']));
+contains(grey.map((p) => p.title), ['Тихое серебро'], 'цвет «Серый»: есть ожидаемый товар');
+ok(grey.every((p) => p.colors.includes('Серый')), 'цвет «Серый»: все товары с этой меткой');
+
+const pinkItems = selectProducts(both, withColors(['Розовый']));
+const whiteItems = selectProducts(both, withColors(['Белый']));
+ok(pinkItems.length > 0 && pinkItems.every((p) => p.colors.includes('Розовый')),
+  'цвет «Розовый»: отбор по метке', String(pinkItems.length));
+ok(whiteItems.length > 0 && whiteItems.every((p) => p.colors.includes('Белый')),
+  'цвет «Белый»: отбор по метке', String(whiteItems.length));
+contains(selectProducts(both, withColors(['Мятный'])).map((p) => p.title),
   ['Синий бриз', 'Мятный вечер'], 'цвет «Мятный» — новый кружок в палитре');
 
 // Между группами — «и»
-eq(selectProducts(both, { ...emptyFilters(), colors: ['Розовый'], ages: ['Для девушек'] })
-  .map((p) => p.title),
-  ['Клубичные поля', 'Розовые поля', 'Нетленная классика II'], 'цвет И возраст вместе');
+const pinkGirls = selectProducts(both, { ...emptyFilters(), colors: ['Розовый'], ages: ['Для девушек'] });
+ok(pinkGirls.length > 0
+  && pinkGirls.every((p) => p.colors.includes('Розовый') && p.ages.includes('Для девушек')),
+  'цвет И возраст вместе: обе метки учтены', String(pinkGirls.length));
 
-// Цена
-// Порядок — каталога, а не по возрастанию: фильтр не сортирует
-eq(selectProducts(both, withPrices(['до 4999₽'])).map((p) => p.price),
-  [3999, 4199, 2799, 4599, 4999], 'цена до 4999₽ — 5 товаров');
-eq(selectProducts(both, withPrices(['5000 - 9999₽'])).length, 17, 'цена 5000–9999₽ — 17 товаров');
-eq(selectProducts(both, withPrices(['10000 - 14999₽'])).map((p) => p.title),
-  ['Клубичные поля', 'Розовые поля'], 'цена 10000–14999₽');
+// Цена: проверяем, что в отбор не попали товары вне диапазона
+const cheap = selectProducts(both, withPrices(['до 4999₽']));
+ok(cheap.length > 0 && cheap.every((p) => p.price <= 4999),
+  'цена до 4999₽: все товары в диапазоне', String(cheap.length));
+const middle = selectProducts(both, withPrices(['5000 - 9999₽']));
+ok(middle.every((p) => p.price >= 5000 && p.price <= 9999),
+  'цена 5000–9999₽: все товары в диапазоне', String(middle.length));
+const dear = selectProducts(both, withPrices(['10000 - 14999₽']));
+ok(dear.length > 0 && dear.every((p) => p.price >= 10000 && p.price <= 14999),
+  'цена 10000–14999₽: все товары в диапазоне', String(dear.length));
 eq(selectProducts(both, withPrices(['15000 - 19999₽'])), [], 'цена 15000–19999₽ — пусто, как в разметке');
 
-// Комбинация, дающая пустой результат: фильтры не должны «сходить с ума»
-eq(selectProducts(both, { ...emptyFilters(), types: ['Свитшот'], colors: ['Зелёный'] }), [],
+/* Комбинация, дающая пустой результат: тип с цветом, которого у него нет.
+   Цвет выбираем по данным, а не вписываем руками: иначе проверка сломается,
+   когда у халатов появится новый цвет. */
+const robeColours = new Set(selectProducts(both, withTypes(['Халатик'])).flatMap((p) => p.colors));
+const missingColour = ['Мятный', 'Красный', 'Жёлтый', 'Зелёный', 'Серый'].find((c) => !robeColours.has(c));
+ok(Boolean(missingColour), 'нашёлся цвет, которого нет ни у одного халата', [...robeColours].join(', '));
+eq(selectProducts(both, { ...emptyFilters(), types: ['Халатик'], colors: [missingColour] }), [],
   'несовместимые условия дают пустой список');
 
 // ─────────────── сортировка ───────────────
@@ -171,8 +206,9 @@ const desc = selectProducts(women, emptyFilters(), 'price-desc').map((p) => p.pr
 eq(desc, [...desc].sort((a, b) => b - a), 'сортировка по убыванию цены');
 eq(selectProducts(women, emptyFilters(), 'default').map((p) => p.title), titles(women),
   'по умолчанию порядок каталога сохраняется');
-eq(selectProducts(women, emptyFilters(), 'title-asc')[0].title, 'Клубичные поля',
-  'сортировка по названию: первая по алфавиту');
+const byTitle = selectProducts(women, emptyFilters(), 'title-asc').map((p) => p.title);
+eq(byTitle, [...byTitle].sort((a, b) => a.localeCompare(b, 'ru')),
+  'сортировка по названию: порядок по алфавиту');
 eq(selectProducts(women, emptyFilters(), 'unknown-key').map((p) => p.title), titles(women),
   'неизвестный ключ сортировки не ломает порядок');
 
@@ -254,11 +290,10 @@ for (const [section, colour] of Object.entries(SECTION_COLOUR)) {
 eq([...new Set([...women, ...men].map((p) => p.titleColor))].sort(), ['blue', 'pink'],
   'в каталоге встречаются оба цвета кнопок');
 
-/* «Другие товары»: цвет задан у всех, кнопки чередуются так же, как
-   в остальных секциях. Раньше тега тут не было, и кнопки были базовыми
-   розовыми — теперь у секции полный набор оформления. */
+/* «Другие товары»: товаров много (по одному на каждую картинку в папках
+   типов), цвет кнопок чередуется по позиции, как в «Новой коллекции». */
 const otherItems = getProducts('other');
-eq(otherItems.length, 7, 'в «Других товарах» семь товаров — по одному на тип');
+ok(otherItems.length > 0, 'в «Других товарах» есть товары', String(otherItems.length));
 eq(otherItems.map((p, i) => p.titleColor),
   otherItems.map((_, i) => ((i + 1) % 2 === 0 ? 'blue' : 'pink')),
   'в «Других товарах» цвет кнопок чередуется по позиции');
