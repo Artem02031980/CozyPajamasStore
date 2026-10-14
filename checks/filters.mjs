@@ -258,6 +258,31 @@ eq([...new Set([...women, ...men].map((p) => p.titleColor))].sort(), ['blue', 'p
 eq(getProducts('other').filter((p) => p.titleColor).map((p) => p.id), [],
   'в «Других товарах» цвет не задан — кнопки остаются как были');
 
+// ─────────────── картинки: пути и размеры ───────────────
+
+/* После переименования папок (men/01.png → m01.png, картинки «Других
+   товаров» разъехались по папкам типов) главный риск — старый путь
+   в данных: карточка тогда молча показывает пустое место. */
+const brokenImages = PRODUCTS.filter((p) => {
+  try {
+    readFileSync(new URL(`../${p.image}`, import.meta.url));
+    return false;
+  } catch {
+    return true;
+  }
+});
+eq(brokenImages.map((p) => `${p.id} → ${p.image}`), [],
+  'у всех товаров картинка существует по указанному пути');
+
+const sizeMismatchAll = PRODUCTS.filter((p) => {
+  const bytes = readFileSync(new URL(`../${p.image}`, import.meta.url));
+  const isPng = bytes.slice(0, 8).toString('hex') === '89504e470d0a1a0a';
+  if (!isPng) return false;
+  return bytes.readUInt32BE(16) !== p.width || bytes.readUInt32BE(20) !== p.height;
+});
+eq(sizeMismatchAll.map((p) => p.id), [],
+  'ширина и высота в данных совпадают с файлами картинок');
+
 // ─────────────── сводка по чипсам ───────────────
 
 const coverageTypes = [...new Set(both.flatMap((p) => p.types))]
