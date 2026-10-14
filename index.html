@@ -585,12 +585,16 @@
           </div>
         </section>
 
-        <!-- Секция 6. Другие товары — слайдер из четырёх товаров и фильтры
-             под ним. Логики пока нет: стрелки и чипсы — разметка под JS
-             (см. data-slider, data-slider-prev, data-slider-next). -->
+        <!-- Секция 6. Другие товары — лента товаров и фильтры под ней.
+             Товары в ленту и фильтры по типам рисует filters.js,
+             листание стрелками — slider.js (см. data-slider-prev и
+             data-slider-next). В разметке лента пустая. -->
         <section class="goods-other" id="goods-other">
           <div class="goods-other__inner container">
             <h2 class="goods-other__title">Другие товары</h2>
+
+            <!-- Сколько товаров нашлось: наполняет filters.js -->
+            <p class="goods__count" data-goods-count aria-live="polite"></p>
 
             <div class="goods-other__slider" data-slider>
               <button
@@ -621,7 +625,7 @@
             </div>
 
             <!-- Фильтры под слайдером: сокращают товары в ленте -->
-            <form class="filters goods-other__filters">
+            <form class="filters goods-other__filters" id="goods-other-filters">
               <div class="filters__group">
                 <h3 class="filters__title">Тип товара</h3>
                 <ul class="filters__list">

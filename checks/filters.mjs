@@ -121,7 +121,7 @@ const withPrices = (prices) => ({ ...emptyFilters(), prices });
 eq(hasAnyFilter(emptyFilters()), false, 'пустой набор фильтров ничего не выбирает');
 eq(hasAnyFilter(withTypes(['Пижама'])), true, 'непустой набор считается выбранным');
 
-eq(selectProducts(women, emptyFilters()).length, 9, 'без фильтров видны все 9 товаров секции');
+eq(selectProducts(women, emptyFilters()).length, 12, 'без фильтров видны все 12 товаров секции');
 eq(selectProducts(women, withTypes(['Халатик'])).map((p) => p.title),
   ['Розовые поля', 'Спокойный сон III'], 'тип «Халатик» в женской коллекции');
 eq(selectProducts(men, withTypes(['Халатик'])).map((p) => p.title),
@@ -135,13 +135,13 @@ eq(selectProducts(women, withTypes(['Свитшот', 'Топ'])).map((p) => p.t
 
 // Цвета
 eq(selectProducts(both, withColors(['Зелёный'])).map((p) => p.title),
-  ['Изумрудный вечер'], 'цвет «Зелёный»');
+  ['Изумрудный вечер', 'Красная клетка', 'Полосатый пиджак'], 'цвет «Зелёный»');
 eq(selectProducts(both, withColors(['Серый'])).map((p) => p.title),
   ['Морская дымка'], 'цвет «Серый»');
-eq(selectProducts(both, withColors(['Розовый'])).length, 5, 'цвет «Розовый» — 5 товаров');
-eq(selectProducts(both, withColors(['Белый'])).length, 9, 'цвет «Белый» — 9 товаров');
+eq(selectProducts(both, withColors(['Розовый'])).length, 7, 'цвет «Розовый» — 7 товаров');
+eq(selectProducts(both, withColors(['Белый'])).length, 12, 'цвет «Белый» — 12 товаров');
 eq(selectProducts(both, withColors(['Мятный'])).map((p) => p.title),
-  ['Мятный вечер'], 'цвет «Мятный» — новый кружок в палитре');
+  ['Синий бриз', 'Мятный вечер'], 'цвет «Мятный» — новый кружок в палитре');
 
 // Между группами — «и»
 eq(selectProducts(both, { ...emptyFilters(), colors: ['Розовый'], ages: ['Для девушек'] })
@@ -152,7 +152,7 @@ eq(selectProducts(both, { ...emptyFilters(), colors: ['Розовый'], ages: [
 // Порядок — каталога, а не по возрастанию: фильтр не сортирует
 eq(selectProducts(both, withPrices(['до 4999₽'])).map((p) => p.price),
   [3999, 4199, 2799, 4599, 4999], 'цена до 4999₽ — 5 товаров');
-eq(selectProducts(both, withPrices(['5000 - 9999₽'])).length, 11, 'цена 5000–9999₽ — 11 товаров');
+eq(selectProducts(both, withPrices(['5000 - 9999₽'])).length, 17, 'цена 5000–9999₽ — 17 товаров');
 eq(selectProducts(both, withPrices(['10000 - 14999₽'])).map((p) => p.title),
   ['Клубичные поля', 'Розовые поля'], 'цена 10000–14999₽');
 eq(selectProducts(both, withPrices(['15000 - 19999₽'])), [], 'цена 15000–19999₽ — пусто, как в разметке');
@@ -248,15 +248,28 @@ const SECTION_COLOUR = { women: 'pink', men: 'blue' };
 for (const [section, colour] of Object.entries(SECTION_COLOUR)) {
   const list = getProducts(section);
   eq([...new Set(list.map((p) => p.titleColor))], [colour],
-    `у всех товаров секции ${section} задан цвет карточки «${colour}»`);
+    `у всех товаров секции ${section} цвет карточки «${colour}»`);
 }
 
 eq([...new Set([...women, ...men].map((p) => p.titleColor))].sort(), ['blue', 'pink'],
   'в каталоге встречаются оба цвета кнопок');
 
-// «Другие товары» без тега: там кнопка остаётся базовой розовой
-eq(getProducts('other').filter((p) => p.titleColor).map((p) => p.id), [],
-  'в «Других товарах» цвет не задан — кнопки остаются как были');
+/* «Другие товары»: цвет задан у всех, кнопки чередуются так же, как
+   в остальных секциях. Раньше тега тут не было, и кнопки были базовыми
+   розовыми — теперь у секции полный набор оформления. */
+const otherItems = getProducts('other');
+eq(otherItems.length, 7, 'в «Других товарах» семь товаров — по одному на тип');
+eq(otherItems.map((p, i) => p.titleColor),
+  otherItems.map((_, i) => ((i + 1) % 2 === 0 ? 'blue' : 'pink')),
+  'в «Других товарах» цвет кнопок чередуется по позиции');
+
+/* Каждый тип товара обязан иметь свой товар: по метке типа работает фильтр
+   в ленте, и пустой чипс выглядел бы сломанным фильтром. */
+const OTHER_TYPES = ['Беруши', 'Маски для сна', 'Колпаки для сна', 'Подушки', 'Мягкие игрушки', 'Пледы'];
+for (const type of OTHER_TYPES) {
+  const found = otherItems.filter((p) => p.types.includes(type));
+  ok(found.length > 0, `тип «${type}» есть хотя бы у одного товара`, String(found.length));
+}
 
 // ─────────────── картинки: пути и размеры ───────────────
 

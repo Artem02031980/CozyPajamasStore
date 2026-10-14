@@ -25,9 +25,19 @@ import { $, $$, delegate, debounce } from './utils.js';
 import { getProducts } from './data.js';
 import { renderCards } from './render.js';
 import { emptyFilters, selectProducts, hasAnyFilter } from './filters-query.js';
+import { initSlider } from './slider.js';
 
 /** Секции, которые показываются постранично и имеют фильтры. */
 const PAGINATED_SECTIONS = ['women', 'men'];
+
+/**
+ * Секции с фильтрами, но без пагинации: у «Других товаров» товары листаются
+ * лентой, поэтому страниц нет — фильтр просто сокращает ленту.
+ */
+const LENTA_SECTIONS = ['other'];
+
+/** Все секции, в которых работают фильтры. */
+const FILTER_SECTIONS = [...PAGINATED_SECTIONS, ...LENTA_SECTIONS];
 
 /**
  * Сколько карточек показывать на странице при текущей ширине окна.
@@ -146,13 +156,16 @@ function scrollToGoodsStart(target) {
  * Товары берутся не из data.js напрямую, а из отбора по фильтрам
  * и сортировке: и число страниц, и счётчик считаются от того, что нашлось.
  *
+ * У «Других товаров» пагинации нет: товары лежат в ленте (slider.js),
+ * поэтому весь отбор рисуется сразу, а кнопок страниц в разметке нет.
+ *
  * @param {string} section
  * @param {number} [page] номер страницы; по умолчанию — текущая
  * @param {object} [options]
  * @param {boolean} [options.scrollToStart] вернуть экран к началу списка товаров
  */
 export function showPage(section, page, { scrollToStart = false } = {}) {
-  const grid = $(`.goods-${section}__grid`);
+  const grid = $(`.goods-${section}__grid`) ?? $(`.goods-${section}__track`);
   const pagination = $(`nav.pagination[data-section="${section}"]`);
   const count = $(`.goods-${section} [data-goods-count]`);
   const perPage = getPerPage();
@@ -166,8 +179,11 @@ export function showPage(section, page, { scrollToStart = false } = {}) {
   state.set(section, { ...current, page: pageNumber, perPage });
 
   if (grid) {
-    const from = (pageNumber - 1) * perPage;
-    const shown = pool.slice(from, from + perPage);
+    /* В «Других товарах» пагинации нет: рисуем весь отбор. В женской
+       и мужской — только текущую страницу. */
+    const shown = LENTA_SECTIONS.includes(section)
+      ? pool
+      : pool.slice((pageNumber - 1) * perPage, (pageNumber - 1) * perPage + perPage);
 
     grid.innerHTML = shown.length
       ? renderCards(section, shown)
@@ -237,18 +253,21 @@ function readFilters(form) {
  * @param {string} section
  */
 function initSection(section) {
-  const pagination = $(`nav.pagination[data-section="${section}"]`);
   const form = $(`#goods-${section}-filters`);
-  if (!pagination) {
-    console.warn(`[filters] не найдена пагинация для секции «${section}»`);
-    return;
-  }
+  const pagination = $(`nav.pagination[data-section="${section}"]`);
+
+  // Ленты листаются стрелками, сетки — кнопками страниц
+  const slider = initSlider(section);
 
   /* Перерисовка после смены фильтра. Страница сбрасывается на первую:
      иначе человек остался бы, например, на второй странице списка из трёх
-     товаров и увидел пустоту. Экран при этом не дёргаем — фильтры стоят
-     рядом с сеткой, и прыжок был бы неожиданным. */
-  const refresh = () => showPage(section, 1);
+     товаров и увидел пустоту. В ленте сбрасываем прокрутку — после отбора
+     показывать её середину бессмысленно.
+     Экран при этом не дёргаем — фильтры стоят рядом с товарами. */
+  const refresh = () => {
+    showPage(section, 1);
+    slider?.reset();
+  };
 
   /** Переключает выбор и перерисовывает список. */
   const toggleChoice = (el) => {
@@ -259,24 +278,26 @@ function initSection(section) {
     refresh();
   };
 
-  pagination.addEventListener('click', (event) => {
-    const target = event.target;
-    if (!(target instanceof Element)) return;
+  if (pagination) {
+    pagination.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
 
-    const button = target.closest('[data-page], [data-page-step]');
-    if (!button || button.disabled) return;
+      const button = target.closest('[data-page], [data-page-step]');
+      if (!button || button.disabled) return;
 
-    const currentPage = currentState(section).page;
-    const step = button.dataset.pageStep;
-    const next = step ? currentPage + Number(step) : Number(button.dataset.page);
+      const currentPage = currentState(section).page;
+      const step = button.dataset.pageStep;
+      const next = step ? currentPage + Number(step) : Number(button.dataset.page);
 
-    // Страница та же — ничего не делаем: не дёргаем экран зря
-    if (next === currentPage) return;
+      // Страница та же — ничего не делаем: не дёргаем экран зря
+      if (next === currentPage) return;
 
-    // scrollToStart: как переход по ссылке на новую страницу каталога —
-    // экран возвращается к началу товаров (см. scrollToGoodsStart)
-    showPage(section, next, { scrollToStart: true });
-  });
+      // scrollToStart: как переход по ссылке на новую страницу каталога —
+      // экран возвращается к началу товаров (см. scrollToGoodsStart)
+      showPage(section, next, { scrollToStart: true });
+    });
+  }
 
   if (!form) {
     console.warn(`[filters] не найдена форма фильтров для секции «${section}»`);
@@ -336,11 +357,11 @@ function initSection(section) {
 }
 
 /**
- * Точка входа: включает фильтры, сортировку и постраничный показ
- * в секциях женской и мужской коллекций.
+ * Точка входа: включает фильтры во всех секциях каталога и постраничный
+ * показ там, где он есть (женская и мужская коллекции).
  */
 export function initFilters() {
-  PAGINATED_SECTIONS.forEach((section) => {
+  FILTER_SECTIONS.forEach((section) => {
     // Первую страницу рисуем сразу — разметка каталога пустая
     initSection(section);
     showPage(section, 1);
@@ -350,7 +371,7 @@ export function initFilters() {
      пересчитываем и перерисовываем. debounce: resize сыплется
      десятками событий, а перерисовка пересобирает всю сетку. */
   window.addEventListener('resize', debounce(() => {
-    for (const section of PAGINATED_SECTIONS) {
+    for (const section of FILTER_SECTIONS) {
       const current = state.get(section);
       // Остаёмся на той же странице, но с новым числом карточек
       showPage(section, current?.page ?? 1);
