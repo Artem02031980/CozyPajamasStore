@@ -291,12 +291,27 @@ eq([...new Set([...women, ...men].map((p) => p.titleColor))].sort(), ['blue', 'p
   'в каталоге встречаются оба цвета кнопок');
 
 /* «Другие товары»: товаров много (по одному на каждую картинку в папках
-   типов), цвет кнопок чередуется по позиции, как в «Новой коллекции». */
+   типов). Цвет карточек здесь НЕ чередуется: у всех розовое название и
+   розовая кнопка, при наведении синяя. Без тега titleColor render.js ставит
+   ровно такой модификатор, поэтому тега не должно быть ни у одного товара. */
 const otherItems = getProducts('other');
 ok(otherItems.length > 0, 'в «Других товарах» есть товары', String(otherItems.length));
-eq(otherItems.map((p, i) => p.titleColor),
-  otherItems.map((_, i) => ((i + 1) % 2 === 0 ? 'blue' : 'pink')),
-  'в «Других товарах» цвет кнопок чередуется по позиции');
+eq(otherItems.map((p) => p.titleColor ?? 'нет'), otherItems.map(() => 'нет'),
+  'в «Других товарах» цвет карточек не чередуется');
+
+/* Порядок в слайдере: одинаковые типы не должны стоять рядом, иначе
+   получаются пачки «четыре беруши подряд». Порядок зашит в данных, так что
+   проверка ловит и случайную правку файла, и возврат к сортировке по цене. */
+const neighbours = otherItems
+  .map((p, i) => (i && p.types[0] === otherItems[i - 1].types[0] ? `${i}: ${p.types[0]}` : null))
+  .filter(Boolean);
+eq(neighbours, [], 'в «Других товарах» нет соседей одного типа');
+
+/* Начало последовательности задано заказчиком: подушка, плед, подушка,
+   игрушка. Дальше — вразнобой. */
+eq(otherItems.slice(0, 4).map((p) => p.types[0]),
+  ['Подушки', 'Пледы', 'Подушки', 'Мягкие игрушки'],
+  'слайдер «Других товаров» начинается с подушки, пледа, подушки, игрушки');
 
 /* Каждый тип товара обязан иметь свой товар: по метке типа работает фильтр
    в ленте, и пустой чипс выглядел бы сломанным фильтром. */
@@ -335,6 +350,47 @@ const sizeMismatchAll = PRODUCTS.filter((p) => {
 });
 eq(sizeMismatchAll.map((p) => p.id), [],
   'ширина и высота в данных совпадают с файлами картинок');
+
+/* ─────────────── цвет кнопки «В корзину» ─────────────── */
+
+/* Кнопку красит модификатор блока карточки, а не button--pink: у последнего
+   своё правило :hover с тёмным фоном, и при равной специфичности правила
+   спорят — розовая кнопка при наведении чернела.
+
+   Проверяем не браузером, а разметкой и CSS: computed-цвет в браузере
+   зависит от того, что успело примениться, а здесь нужен именно контракт
+   «в покое розовый, при наведении синий» для «Других товаров» и «свой цвет
+   секции» для остальных. */
+const CARD_CSS = readFileSync(new URL('../assets/css/blocks/product-card.css', import.meta.url), 'utf8');
+const RENDER_JS = readFileSync(new URL('../assets/js/render.js', import.meta.url), 'utf8');
+
+const ruleBody = (selector) => {
+  const at = CARD_CSS.indexOf(selector + ' {');
+  return at < 0 ? null : CARD_CSS.slice(at, CARD_CSS.indexOf('}', at));
+};
+
+const otherIdle = ruleBody('.product-card__button--other');
+const otherHover = ruleBody('.product-card__button--other:hover');
+ok(otherIdle !== null, 'есть правило кнопки «Других товаров»', '.product-card__button--other');
+ok(otherHover !== null, 'есть правило кнопки «Других товаров» при наведении', '.product-card__button--other:hover');
+ok(/background-color:\s*var\(--color-pink\)/.test(otherIdle ?? ''),
+  'кнопка «Других товаров» в покое розовая', otherIdle?.trim() ?? 'правило не найдено');
+ok(/background-color:\s*var\(--color-blue\)/.test(otherHover ?? ''),
+  'кнопка «Других товаров» при наведении синяя', otherHover?.trim() ?? 'правило не найдено');
+
+/* Обе секции одежды красятся модификатором карточки, а не button--pink */
+for (const colour of ['pink', 'blue']) {
+  const idle = ruleBody(`.product-card__button--${colour}`);
+  const hover = ruleBody(`.product-card__button--${colour}:hover`);
+  ok(/background-color:\s*var\(--color-/.test(idle ?? ''),
+    `у модификатора --${colour} свой фон`, idle?.trim() ?? 'правило не найдено');
+  ok(/background-color:\s*var\(--color-/.test(hover ?? ''),
+    `у модификатора --${colour} свой фон при наведении`, hover?.trim() ?? 'правило не найдено');
+}
+
+ok(/const buttonModifier = titleColor/.test(RENDER_JS),
+  'render.js выбирает цвет кнопки по тегу titleColor',
+  'в render.js не найдена строка выбора модификатора кнопки');
 
 // ─────────────── сводка по чипсам ───────────────
 
