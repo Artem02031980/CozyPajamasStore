@@ -20,9 +20,11 @@
  *   checkout.js    — форма оформления заказа
  *   thanks.js      — показ заказа и вопроса на страницах благодарности
  *   feedback.js    — форма обратной связи
+ *   product.js     — галерея, размеры и услуга на странице товара
  *
  * Какая страница что запускает, решает атрибут data-page на <body>:
  *   home             — каталог, фильтры, корзина, оформление, форма вопроса
+ *   product          — галерея, размеры, услуга «ПРИНТ», корзина
  *   thanks-cart      — показ оформленного заказа
  *   thanks-feedback  — показ вопроса из формы обратной связи
  */
@@ -35,6 +37,7 @@ import { initCart } from './cart-ui.js';
 import { initCheckout } from './checkout.js';
 import { initThanks, initThanksFeedback } from './thanks.js';
 import { initFeedback } from './feedback.js';
+import { initProduct } from './product.js';
 
 /**
  * Каталог: секции, фильтры, корзина, оформление и форма вопроса.
@@ -69,6 +72,18 @@ function initThanksFeedbackPage() {
 }
 
 /**
+ * Страница товара: галерея, размеры, услуга «ПРИНТ» и корзина.
+ * Форма обратной связи на этой странице не выводится, поэтому
+ * initFeedback здесь не вызывается.
+ */
+function initProductPage() {
+  initHeader();
+  initModal();
+  initCart();
+  initProduct();
+}
+
+/**
  * Запуск приложения.
  *
  * Признак страницы — data-page на <body>. Без него запускаем всё, что
@@ -76,6 +91,11 @@ function initThanksFeedbackPage() {
  */
 function init() {
   const page = document.body.dataset.page ?? 'home';
+
+  if (page === 'product') {
+    initProductPage();
+    return;
+  }
 
   if (page === 'thanks-cart') {
     initThanksCartPage();

@@ -1,0 +1,463 @@
+/* ==========================================================================
+   product.css — страница товара (/product-pages/*.html)
+
+   Свёрстана по макетам figma/768-1280-.jpg и figma/320-768.jpg: на десктопе
+   белая карточка товара лежит на иллюстрированном фоне, до 768px — колонка
+   на светлой подложке. Pixel Perfect не требуется, но порядок блоков
+   и пропорции взяты из макетов.
+
+   Числа из макета:
+     1280 — карточка ~604px шириной, галерея и информация пополам,
+            стрелки листания стоят за карточкой, в поле страницы;
+     768  — карточка на всю ширину контейнера, две колонки;
+     320  — одна колонка: фото, подпись, название, цена, размеры, кнопки,
+            принт, описание, характеристики.
+
+   Общие элементы берутся у блоков: шапка — sections/header.css, кнопки —
+   blocks/button.css, окно корзины — blocks/modal.css и blocks/cart.css.
+   Здесь только то, что относится к этой странице.
+   ========================================================================== */
+
+/* ==========================================================================
+   1. Фон страницы
+   Иллюстрация из макета (assets/images/product-page/bg.png). На десктопе она
+   растягивается на весь экран, на мобильном выключается: за карточкой
+   во всю ширину её всё равно не видно, а весит файл 1.4 МБ — телефону
+   незачем его грузить.
+   ========================================================================== */
+
+body[data-page='product'] {
+  background-color: var(--color-pink-light);
+}
+
+@media (min-width: 768px) {
+  body[data-page='product'] {
+    background-image: url('../../images/product-page/bg.png');
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-size: cover;
+
+    /* Фон закреплён за окном: карточка товара выше экрана, и при прокрутке
+       иллюстрация не уезжает вверх вместе с содержимым */
+    background-attachment: fixed;
+  }
+}
+
+/* ==========================================================================
+   2. Секция и карточка
+   Отступы секции — как у секций главной. В layout.css они заданы списком
+   селекторов, и страницы товара в нём нет: padding задаётся здесь.
+   ========================================================================== */
+
+.product {
+  padding-block: var(--section-padding-y);
+}
+
+.product__card {
+  display: grid;
+  gap: var(--space-24);
+  padding: var(--space-24);
+  background-color: var(--color-white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+
+  /* Карточка уже контейнера: в макете 1280 она занимает около половины
+     экрана, и по бокам остаётся поле страницы. Без этого ограничения
+     стрелкам листания негде встать — они бы легли на саму карточку.
+     Выравнивание по центру контейнера */
+  max-width: 720px;
+  margin-inline: auto;
+}
+
+@media (min-width: 768px) {
+  .product__card {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-32);
+    padding: var(--space-32);
+  }
+}
+
+/* ==========================================================================
+   3. Галерея
+   Кадр один: вторых ракурсов у товаров пока нет. Стрелки и точки — задел
+   под галерею, они работают на любое число кадров (product.js), а при одном
+   кадре стрелки выключены.
+   ========================================================================== */
+
+.product__gallery {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 320px;
+}
+
+.product__stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding-inline: var(--space-32);
+}
+
+.product__image {
+  display: block;
+  width: auto;
+  max-width: 100%;
+
+  /* Высота ограничена, а не задана: фото товаров узкие и очень высокие
+     (385×1159), и без ограничения кадр растянул бы карточку на весь экран */
+  max-height: 380px;
+  object-fit: contain;
+}
+
+@media (min-width: 768px) {
+  .product__gallery {
+    min-height: 520px;
+  }
+
+  .product__image {
+    max-height: 520px;
+  }
+
+  /* В макете 1280 стрелки стоят за карточкой, в поле страницы, поэтому
+     внутри галереи место под них не оставляем */
+  .product__stage {
+    padding-inline: 0;
+  }
+}
+
+/* Стрелки листания. Шеврон рисуем границами, как в «Других товарах»:
+   отдельного файла иконки стрелки в проекте нет */
+.product__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: var(--z-base);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-32);
+  height: var(--control-height);
+  color: var(--color-dark);
+  transition: opacity var(--transition-fast) var(--transition-timing);
+}
+
+.product__arrow--prev {
+  left: 0;
+}
+
+.product__arrow--next {
+  right: 0;
+}
+
+.product__arrow-icon {
+  width: var(--icon-size-lg);
+  height: var(--icon-size-lg);
+  border-top: var(--border-width) solid currentcolor;
+  border-right: var(--border-width) solid currentcolor;
+}
+
+.product__arrow--prev .product__arrow-icon {
+  transform: rotate(-135deg);
+}
+
+.product__arrow--next .product__arrow-icon {
+  transform: rotate(45deg);
+}
+
+/* «Листать некуда»: при одном кадре обе стрелки выключены */
+.product__arrow[disabled] {
+  opacity: 0.4;
+  cursor: default;
+}
+
+@media (min-width: 768px) {
+  .product__arrow--prev {
+    left: -48px;
+  }
+
+  .product__arrow--next {
+    right: -48px;
+  }
+}
+
+/* Точки-индикаторы кадров. Файл из макета: розовое кольцо с отверстием
+   посередине (assets/images/icons/page-dot.svg). Активная точка темнее —
+   в файле она розовая, поэтому у активной галочка гасится фильтром,
+   второго файла ради этого не заводим. */
+.product__dots {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  display: flex;
+  gap: var(--space-8);
+}
+
+.product__dot {
+  width: 40px;
+  height: 40px;
+  background-image: url('../../images/icons/page-dot.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  transition: opacity var(--transition-fast) var(--transition-timing);
+}
+
+.product__dot:not(.is-active) {
+  opacity: 0.5;
+}
+
+.product__dot.is-active {
+  filter: brightness(0.45);
+}
+
+/* С 768px стрелки листают за карточкой, точки не нужны: в макете 1280 их нет */
+@media (min-width: 768px) {
+  .product__dots {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   4. Информация о товаре
+   ========================================================================== */
+
+.product__info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.product__subtitle {
+  font-size: var(--fs-14);
+  line-height: var(--lh-snug);
+  color: var(--color-dark);
+}
+
+/* Название и цена — крупные, по центру, как в макете. Цвет названия — тот же
+   розовый, что у карточек женской коллекции: товар из этой секции */
+.product__title {
+  margin-top: var(--space-4);
+  font-size: var(--fs-30);
+  line-height: var(--lh-tight);
+  color: var(--color-pink);
+  text-transform: uppercase;
+}
+
+.product__price {
+  margin-top: var(--space-8);
+  font-size: var(--fs-30);
+  line-height: var(--lh-tight);
+  color: var(--color-dark);
+}
+
+/* ==========================================================================
+   5. Размеры
+   Выбран ровно один размер: пижаму покупают одного размера. Пока не выбран
+   ни один — товар добавится без размера, как из карточки каталога.
+   ========================================================================== */
+
+.product__sizes {
+  margin-top: var(--space-24);
+}
+
+/* Подпись нужна тем, кто ходит по странице с клавиатуры и скринридером:
+   без неё ряд кнопок «S», «M», «XL» непонятен */
+.product__sizes-title {
+  font-size: var(--fs-14);
+  line-height: var(--lh-snug);
+  color: var(--color-dark);
+}
+
+/* На 768px и выше подпись скрыта визуально, но остаётся для скринридера:
+   в макете рядом с размерами подписи нет */
+@media (min-width: 768px) {
+  .product__sizes-title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+.product__sizes-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-8);
+  margin-top: var(--space-8);
+}
+
+.product__size {
+  min-width: var(--control-height);
+  min-height: var(--control-height);
+  padding-inline: var(--space-8);
+  font-family: var(--font-body);
+  font-size: var(--fs-16);
+  color: var(--color-dark);
+  background-color: var(--color-white);
+  border: var(--border-width-thin) solid var(--color-pink);
+  border-radius: var(--radius-xs);
+  transition: color var(--transition-fast) var(--transition-timing),
+    background-color var(--transition-fast) var(--transition-timing);
+}
+
+/* Выбранный размер выглядит как выбранный чипс фильтра */
+.product__size:hover,
+.product__size.is-active {
+  color: var(--color-white);
+  background-color: var(--color-pink);
+}
+
+/* ==========================================================================
+   6. Кнопки
+   ========================================================================== */
+
+.product__buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-12);
+  width: 100%;
+  margin-top: var(--space-24);
+}
+
+.product__button {
+  /* Скругление из макета — 8px, а не «пилюля» базовой кнопки */
+  border-radius: var(--radius-sm);
+
+  /* Текст не переносим: подписи кнопок в одну строку, как в макете.
+     Перенос делал «Добавить в корзину» двухэтажной */
+  white-space: nowrap;
+
+  /* Кнопки стоят в столбик на всю ширину колонки — на всех ширинах.
+     В макете 1280 они в строку, но там и карточка шире: две кнопки вместе
+     занимают 462px, а колонка информации — 312px. При строке на 768px
+     появлялась горизонтальная прокрутка всей страницы (проверено замером),
+     поэтому столбик, а не строка. */
+  width: 100%;
+}
+
+.product__button-icon {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.product__button-icon--cart {
+  background-image: url('../../images/icons/cart-white.svg');
+}
+
+.product__button-icon--catalog {
+  width: 11px;
+  height: 11px;
+  background-image: url('../../images/icons/icon-catalog.svg');
+}
+
+/* Вторая кнопка — «Купить в один клик» — и обе кнопки принта: розовая рамка
+   и розовый текст, при наведении заливка синяя. Приём тот же, что
+   у «Вернуться к покупкам» в корзине, но там цвет задан в своём файле;
+   здесь это модификатор, потому что кнопка повторяется на странице.
+
+   button--pink у этих кнопок не ставится: у него своя заливка и свой ховер,
+   и вдвоём они спорили бы по специфичности. */
+.button--outline-pink {
+  color: var(--color-pink);
+  background-color: var(--color-transparent);
+  border: var(--border-width-thin) solid var(--color-pink);
+}
+
+.button--outline-pink:hover {
+  color: var(--color-white);
+  background-color: var(--color-blue);
+  border-color: var(--color-blue);
+}
+
+/* ==========================================================================
+   7. Услуга нанесения принта
+   ========================================================================== */
+
+.product__service {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  margin-top: var(--space-16);
+  font-size: var(--fs-16);
+  line-height: var(--lh-snug);
+  color: var(--color-pink);
+  cursor: pointer;
+}
+
+.product__service-checkbox {
+  flex: none;
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+  accent-color: var(--color-pink);
+}
+
+.product__print {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-12);
+  width: 100%;
+  margin-top: var(--space-16);
+}
+
+/* Обе кнопки принта — в столбик, как и основные: в строку они не влезают
+   в колонку информации (см. .product__button) */
+.product__print .product__button {
+  font-size: var(--fs-14);
+}
+
+/* ==========================================================================
+   8. Описание и характеристики
+   ========================================================================== */
+
+.product__block {
+  width: 100%;
+  margin-top: var(--space-24);
+  text-align: left;
+}
+
+/* h2 по умолчанию 36px — для подписи внутри карточки это слишком крупно:
+   в макете она одного размера с обычным текстом, но жирная */
+.product__block-title {
+  font-size: var(--fs-18);
+  line-height: var(--lh-snug);
+}
+
+.product__text {
+  margin-top: var(--space-8);
+  font-size: var(--fs-16);
+  line-height: var(--lh-base);
+}
+
+/* Характеристики — список пар «название — значение», поэтому dl, а не
+   таблица: это не табличные данные. Значение стоит на той же строке,
+   что и название, поэтому две колонки */
+.product__details {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-4) var(--space-8);
+  margin-top: var(--space-8);
+  font-size: var(--fs-14);
+  line-height: var(--lh-snug);
+}
+
+.product__details-name {
+  color: var(--color-dark);
+  opacity: 0.6;
+}
+
+.product__details-value {
+  color: var(--color-dark);
+}

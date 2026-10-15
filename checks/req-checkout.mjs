@@ -323,7 +323,7 @@ try {
   ok(thanks.greeting === 'Анна, спасибо за заказ!', 'приветствие с именем', String(thanks.greeting));
   ok(Boolean(thanks.date), 'дата показана', String(thanks.date));
   ok(thanks.items.length === 2, 'в составе заказа две строки', String(thanks.items.length));
-  ok(thanks.items.some((t) => has(t, 'Клубичные поля') && has(t, '× 2')),
+  ok(thanks.items.some((t) => has(t, 'Клубничные поля') && has(t, '× 2')),
     'позиция с количеством', JSON.stringify(thanks.items));
   ok(thanks.items.some((t) => has(t, 'ПРИНТ')), 'услуга в составе заказа',
     JSON.stringify(thanks.items));

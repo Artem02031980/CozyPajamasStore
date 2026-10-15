@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Клубничные поля — пижама женская | Магазин уютных пижам</title>
+    <meta
+      name="description"
+      content="Пижама женская «Клубничные поля»: брюки, сорочка и майка из махровой ткани. Размеры S, M, XL, XXL. 12 199 ₽."
+    />
+
+    <meta name="theme-color" content="#ffffff" />
+
+    <!-- Иконка вкладки в стиле макета (розовая пижама) -->
+    <link rel="icon" type="image/svg+xml" href="../assets/images/icons/favicon.svg" />
+
+    <!-- Шрифты: Roboto Slab Regular (400) и Bold (700), кириллица -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap"
+    />
+
+    <!-- Единственный подключаемый CSS: внутри только @import.
+         Страница лежит на уровень глубже корня, поэтому путь через ../ -->
+    <link rel="stylesheet" href="../assets/css/style.css" />
+  </head>
+
+  <body data-page="product">
+    <div class="root">
+      <!-- Шапка та же, что на главной: разметку страницы товара сверяют
+           с главной глазами, и расхождение в шапке бросается в глаза.
+           Пункты меню ведут на секции главной, поэтому пути через ../ -->
+      <header class="header">
+        <div class="header__inner container">
+          <button
+            class="header__burger"
+            type="button"
+            data-burger
+            aria-label="Меню"
+            aria-expanded="false"
+            aria-controls="header-nav"
+          >
+            <span class="header__burger-line"></span>
+            <span class="header__burger-line"></span>
+            <span class="header__burger-line"></span>
+          </button>
+
+          <nav class="header__nav" id="header-nav" data-nav aria-label="Основное меню">
+            <ul class="header__list">
+              <li class="header__item">
+                <a class="header__link" href="../index.html#goods-new">Новая коллекция</a>
+              </li>
+              <li class="header__item">
+                <a class="header__link" href="../index.html#goods-women">Женские пижамы</a>
+              </li>
+              <li class="header__item">
+                <a class="header__link" href="../index.html#goods-men">Мужские пижамы</a>
+              </li>
+              <li class="header__item">
+                <a class="header__link" href="../index.html#goods-print">Принты</a>
+              </li>
+              <li class="header__item">
+                <a class="header__link" href="../index.html#goods-other">Другие товары</a>
+              </li>
+            </ul>
+          </nav>
+
+          <button class="header__cart" type="button" data-cart-open>
+            <span class="header__cart-text">
+              <span class="header__cart-label">Корзина</span>
+              <span class="header__cart-count" data-cart-counter>0</span>
+            </span>
+          </button>
+
+          <div class="header__socials">
+            <a
+              class="header__social header__social--instagram"
+              href="https://www.instagram.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+            ></a>
+            <a
+              class="header__social header__social--vk"
+              href="https://vk.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="VK"
+            ></a>
+          </div>
+        </div>
+      </header>
+
+      <main class="main">
+        <!-- Страница товара. Разметка одной карточки, без сетки: галерея
+             слева, описание справа. Всё, что относится к конкретному товару,
+             стоит здесь, а не рисуется скриптом: страница должна читаться
+             и без JavaScript. -->
+        <section class="product">
+          <div class="product__inner container">
+            <article class="product__card">
+              <!-- ==================== Галерея ====================
+                   Снимок один: вторых ракурсов в проекте нет. Стрелки и точки
+                   показываются только на мобильном, где в макете видно
+                   листание; при одном кадре product.js проставляет стрелкам
+                   disabled и не даёт листать в пустоту. -->
+              <div class="product__gallery">
+                <button
+                  class="product__arrow product__arrow--prev"
+                  type="button"
+                  data-product-prev
+                  aria-label="Предыдущее фото"
+                  disabled
+                >
+                  <span class="product__arrow-icon" aria-hidden="true"></span>
+                </button>
+
+                <div class="product__stage">
+                  <img
+                    class="product__image"
+                    src="../assets/images/products/women/w03.png"
+                    alt="Пижама с розовым цветочным принтом и красным поясом"
+                    width="385"
+                    height="1159"
+                  />
+                </div>
+
+                <button
+                  class="product__arrow product__arrow--next"
+                  type="button"
+                  data-product-next
+                  aria-label="Следующее фото"
+                  disabled
+                >
+                  <span class="product__arrow-icon" aria-hidden="true"></span>
+                </button>
+
+                <div class="product__dots" role="tablist" aria-label="Фотографии товара">
+                  <button
+                    class="product__dot is-active"
+                    type="button"
+                    role="tab"
+                    aria-selected="true"
+                    aria-label="Фото 1"
+                    data-product-dot="0"
+                  ></button>
+                </div>
+              </div>
+
+              <!-- ==================== Информация ==================== -->
+              <div class="product__info">
+                <p class="product__subtitle">Пижама для девушек</p>
+                <h1 class="product__title">Клубничные поля</h1>
+                <p class="product__price">12 199 ₽</p>
+
+                <!-- Размеры. Кнопка «Добавить в корзину» берёт выбранный
+                     размер из своего data-cart-size — его проставляет
+                     product.js, поэтому без скрипта товар добавится
+                     без размера, а не с чужим. -->
+                <div class="product__sizes">
+                  <h2 class="product__sizes-title">Размер</h2>
+                  <ul class="product__sizes-list">
+                    <li>
+                      <button class="product__size" type="button" data-product-size="S">S</button>
+                    </li>
+                    <li>
+                      <button class="product__size" type="button" data-product-size="M">M</button>
+                    </li>
+                    <li>
+                      <button class="product__size" type="button" data-product-size="XL">XL</button>
+                    </li>
+                    <li>
+                      <button class="product__size" type="button" data-product-size="XXL">XXL</button>
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="product__buttons">
+                  <!-- Иконка корзины — та же, что в шапке и в карточках:
+                       assets/images/icons/cart-white.svg.
+                       Текст подписи завёрнут в span не для красоты: отзыв
+                       «В корзине» (cart-ui.js) заменяет текст кнопки,
+                       а присваивание button.textContent стирало бы иконку
+                       вместе с текстом. Подпись ищется по data-cart-label -->
+                  <button
+                    class="product__button product__button--cart button button--pink"
+                    type="button"
+                    data-cart-add="goods-women-03"
+                    data-cart-size=""
+                  >
+                    <span class="product__button-icon product__button-icon--cart" aria-hidden="true"></span>
+                    <span class="product__button-label" data-cart-label>Добавить в корзину</span>
+                  </button>
+
+                  <!-- «Купить в один клик» открывает то же окно корзины:
+                       отдельного быстрого оформления в проекте нет, а окно
+                       уже содержит форму заказа -->
+                  <button
+                    class="product__button button button--outline-pink"
+                    type="button"
+                    data-modal-open="cart"
+                  >
+                    Купить в один клик
+                  </button>
+                </div>
+
+                <!-- Услуга нанесения принта. Галочка добавляет в корзину ту же
+                     услугу, что кнопка «ПРИНТ» на главной: id услуги — print.
+                     Цена (500 ₽) и порог бесплатной выдачи (15 000 ₽) взяты
+                     из значений по умолчанию cart.js. Кнопки ниже — выбор
+                     макета, он появится на шаге 6. -->
+                <label class="product__service">
+                  <input
+                    class="product__service-checkbox"
+                    type="checkbox"
+                    name="print-service"
+                    data-product-service
+                  />
+                  <span class="product__service-text">Добавить услугу нанесения принта</span>
+                </label>
+
+                <div class="product__print">
+                  <button
+                    class="product__button product__button--print button button--outline-pink"
+                    type="button"
+                    data-print-choose
+                  >
+                    <span class="product__button-icon product__button-icon--catalog" aria-hidden="true"></span>
+                    Выбрать из каталога
+                  </button>
+
+                  <button
+                    class="product__button product__button--print button button--outline-pink"
+                    type="button"
+                    data-print-upload
+                  >
+                    Добавить свой макет
+                  </button>
+                </div>
+
+                <section class="product__block">
+                  <h2 class="product__block-title">Описание</h2>
+                  <p class="product__text">
+                    Классическая пижама женская теплая со штанами(брюками), которая подойдет
+                    Вам уют и тепло в любом уголке нашей необъятной страны. Материал полиша:
+                    велсофт(махровый).
+                  </p>
+                </section>
+
+                <section class="product__block">
+                  <h2 class="product__block-title">Характеристики</h2>
+                  <dl class="product__details">
+                    <dt class="product__details-name">Сезон</dt>
+                    <dd class="product__details-value">Зима</dd>
+
+                    <dt class="product__details-name">Материал</dt>
+                    <dd class="product__details-value">Махровая ткань</dd>
+
+                    <dt class="product__details-name">Состав материала</dt>
+                    <dd class="product__details-value">100% полиэстер</dd>
+
+                    <dt class="product__details-name">Коллекция</dt>
+                    <dd class="product__details-value">Весна-Лето 2023</dd>
+
+                    <dt class="product__details-name">Стиль</dt>
+                    <dd class="product__details-value">Домашний, повседневный</dd>
+                  </dl>
+                </section>
+              </div>
+            </article>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <div class="footer__inner container">
+          <p class="footer__copyright">ООО «Магазин уютных пижам» © 2023</p>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Модальное окно корзины: то же, что на главной. Открывает кнопка
+         «Корзина» в шапке и «Купить в один клик». -->
+    <div
+      class="modal is-hidden"
+      data-modal="cart"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cart-title"
+      aria-hidden="true"
+    >
+      <div class="modal__overlay" data-modal-close></div>
+
+      <div class="modal__dialog">
+        <div class="modal__head">
+          <h2 class="modal__title" id="cart-title">Корзина</h2>
+          <button class="modal__close" type="button" data-modal-close aria-label="Закрыть корзину">
+            ×
+          </button>
+        </div>
+
+        <div class="cart" data-cart-body></div>
+      </div>
+    </div>
+
+    <!-- Единственный подключаемый скрипт: точка входа с импортами модулей -->
+    <script type="module" src="../assets/js/script.js"></script>
+  </body>
+</html>

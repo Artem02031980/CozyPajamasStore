@@ -84,18 +84,27 @@ function refresh() {
  * Кнопку не отключаем: повторное нажатие — обычный способ набрать
  * несколько штук, и блокировка на время отзыва съедала бы такие клики.
  *
+ * Меняем текст не у самой кнопки, а у её подписи (data-cart-label), если она
+ * есть. Присваивание button.textContent стирает всё содержимое кнопки —
+ * а внутри бывает иконка (страница товара), и после первого же нажатия она
+ * исчезала навсегда. Если подписи нет, работает как раньше: кнопки карточек
+ * состоят из одного текста.
+ *
  * @param {HTMLButtonElement} button
  */
 function showAdded(button) {
-  if (!originalLabels.has(button)) originalLabels.set(button, button.textContent.trim());
+  const label = button.querySelector('[data-cart-label]');
+  const target = label ?? button;
 
-  button.textContent = 'В корзине';
+  if (!originalLabels.has(button)) originalLabels.set(button, target.textContent.trim());
+
+  target.textContent = 'В корзине';
   button.classList.add('is-added');
 
   window.clearTimeout(addedTimers.get(button));
 
   addedTimers.set(button, window.setTimeout(() => {
-    button.textContent = originalLabels.get(button);
+    target.textContent = originalLabels.get(button);
     button.classList.remove('is-added');
     addedTimers.delete(button);
   }, FEEDBACK_MS));
