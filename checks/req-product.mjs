@@ -31,7 +31,6 @@ const dots = [...document.querySelectorAll('[data-product-dot]')];
 const dotsBox = document.querySelector('.product__dots');
 const prev = document.querySelector('[data-product-prev]');
 const next = document.querySelector('[data-product-next]');
-const service = document.querySelector('[data-product-service]');
 const modal = document.querySelector('[data-modal="cart"]');
 
 localStorage.removeItem('cozy-pajamas:cart');
@@ -152,17 +151,49 @@ const gallery = {
   })(),
 };
 
-// ─── услуга нанесения принта ───
+// ─── нанесение принта ───
 
-service.checked = true;
-service.dispatchEvent(new Event('change', { bubbles: true }));
-await frame();
-const afterServiceOn = JSON.parse(localStorage.getItem('cozy-pajamas:cart') ?? '[]');
+/* Галочки услуги больше нет, вместо неё текст и две кнопки:
+   ссылка на каталог и выбор файла. Файл подкладываем через DataTransfer —
+   так же, как его выбрал бы человек в системном окне */
+const printTitle = document.querySelector('.product__print-title');
+const printFile = document.querySelector('[data-print-upload]');
+const printNote = document.querySelector('[data-print-file]');
+const printChoose = document.querySelector('.product__print a');
 
-service.checked = false;
-service.dispatchEvent(new Event('change', { bubbles: true }));
-await frame();
-const afterServiceOff = JSON.parse(localStorage.getItem('cozy-pajamas:cart') ?? '[]');
+const chooseLink = {
+  текст: printChoose?.textContent.trim() ?? null,
+  адрес: printChoose?.getAttribute('href') ?? null,
+};
+
+/** Кладёт в поле файл с заданным именем и шлёт change. */
+const pickFile = async (name) => {
+  const transfer = new DataTransfer();
+  transfer.items.add(new File(['x'], name, { type: 'application/octet-stream' }));
+  printFile.files = transfer.files;
+  printFile.dispatchEvent(new Event('change', { bubbles: true }));
+  await frame();
+  await new Promise((r) => setTimeout(r, 60));
+
+  return {
+    имя: name,
+    подпись: printNote?.textContent.trim() ?? null,
+    подписьВидна: printNote ? !printNote.hidden : null,
+    ошибка: printNote?.classList.contains('product__print-file--error') ?? null,
+    осталосьВПоле: printFile.files.length,
+  };
+};
+
+const printFiles = {
+  текст: printTitle?.textContent.trim() ?? null,
+  accept: printFile?.getAttribute('accept') ?? null,
+  типПоля: printFile?.getAttribute('type') ?? null,
+  чекбоксов: document.querySelectorAll('input[type="checkbox"]').length,
+  ссылка: chooseLink,
+  pdf: await pickFile('макет.pdf'),
+  psd: await pickFile('макет.psd'),
+  doc: await pickFile('документ.doc'),
+};
 
 // ─── «Купить в один клик» открывает окно корзины ───
 
@@ -194,9 +225,8 @@ return {
   послеОтзыва: afterFeedback,
   корзина: {
     послеДобавления: cartAfterAdd,
-    сУслугойПринта: afterServiceOn.map((i) => i.id),
-    безУслугиПринта: afterServiceOff.map((i) => i.id),
   },
+  принт: printFiles,
   галерея: gallery,
   окноКорзиныОткрылось: modalOpen,
   счётчикВШапке: document.querySelector('[data-cart-counter]')?.textContent.trim() ?? null,

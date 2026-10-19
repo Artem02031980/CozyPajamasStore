@@ -150,20 +150,63 @@ const REQUIRED = [
   ['data-cart-add="goods-women-03"', 'кнопка «Добавить в корзину» добавляет этот товар'],
   ['data-cart-size', 'у кнопки есть место под выбранный размер'],
   ['data-modal-open="cart"', '«Купить в один клик» открывает окно корзины'],
-  ['data-product-service', 'галочка услуги нанесения принта'],
-  ['data-print-choose', 'кнопка «Выбрать из каталога»'],
-  ['data-print-upload', 'кнопка «Добавить свой макет»'],
+  ['data-print-upload', 'поле выбора файла макета'],
   ['product__sizes', 'блок размеров'],
   ['product__dots', 'точки-индикаторы галереи'],
   ['data-product-prev', 'стрелка «предыдущее фото»'],
   ['data-product-next', 'стрелка «следующее фото»'],
   ['product__details', 'список характеристик'],
-  ['product__service-text', 'подпись услуги нанесения принта'],
+  ['product__print-title', 'подпись «Добавить принт:»'],
 ];
 
 for (const [needle, name] of REQUIRED) {
   ok(html.includes(needle), name);
 }
+
+// ─────────────── нанесение принта ───────────────
+
+/* Галочки услуги на странице нет: услуга «ПРИНТ» добавляется кнопкой
+   в секции принтов на главной. Если чекбокс вернут, проверка скажет */
+ok(!html.includes('data-product-service'), 'галочки услуги нанесения принта нет');
+ok(!/type="checkbox"/.test(html), 'на странице нет чекбоксов');
+ok(html.includes('>Добавить принт:<'), 'вместо галочки стоит текст «Добавить принт:»');
+
+/* «Выбрать из каталога» — ссылка на каталог: страницы каталога макетов пока
+   нет, ведём в секцию принтов главной. Кнопкой быть не должна */
+const chooseLink = html.match(/<a[^>]*href="([^"]+)"[^>]*>[\s\S]{0,300}?Выбрать из каталога/);
+ok(Boolean(chooseLink), '«Выбрать из каталога» — ссылка, а не кнопка',
+  chooseLink ? chooseLink[1] : 'ссылка не найдена');
+ok(chooseLink?.[1] === '../index.html#goods-print',
+  'ссылка ведёт на каталог принтов главной', String(chooseLink?.[1]));
+
+/* «Добавить свой макет» открывает системное окно выбора файла: это label
+   для скрытого input[type=file]. Без JS тоже работает */
+ok(/<label[^>]*for="product-print-file"[^>]*>[\s\S]{0,120}?Добавить свой макет/.test(html),
+  '«Добавить свой макет» — label для поля с файлом');
+ok(/<input[^>]*type="file"[^>]*id="product-print-file"/.test(html)
+  || /id="product-print-file"[^>]*type="file"/.test(html),
+  'на странице есть поле выбора файла');
+
+const accept = html.match(/accept="([^"]+)"/)?.[1] ?? '';
+for (const format of ['pdf', 'jpg', 'jpeg', 'png', 'psd', 'tiff']) {
+  ok(accept.includes(`.${format}`), `в accept разрешён .${format}`, accept.slice(0, 60));
+}
+ok(!/\.doc|\.zip|\.gif|\.svg/.test(accept), 'в accept нет посторонних форматов');
+
+/* Правило формата живёт и в модуле — проверяем настоящую функцию, а не текст:
+   в системном окне можно переключиться на «Все файлы» и обойти accept */
+const { checkPrintFile, PRINT_FILE_FORMATS } = await import('../assets/js/product.js');
+eq(PRINT_FILE_FORMATS, ['.pdf', '.jpg', '.jpeg', '.png', '.psd', '.tiff', '.tif'],
+  'модуль знает те же форматы');
+
+for (const [name, expected] of [
+  ['макет.pdf', true], ['фото.JPG', true], ['рисунок.png', true], ['макет.psd', true],
+  ['скан.tiff', true], ['скан.tif', true], ['фото.jpeg', true],
+  ['документ.doc', false], ['архив.zip', false], ['картинка.gif', false], ['файл', false],
+]) {
+  eq(checkPrintFile({ name }).ok, expected, `файл «${name}» ${expected ? 'принимается' : 'отклоняется'}`);
+}
+eq(checkPrintFile(null).ok, false, 'пустой выбор не считается файлом');
 
 /* В разметке должен быть ровно один h1: это заголовок страницы */
 const h1Count = (html.match(/<h1/g) ?? []).length;
@@ -213,9 +256,16 @@ ok(/\.is-active/.test(css), 'у выбранного размера есть о�
 
 /* Кнопки стоят в столбик: в строку две кнопки занимают 462px, а колонка
    информации — 312px, и на 768px появлялась горизонтальная прокрутка.
-   Если кто-то вернёт строку, проверка об этом скажет */
-ok(/\.product__button \{[\s\S]{0,400}?width: 100%/.test(css.replace(/\r\n/g, '\n')),
-  'кнопки на странице товара растянуты на ширину колонки');
+   Если кто-то вернёт строку, проверка об этом скажет.
+   Правило вырезаем по закрывающей скобке: комментарий внутри длиннее
+   любого разумного окна поиска и рос с каждой правкой */
+const buttonRule = (() => {
+  const text = css.replace(/\r\n/g, '\n');
+  const at = text.indexOf('.product__button {');
+  return at < 0 ? '' : text.slice(at, text.indexOf('}', at));
+})();
+
+ok(/width: 100%/.test(buttonRule), 'кнопки на странице товара растянуты на ширину колонки');
 ok(!/\.product__buttons \{[^}]*flex-direction: row/.test(css),
   'кнопки не встают в строку — в колонку информации они не влезают');
 ok(!/\.product__print \{[^}]*flex-direction: row/.test(css),
@@ -369,8 +419,12 @@ ok(script.includes("page === 'product'"), 'точка входа знает пр
 const module = read('assets/js/product.js');
 ok(module.includes('initProduct'), 'product.js экспортирует initProduct');
 ok(module.includes('data-cart-size'), 'product.js проставляет размер кнопке корзины');
-ok(module.includes('SERVICE_ID'), 'product.js берёт id услуги из cart.js, а не пишет строкой');
-ok(module.includes('hasService'), 'галочка услуги сверяется с состоянием корзины');
+
+/* Галочки услуги больше нет, значит и логики услуги в модуле быть не должно:
+   она ушла вместе с чекбоксом */
+ok(!module.includes('data-product-service'), 'в модуле нет логики галочки услуги');
+ok(!module.includes('hasService'), 'модуль не трогает услугу «ПРИНТ» в корзине');
+ok(module.includes('checkPrintFile'), 'в модуле есть проверка формата файла');
 
 /* Отзыв «В корзине» меняет текст кнопки. Если менять его у всей кнопки,
    иконка внутри стирается безвозвратно — так и было до этой правки */

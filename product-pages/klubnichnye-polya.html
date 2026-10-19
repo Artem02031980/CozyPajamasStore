@@ -212,39 +212,48 @@
                   </button>
                 </div>
 
-                <!-- Услуга нанесения принта. Галочка добавляет в корзину ту же
-                     услугу, что кнопка «ПРИНТ» на главной: id услуги — print.
-                     Цена (500 ₽) и порог бесплатной выдачи (15 000 ₽) взяты
-                     из значений по умолчанию cart.js. Кнопки ниже — выбор
-                     макета, он появится на шаге 6. -->
-                <label class="product__service">
-                  <input
-                    class="product__service-checkbox"
-                    type="checkbox"
-                    name="print-service"
-                    data-product-service
-                  />
-                  <span class="product__service-text">Добавить услугу нанесения принта</span>
-                </label>
+                <!-- Нанесение принта. Галочки здесь нет: услуга «ПРИНТ»
+                     добавляется кнопкой в секции принтов на главной, а тут
+                     человек выбирает сам макет.
+                     «Выбрать из каталога» пока ведёт на секцию принтов
+                     главной: отдельная страница каталога макетов появится
+                     позже.
+                     «Добавить свой макет» — это label для скрытого поля
+                     с файлом: клик открывает системное окно выбора файла,
+                     а accept ограничивает форматы. Проверку формата делает
+                     и product.js — в диалоге можно переключиться
+                     на «Все файлы» и обойти accept. -->
+                <p class="product__print-title">Добавить принт:</p>
 
                 <div class="product__print">
-                  <button
+                  <a
                     class="product__button product__button--print button button--outline-pink"
-                    type="button"
-                    data-print-choose
+                    href="../index.html#goods-print"
                   >
                     <span class="product__button-icon product__button-icon--catalog" aria-hidden="true"></span>
                     Выбрать из каталога
-                  </button>
+                  </a>
 
-                  <button
-                    class="product__button product__button--print button button--outline-pink"
-                    type="button"
-                    data-print-upload
+                  <label
+                    class="product__button product__button--print product__button--file button button--outline-pink"
+                    for="product-print-file"
                   >
                     Добавить свой макет
-                  </button>
+                  </label>
+
+                  <input
+                    class="visually-hidden"
+                    type="file"
+                    id="product-print-file"
+                    name="print-file"
+                    accept=".pdf,.jpg,.jpeg,.png,.psd,.tiff,.tif,application/pdf,image/jpeg,image/png,image/vnd.adobe.photoshop,image/tiff"
+                    data-print-upload
+                  />
                 </div>
+
+                <!-- Что выбрали: имя файла или сообщение о неподходящем
+                     формате. Наполняет product.js -->
+                <p class="product__print-file" data-print-file hidden></p>
               </div>
               <!-- конец .product__info и .product__main -->
               </div>

@@ -492,25 +492,16 @@ body[data-page='product'] {
 }
 
 /* ==========================================================================
-   7. Услуга нанесения принта
+   7. Нанесение принта
+   Галочки услуги здесь нет: услуга «ПРИНТ» добавляется кнопкой в секции
+   принтов на главной. Тут только подпись и выбор макета.
    ========================================================================== */
 
-.product__service {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-8);
+.product__print-title {
   margin-top: var(--space-16);
   font-size: var(--fs-16);
   line-height: var(--lh-snug);
   color: var(--color-pink);
-  cursor: pointer;
-}
-
-.product__service-checkbox {
-  flex: none;
-  width: var(--icon-size-sm);
-  height: var(--icon-size-sm);
-  accent-color: var(--color-pink);
 }
 
 .product__print {
@@ -519,13 +510,38 @@ body[data-page='product'] {
   align-items: center;
   gap: var(--space-12);
   width: 100%;
-  margin-top: var(--space-16);
+  margin-top: var(--space-8);
 }
 
 /* Обе кнопки принта — в столбик, как и основные: в строку они не влезают
    в колонку информации (см. .product__button) */
 .product__print .product__button {
   font-size: var(--fs-14);
+}
+
+/* Имя выбранного файла или сообщение о неподходящем формате.
+   Скрыт атрибутом hidden, пока файла нет */
+.product__print-file {
+  margin-top: var(--space-8);
+  font-size: var(--fs-14);
+  line-height: var(--lh-snug);
+  color: var(--color-dark);
+}
+
+/* Ошибка формата: файл не принят. Красный — тот же, что у ошибок формы
+   оформления и формы вопроса */
+.product__print-file--error {
+  color: #fe0000;
+}
+
+/* Поле выбора файла скрыто визуально, но остаётся в порядке табуляции:
+   Enter или пробел на нём открывают системное окно. Пока фокус на поле,
+   подсвечиваем кнопку-подпись — иначе человек с клавиатуры не видит,
+   где находится. :has() поддерживается во всех актуальных браузерах;
+   без него кнопка просто не подсветится, работать она не перестанет */
+.product__print:has([data-print-upload]:focus-visible) .product__button--file {
+  outline: var(--border-width) solid var(--color-pink);
+  outline-offset: var(--space-4);
 }
 
 /* ==========================================================================

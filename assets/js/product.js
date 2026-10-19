@@ -12,20 +12,26 @@
  *   2. выбор размера — ровно один, и он же уезжает в корзину: кнопка
  *      «Добавить в корзину» читает свой data-cart-size, а модуль его
  *      проставляет. Без скрипта товар добавится без размера, а не с чужим;
- *   3. галочка «Добавить услугу нанесения принта» — кладёт в корзину ту же
- *      услугу, что кнопка «ПРИНТ» на главной (id `print` из cart.js);
- *   4. кнопки выбора макета пока только пишут в консоль: сам выбор макета —
- *      шаг 6, и придумывать ему поведение заранее не нужно.
+ *   3. выбор файла макета для нанесения принта: проверка формата и показ
+ *      имени выбранного файла. Само окно выбора открывает браузер — кнопка
+ *      «Добавить свой макет» это label для скрытого поля с файлом, поэтому
+ *      работает и без скрипта.
  *
  * Логика корзины не дублируется: состав, суммы и счётчик ведёт cart.js,
  * события страницы — cart-ui.js.
  */
 
 import { $, $$ } from './utils.js';
-import { SERVICE_ID, hasService, getItems, addItem, removeItem, CART_CHANGED } from './cart.js';
 
 /** Класс выбранного размера — тот же, что у выбранного чипса фильтра. */
 const ACTIVE = 'is-active';
+
+/**
+ * Форматы файла макета. Список дублирует accept у поля: в системном окне
+ * выбора можно переключиться на «Все файлы» и выбрать что угодно, поэтому
+ * одной разметки мало — формат проверяется ещё и здесь.
+ */
+export const PRINT_FILE_FORMATS = ['.pdf', '.jpg', '.jpeg', '.png', '.psd', '.tiff', '.tif'];
 
 /** Селекторы страницы: собраны здесь, чтобы не рассыпать строки по коду. */
 const SELECTOR = {
@@ -36,8 +42,8 @@ const SELECTOR = {
   prev: '[data-product-prev]',
   next: '[data-product-next]',
   addButton: '[data-cart-add]',
-  service: '[data-product-service]',
-  printChoice: '[data-print-choose], [data-print-upload]',
+  printFile: '[data-print-upload]',
+  printFileNote: '[data-print-file]',
 };
 
 /**
@@ -119,16 +125,65 @@ function selectSize(chip) {
 }
 
 /**
- * Приводит галочку услуги в соответствие с корзиной.
+ * Разбирает выбранный файл: имя, расширение, подходит ли формат.
  *
- * Состояние берём у корзины, а не у галочки: услугу можно убрать в окне
- * корзины, и после этого галочка на странице не должна врать.
+ * Отдельной функцией, потому что её проверяют без браузера
+ * (checks/product.mjs): у правила формата должны быть тесты.
+ *
+ * @param {File|null} file
+ * @returns {{name: string, extension: string, ok: boolean}}
  */
-function syncServiceCheckbox() {
-  const box = $(SELECTOR.service);
-  if (!box) return;
+export function checkPrintFile(file) {
+  const name = String(file?.name ?? '');
+  const dot = name.lastIndexOf('.');
+  const extension = dot < 0 ? '' : name.slice(dot).toLowerCase();
 
-  box.checked = hasService(getItems());
+  return { name, extension, ok: PRINT_FILE_FORMATS.includes(extension) };
+}
+
+/**
+ * Показывает итог выбора файла под кнопками.
+ *
+ * @param {HTMLElement|null} note
+ * @param {string} text
+ * @param {boolean} isError
+ */
+function showPrintFileNote(note, text, isError) {
+  if (!note) return;
+
+  note.textContent = text;
+  note.classList.toggle('product__print-file--error', isError);
+  note.hidden = !text;
+}
+
+/**
+ * Подключает выбор файла макета.
+ * @param {HTMLInputElement|null} input
+ */
+function initPrintUpload(input) {
+  if (!input) return;
+
+  const note = $(SELECTOR.printFileNote);
+
+  input.addEventListener('change', () => {
+    const file = input.files?.[0] ?? null;
+    if (!file) {
+      showPrintFileNote(note, '', false);
+      return;
+    }
+
+    const { name, ok } = checkPrintFile(file);
+
+    if (ok) {
+      showPrintFileNote(note, `Выбран файл: ${name}`, false);
+      return;
+    }
+
+    /* Файл неподходящего формата не держим в поле: иначе человек думает,
+       что макет принят. Сбрасываем выбор и говорим, что нужно */
+    showPrintFileNote(note, 'Файл не подходит. Нужен PDF, JPG, PNG, PSD или TIFF.', true);
+    input.value = '';
+  });
 }
 
 /** Подключает страницу товара. */
@@ -152,31 +207,6 @@ export function initProduct() {
     chip.addEventListener('click', () => selectSize(chip));
   });
 
-  // 3. Услуга нанесения принта
-  const service = $(SELECTOR.service);
-  if (service) {
-    service.addEventListener('change', () => {
-      if (service.checked) {
-        addItem(SERVICE_ID, { qty: 1 });
-      } else {
-        removeItem(SERVICE_ID);
-      }
-
-      /* cart-ui.js перерисовывает окно корзины и счётчик по этому же
-         событию — отдельного канала для страницы товара не нужно */
-      document.dispatchEvent(new CustomEvent(CART_CHANGED));
-      syncServiceCheckbox();
-    });
-
-    document.addEventListener(CART_CHANGED, syncServiceCheckbox);
-    syncServiceCheckbox();
-  }
-
-  /* 4. Кнопки выбора макета. Выбор макета — шаг 6; сейчас кнопка сообщает
-     о себе в консоль, чтобы не выглядеть сломанной. */
-  $$(SELECTOR.printChoice).forEach((button) => {
-    button.addEventListener('click', () => {
-      console.info(`[product] «${button.textContent.trim()}»: выбор макета появится на шаге 6`);
-    });
-  });
+  // 3. Выбор файла макета для принта
+  initPrintUpload($(SELECTOR.printFile));
 }
