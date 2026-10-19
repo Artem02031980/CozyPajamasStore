@@ -254,6 +254,26 @@ ok(/@media \(min-width: 768px\)/.test(css), 'у страницы есть пла
 ok(/grid-template-columns/.test(css), 'галерея и информация раскладываются сеткой');
 ok(/\.is-active/.test(css), 'у выбранного размера есть оформление');
 
+/* Подпись «Добавить принт:» — тёмная и по левому краю, как обычный текст:
+   розовыми на странице остаются только название товара и рамки кнопок.
+   align-self: stretch обязателен, потому что родитель — флекс-колонка
+   с центровкой: без растяжки подпись сжалась бы до ширины текста,
+   и text-align выравнивал бы внутри этой узкой коробки, а не по краю
+   колонки */
+const printTitleRule = (() => {
+  const text = css.replace(/\r\n/g, '\n');
+  const at = text.indexOf('.product__print-title {');
+  return at < 0 ? '' : text.slice(at, text.indexOf('}', at));
+})();
+
+ok(/color: var\(--color-dark\)/.test(printTitleRule), 'подпись «Добавить принт:» тёмная',
+  printTitleRule.replace(/\s+/g, ' ').slice(0, 120));
+ok(/text-align: left/.test(printTitleRule), 'подпись выровнена по левому краю');
+ok(/align-self: stretch/.test(printTitleRule),
+  'подпись растянута на ширину колонки — иначе выравнивание не видно');
+ok(/margin-top: var\(--space-24\)/.test(printTitleRule),
+  'отступ от кнопки «Купить в один клик» — 24px');
+
 /* Кнопки стоят в столбик: в строку две кнопки занимают 462px, а колонка
    информации — 312px, и на 768px появлялась горизонтальная прокрутка.
    Если кто-то вернёт строку, проверка об этом скажет.
