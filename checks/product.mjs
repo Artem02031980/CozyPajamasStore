@@ -250,6 +250,65 @@ ok(/align-items: flex-start/.test(stageRule),
 ok(!/height: 100%/.test(stageRule),
   'у сцены нет height: 100% — он растягивал её на всю колонку');
 
+/* ─────────────── две колонки с 1280px ─────────────── */
+
+/* С 1280px карточка занимает 1200px и делится на две колонки: слева фото
+   и покупка до кнопки «Добавить свой макет», справа описание
+   и характеристики. Разделение — по разметке, поэтому проверяем и её,
+   и стили: если обёртки поедут, колонки сложатся не там */
+
+ok(html.includes('class="product__main"'), 'первая колонка обёрнута в .product__main');
+ok(html.includes('class="product__specs"'), 'вторая колонка обёрнута в .product__specs');
+
+const mainStart = html.indexOf('class="product__main"');
+const specsStart = html.indexOf('class="product__specs"');
+const articleEnd = html.indexOf('</article>');
+
+ok(mainStart > 0 && specsStart > mainStart, 'вторая колонка идёт после первой',
+  `${mainStart} → ${specsStart}`);
+
+/* Комментарии разметки из сравнения выбрасываем: в них встречаются те же
+   слова («Описание и характеристики» подписано над блоком), и проверка
+   ловила комментарий вместо содержимого */
+const noComments = (value) => value.replace(/<!--[\s\S]*?-->/g, '');
+const mainHtml = noComments(html.slice(mainStart, specsStart));
+const specsHtml = noComments(html.slice(specsStart, articleEnd));
+
+/* Граница колонок: последнее, что стоит в первой, — кнопка «Добавить свой
+   макет»; первое во второй — заголовок «Описание» */
+ok(mainHtml.includes('data-print-upload'), 'кнопка «Добавить свой макет» в первой колонке');
+ok(!specsHtml.includes('data-print-upload'), 'и её нет во второй колонке',
+  'кнопка попала в блок описания');
+ok(mainHtml.includes('Описание') === false,
+  'описания в первой колонке нет — оно начинается со второй');
+ok(specsHtml.indexOf('Описание') < specsHtml.indexOf('Характеристики'),
+  'во второй колонке сперва описание, потом характеристики');
+
+/* Первым после кнопки «Добавить свой макет» в разметке идёт блок описания:
+   между ними не должно быть ничего из первой колонки */
+const afterPrint = html.slice(html.indexOf('data-print-upload'), specsStart);
+ok(!afterPrint.includes('product__price') && !afterPrint.includes('product__size"'),
+  'после кнопки принта первая колонка заканчивается — цена и размеры выше');
+
+/* Карточка на всю ширину контейнера только с 1280px. До этого 720px:
+   иначе стрелкам листания негде встать */
+const media1280 = css.slice(css.indexOf('@media (min-width: 1280px)'));
+ok(media1280.includes('max-width: 1200px'), 'с 1280px карточка до 1200px');
+ok(/@media \(min-width: 1280px\)[\s\S]{0,400}?\.product__card \{[\s\S]{0,300}?grid-template-columns/.test(
+  css.replace(/\r\n/g, '\n'),
+), 'с 1280px карточка раскладывается на две колонки');
+
+const mainRule = startRule('.product__main');
+ok(mainRule.length > 0, 'у первой колонки есть своя раскладка');
+ok(/auto minmax\(0, 1fr\)/.test(media1280),
+  'в первой колонке фото занимает свою ширину, информация — остальное');
+
+ok(/\.product__specs > \.product__block:first-child \{[\s\S]{0,120}?margin-top: 0/.test(
+  css.replace(/\r\n/g, '\n'),
+), 'описание встаёт вровень с верхом фото');
+
+/* ─────────────── связка со скриптами ─────────────── */
+
 const script = read('assets/js/script.js');
 ok(script.includes('initProduct'), 'точка входа запускает страницу товара');
 ok(script.includes("page === 'product'"), 'точка входа знает признак product');

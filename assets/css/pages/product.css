@@ -69,11 +69,49 @@ body[data-page='product'] {
   margin-inline: auto;
 }
 
+/* Первая колонка: фото и информация до кнопки «Добавить свой макет».
+   Отдельная обёртка нужна ради 1280px: там карточка делится надвое,
+   и фото с кнопками должны остаться вместе, одной колонкой */
+.product__main {
+  display: grid;
+  gap: var(--space-24);
+}
+
 @media (min-width: 768px) {
   .product__card {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: var(--space-32);
     padding: var(--space-32);
+  }
+
+  .product__main {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-32);
+  }
+}
+
+/* С 1280px карточка занимает почти всю ширину контейнера (1200px)
+   и делится на две колонки: слева фото и покупка, справа описание
+   и характеристики. До 1280px описание идёт следом за кнопками,
+   как в макете: в узкой карточке вторая колонка раздавила бы обе */
+@media (min-width: 1280px) {
+  .product__card {
+    max-width: 1200px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-64);
+    padding: var(--space-40);
+  }
+
+  /* В первой колонке фото занимает свою ширину, информация — остальное.
+     Ровные половины здесь не годятся: снимок узкий (385×1159), и половина
+     от 560px оставила бы вокруг него поля шире самого фото */
+  .product__main {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  /* Подпись «Описание» встаёт на одну линию с верхом фото: отступ у первого
+     блока в колонке убираем, у остальных он остаётся */
+  .product__specs > .product__block:first-child {
+    margin-top: 0;
   }
 }
 
@@ -183,13 +221,18 @@ body[data-page='product'] {
   cursor: default;
 }
 
+/* От 768px стрелки стоят на поле карточки, рядом с фото. Отступ ровно
+   в ширину самой стрелки: она целиком остаётся на белом поле и не задевает
+   ни фото слева, ни колонку информации справа — зазор между ними на 768px
+   и выше тоже 32px. Было -48px: стрелка вылезала за край карточки на 8px
+   при карточке 1200px. */
 @media (min-width: 768px) {
   .product__arrow--prev {
-    left: -48px;
+    left: -32px;
   }
 
   .product__arrow--next {
-    right: -48px;
+    right: -32px;
   }
 }
 
