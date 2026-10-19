@@ -226,6 +226,30 @@ ok(!/\.product__print \{[^}]*flex-direction: row/.test(css),
 ok(/\.product__card \{[\s\S]{0,600}?max-width: 720px/.test(css.replace(/\r\n/g, '\n')),
   'карточка товара уже контейнера — стрелкам есть где встать');
 
+/* Фото прижато к верхнему краю карточки. Колонка информации выше снимка
+   (938px против 520px), и при выравнивании по центру над фото оставалось
+   209px пустоты. Галерея при этом не растягивается на всю высоту ряда:
+   иначе стрелка, привязанная к top: 50%, уезжала к низу снимка.
+   Правило вырезаем по закрывающей скобке — в этих правилах нет комментариев
+   с фигурными скобками, в отличие от .product__card выше */
+const startRule = (selector) => {
+  const at = css.indexOf(selector + ' {');
+  return at < 0 ? '' : css.slice(at, css.indexOf('}', at));
+};
+
+const galleryRule = startRule('.product__gallery');
+ok(/align-items: flex-start/.test(galleryRule),
+  'фото прижато к верхнему краю, а не по центру колонки',
+  galleryRule.replace(/\s+/g, ' ').slice(0, 120));
+ok(/align-self: start/.test(galleryRule),
+  'галерея не растягивается — стрелки стоят по центру снимка');
+
+const stageRule = startRule('.product__stage');
+ok(/align-items: flex-start/.test(stageRule),
+  'сцена кадра выравнивает фото по верхнему краю');
+ok(!/height: 100%/.test(stageRule),
+  'у сцены нет height: 100% — он растягивал её на всю колонку');
+
 const script = read('assets/js/script.js');
 ok(script.includes('initProduct'), 'точка входа запускает страницу товара');
 ok(script.includes("page === 'product'"), 'точка входа знает признак product');

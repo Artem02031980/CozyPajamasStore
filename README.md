@@ -346,7 +346,7 @@ node checks/filters.mjs     # отбор, сортировка, каталог: 
 node checks/cart.mjs        # корзина и услуга «ПРИНТ»: 54 проверки
 node checks/checkout.mjs    # правила полей и сборка заказа: 45 проверок
 node checks/feedback.mjs    # форма обратной связи: 57 проверок
-node checks/product.mjs     # страница товара: данные, разметка, файлы: 91 проверка
+node checks/product.mjs     # страница товара: данные, разметка, файлы: 95 проверок
 ```
 
 Ещё два файла поднимают Chrome сами, потому что им нужны переходы между
@@ -476,3 +476,4 @@ node ~/.dsh/bin/browser.mjs --url http://127.0.0.1:8000/thanks-feedback.html `
 любые `.php` и папка `api/` (заказ имитируется, переход на страницу благодарности делает JS);
 `scss/`, `dist/`, `node_modules/`, сборка; `assets/fonts/` (шрифты подключаются ссылкой);
 `assets/js/vendor/` (только ванильный JS); `404.html`.
+

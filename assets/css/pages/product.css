@@ -88,15 +88,26 @@ body[data-page='product'] {
   position: relative;
   display: flex;
   justify-content: center;
-  align-items: center;
+
+  /* Фото прижато к верхнему краю, а не висит по центру колонки. Колонка
+     информации выше галереи (938px против 520px у снимка), и при
+     выравнивании по центру над фото оставалось 209px пустоты, а под ним —
+     ещё столько же. По верхнему краю фото читается как начало карточки
+     и стоит на одной линии с подписью и названием */
+  align-items: flex-start;
   min-height: 320px;
+
+  /* Галерея не растягивается на всю высоту ряда: стрелки и точки привязаны
+     к её краям, и в растянутой галерее стрелка вставала на top: 50%
+     от 938px — у самого низа снимка. По содержимому её высота равна фото,
+     и стрелки оказываются ровно посередине кадра */
+  align-self: start;
 }
 
 .product__stage {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  height: 100%;
   padding-inline: var(--space-32);
 }
 
