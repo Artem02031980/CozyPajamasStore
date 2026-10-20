@@ -27,7 +27,9 @@
     <link rel="stylesheet" href="../assets/css/style.css" />
   </head>
 
-  <body data-page="product">
+  <!-- data-page — какой набор скриптов запускать, data-section — какой фон
+       страницы брать из assets/images/product-page: bg_women.png -->
+  <body data-page="product" data-section="women">
     <div class="root">
       <!-- Шапка та же, что на главной: разметку страницы товара сверяют
            с главной глазами, и расхождение в шапке бросается в глаза.
@@ -260,7 +262,7 @@
                    второй колонкой рядом с фото и кнопками. -->
               <div class="product__specs">
                 <section class="product__block">
-                  <h2 class="product__block-title">Описание</h2>
+                  <h2 class="product__block-title">Описание:</h2>
 
                   <!-- Состав — сразу под заголовком, до текста описания.
                        Строка та же, что subtitle в data.js: там она стоит

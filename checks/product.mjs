@@ -250,13 +250,34 @@ ok(html.includes('product__sizes-title'), 'у блока размеров ест
 
 // ─────────────── файлы, добавленные из макета ───────────────
 
-const bg = bytes('assets/images/product-page/bg.png');
-ok(Boolean(bg), 'фон страницы товара лежит в assets/images/product-page');
-if (bg) {
-  const png = bg.slice(0, 8).toString('hex') === '89504e470d0a1a0a';
-  ok(png, 'фон — PNG');
-  eq([bg.readUInt32BE(16), bg.readUInt32BE(20)], [1536, 864], 'размер фона из макета');
+/* Фон свой у каждого вида товара: bg_women, bg_men, bg_other. Имена
+   совпадают с секциями каталога, и CSS выбирает файл по data-section
+   у <body> — поэтому страница товара обязана нести этот атрибут */
+const SECTIONS_WITH_BG = ['women', 'men', 'other'];
+const backgrounds = {};
+
+for (const section of SECTIONS_WITH_BG) {
+  const file = bytes(`assets/images/product-page/bg_${section}.png`);
+  backgrounds[section] = file;
+
+  ok(Boolean(file), `фон коллекции «${section}» лежит на месте`,
+    `assets/images/product-page/bg_${section}.png`);
+  if (!file) continue;
+
+  ok(file.slice(0, 8).toString('hex') === '89504e470d0a1a0a',
+    `bg_${section}.png — PNG`);
+  eq([file.readUInt32BE(16), file.readUInt32BE(20)], [1536, 864],
+    `размер фона «${section}» из макета`);
 }
+
+/* Старое имя без вида товара больше не используется: файла нет.
+   Ссылки в стилях проверяются ниже, там где читается CSS */
+ok(!existsSync(at('assets/images/product-page/bg.png')),
+  'файла bg.png без вида товара не осталось');
+
+ok(html.match(/<body[^>]*data-section="([^"]+)"/)?.[1] === 'women',
+  'у страницы товара указан вид товара в data-section',
+  String(html.match(/<body[^>]*>/)?.[0]));
 
 for (const icon of ['icon-catalog.svg', 'icon-catalog_white.svg']) {
   const file = bytes(`assets/images/icons/${icon}`);
@@ -277,10 +298,19 @@ ok(css.length > 0, 'product.css не пустой', `${css.length} байт`);
 ok(read('assets/css/style.css').includes("url('pages/product.css')"),
   'product.css подключён в style.css');
 
-ok(css.includes('bg.png'), 'фон страницы подключён в стилях');
 ok(css.includes('icon-catalog.svg'), 'иконка каталога подключена в стилях');
 ok(css.includes('cart-white.svg'), 'иконка корзины в кнопке — существующая в проекте');
 ok(!css.includes('icon-cart.svg'), 'в стилях нет ссылки на дубль иконки корзины');
+
+/* Фон выбирается по виду товара: у каждой коллекции свой файл,
+   ссылки на старое общее имя быть не должно */
+ok(!css.includes('product-page/bg.png'), 'в стилях нет ссылки на старое имя bg.png');
+
+for (const section of SECTIONS_WITH_BG) {
+  ok(css.includes(`data-section='${section}'`) || css.includes(`data-section="${section}"`),
+    `стили знают вид товара «${section}»`);
+  ok(css.includes(`bg_${section}.png`), `в стилях подключён фон «${section}»`);
+}
 
 /* Точек-индикаторов нет ни в разметке, ни в стилях, ни в модуле:
    при одном кадре они ничего не показывали. Файл page-dot.svg вместе с ними
@@ -551,9 +581,11 @@ ok(cartUi.includes('const target = label ?? button'),
 process.stdout.write(`Проверок пройдено: ${passed}\n`);
 process.stdout.write(`Страница: ${PAGE} (${html.length} байт)\n`);
 process.stdout.write(`Товар: ${product.title} — ${product.price} ₽, размеры ${product.sizes.join(', ')}\n`);
-process.stdout.write(`Файлы из макета: bg.png ${bg ? Math.round(bg.length / 1024) + ' КБ' : 'нет'}, `
-  + `иконок ${['icon-catalog.svg', 'icon-catalog_white.svg']
-    .filter((i) => bytes(`assets/images/icons/${i}`)).length}\n`);
+process.stdout.write(`Фоны: ${SECTIONS_WITH_BG
+  .map((s) => `bg_${s}.png ${backgrounds[s] ? Math.round(backgrounds[s].length / 1024) + ' КБ' : 'нет'}`)
+  .join(', ')}\n`);
+process.stdout.write(`Иконок: ${['icon-catalog.svg', 'icon-catalog_white.svg']
+  .filter((i) => bytes(`assets/images/icons/${i}`)).length}\n`);
 
 if (failures.length) {
   process.stdout.write(`\nНЕ ПРОШЛО: ${failures.length}\n`);

@@ -20,19 +20,43 @@
 
 /* ==========================================================================
    1. Фон страницы
-   Иллюстрация из макета (assets/images/product-page/bg.png). На десктопе она
-   растягивается на весь экран, на мобильном выключается: за карточкой
-   во всю ширину её всё равно не видно, а весит файл 1.4 МБ — телефону
-   незачем его грузить.
+   Иллюстрации из макета — по одной на каждый вид товара
+   (assets/images/product-page/bg_<вид>.png). Какой из них взять, решает
+   атрибут data-section у <body>: женская, мужская или «другие товары».
+   Сами фоны подключаются с 768px: за карточкой во всю ширину их всё равно
+   не видно, а каждый весит около 1.4 МБ — телефону незачем его грузить.
+
+   Цвет подложки тоже свой у вида: пока фон не загрузился (или он выключен
+   на мобильном), страница должна быть того же тона, что и иллюстрация.
    ========================================================================== */
 
-body[data-page='product'] {
+body[data-page='product'][data-section='women'] {
   background-color: var(--color-pink-light);
 }
 
+body[data-page='product'][data-section='men'] {
+  background-color: var(--color-blue-light);
+}
+
+body[data-page='product'][data-section='other'] {
+  background-color: var(--color-beige-light);
+}
+
 @media (min-width: 768px) {
+  body[data-page='product'][data-section='women'] {
+    background-image: url('../../images/product-page/bg_women.png');
+  }
+
+  body[data-page='product'][data-section='men'] {
+    background-image: url('../../images/product-page/bg_men.png');
+  }
+
+  body[data-page='product'][data-section='other'] {
+    background-image: url('../../images/product-page/bg_other.png');
+  }
+
+  /* Общие свойства фона для всех трёх: различается только файл */
   body[data-page='product'] {
-    background-image: url('../../images/product-page/bg.png');
     background-repeat: no-repeat;
     background-position: top center;
     background-size: cover;
