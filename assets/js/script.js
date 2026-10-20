@@ -34,7 +34,7 @@ import { renderCatalog } from './render.js';
 import { initFilters } from './filters.js';
 import { initModal } from './modal.js';
 import { initCart } from './cart-ui.js';
-import { initCheckout } from './checkout.js';
+import { initCheckout, initBuyNow } from './checkout.js';
 import { initThanks, initThanksFeedback } from './thanks.js';
 import { initFeedback } from './feedback.js';
 import { initProduct } from './product.js';
@@ -72,7 +72,7 @@ function initThanksFeedbackPage() {
 }
 
 /**
- * Страница товара: галерея, размеры, услуга «ПРИНТ» и корзина.
+ * Страница товара: размеры, выбор файла макета, корзина и покупка в один клик.
  * Форма обратной связи на этой странице не выводится, поэтому
  * initFeedback здесь не вызывается.
  */
@@ -81,6 +81,7 @@ function initProductPage() {
   initModal();
   initCart();
   initProduct();
+  initBuyNow();
 }
 
 /**

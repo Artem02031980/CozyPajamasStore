@@ -168,7 +168,7 @@ ok(descriptionBlock.indexOf('product__composition') < descriptionBlock.indexOf('
 const REQUIRED = [
   ['data-cart-add="goods-women-03"', 'кнопка «Добавить в корзину» добавляет этот товар'],
   ['data-cart-size', 'у кнопки есть место под выбранный размер'],
-  ['data-modal-open="cart"', '«Купить в один клик» открывает окно корзины'],
+  ['data-buy-now="goods-women-03"', '«Купить в один клик» оформляет заказ сразу'],
   ['data-print-upload', 'поле выбора файла макета'],
   ['product__sizes', 'блок размеров'],
   ['data-product-prev', 'стрелка «предыдущее фото»'],
@@ -195,6 +195,22 @@ ok(/class="product__arrow product__arrow--prev"[\s\S]{0,200}?disabled/.test(html
   'стрелка «назад» выключена: кадр один');
 ok(/class="product__arrow product__arrow--next"[\s\S]{0,200}?disabled/.test(html),
   'стрелка «вперёд» выключена: кадр один');
+
+// ─────────────── покупка в один клик ───────────────
+
+/* Кнопка ведёт сразу на страницу благодарности, а не в окно корзины.
+   Путь относительный: страница товара лежит на уровень глубже корня.
+   Адрес в атрибуте, а не в модуле, чтобы главная вела на свой же путь */
+const buyNow = html.match(/<button[^>]*data-buy-now[\s\S]{0,400}?<\/button>/)?.[0] ?? '';
+
+ok(buyNow.includes('data-buy-now="goods-women-03"'),
+  'кнопка знает, какой товар покупает', buyNow.slice(0, 160));
+eq(buyNow.match(/data-buy-now-redirect="([^"]+)"/)?.[1], '../thanks-cart.html',
+  'кнопка ведёт на thanks-cart.html через ../');
+ok(buyNow.includes('data-cart-size'),
+  'у кнопки есть место под выбранный размер');
+ok(!buyNow.includes('data-modal-open'),
+  'окно корзины эта кнопка больше не открывает');
 
 // ─────────────── нанесение принта ───────────────
 

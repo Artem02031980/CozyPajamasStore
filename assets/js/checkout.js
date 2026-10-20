@@ -17,6 +17,7 @@
 import { $, $$, formatPrice } from './utils.js';
 import * as cart from './cart.js';
 import { writeOrder } from './storage.js';
+import { getProduct } from './data.js';
 
 /** Правила проверки полей. */
 const RULES = {
@@ -127,6 +128,52 @@ export function buildOrder(values, { terms = cart.getServiceTerms(), date = new 
       serviceQty: totals.serviceQty,
       total: totals.total,
       count: totals.count,
+    },
+  };
+}
+
+/**
+ * Собирает заказ «в один клик»: один товар со страницы товара, без формы
+ * и без корзины.
+ *
+ * Человек не вводит ни имени, ни телефона — по задумке это покупка одной
+ * кнопкой, и страница благодарности показывает «Спасибо за заказ!» без
+ * обращения по имени. Корзина не трогается: то, что в ней лежит, остаётся
+ * на месте, а заказ сохраняется как отдельный документ.
+ *
+ * @param {string} productId id товара из data.js
+ * @param {object} [options]
+ * @param {string} [options.size] выбранный размер
+ * @param {Date} [options.date] момент покупки — для проверок
+ * @returns {object|null} заказ или null, если товара с таким id нет
+ */
+export function buildOneClickOrder(productId, { size = '', date = new Date() } = {}) {
+  const product = getProduct(productId);
+  if (!product) return null;
+
+  const sum = product.price;
+
+  return {
+    number: makeOrderNumber(date),
+    createdAt: date.toISOString(),
+    customer: { name: '', phone: '', email: '', comment: 'Покупка в один клик' },
+    items: [{
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      qty: 1,
+      size: String(size ?? ''),
+      sum,
+    }],
+    /* Услуга «ПРИНТ» в покупку в один клик не попадает: её добавляют
+       отдельной кнопкой, и без формы человек её не выбирал */
+    totals: {
+      products: sum,
+      service: 0,
+      serviceFree: false,
+      serviceQty: 0,
+      total: sum,
+      count: 1,
     },
   };
 }
@@ -269,5 +316,54 @@ export function initCheckout() {
 
     const box = $(`[data-checkout-error="${field.name}"]`, form);
     if (box) box.textContent = '';
+  });
+}
+
+/**
+ * Куда вести после покупки в один клик.
+ *
+ * Адрес задаётся атрибутом data-buy-now-redirect у кнопки: страница товара
+ * лежит на уровень глубже корня и ведёт на ../thanks-cart.html, а главная
+ * смогла бы вести на thanks-cart.html. Без атрибута берём адрес для корня.
+ *
+ * @param {HTMLElement} button
+ * @returns {string}
+ */
+function buyNowRedirectFrom(button) {
+  return button.dataset.buyNowRedirect || 'thanks-cart.html';
+}
+
+/**
+ * Подключает кнопки «Купить в один клик».
+ *
+ * Покупка сразу становится заказом: он сохраняется в хранилище, и человек
+ * попадает на страницу благодарности с составом и суммой. Корзина не
+ * используется вовсе — ни добавляется в неё товар, ни очищается: то, что
+ * человек складывал раньше, остаётся на месте.
+ *
+ * Проект учебный, поэтому заказ создаётся без имени и телефона и никто
+ * ни с кем не связывается — страница благодарности об этом честно
+ * предупреждает.
+ *
+ * Слушатель на document, как и у формы: кнопка может появиться на любой
+ * странице, и вешать обработчик на каждую не нужно.
+ */
+export function initBuyNow() {
+  document.addEventListener('click', (event) => {
+    const button = event.target;
+    if (!(button instanceof Element)) return;
+
+    const trigger = button.closest('[data-buy-now]');
+    if (!trigger) return;
+
+    event.preventDefault();
+
+    const order = buildOneClickOrder(trigger.dataset.buyNow, {
+      size: trigger.dataset.cartSize ?? '',
+    });
+    if (!order) return;
+
+    writeOrder(order);
+    window.location.href = buyNowRedirectFrom(trigger);
   });
 }

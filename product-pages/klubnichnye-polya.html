@@ -198,13 +198,17 @@
                     <span class="product__button-label" data-cart-label>Добавить в корзину</span>
                   </button>
 
-                  <!-- «Купить в один клик» открывает то же окно корзины:
-                       отдельного быстрого оформления в проекте нет, а окно
-                       уже содержит форму заказа -->
+                  <!-- «Купить в один клик» сразу оформляет заказ: товар
+                       с выбранным размером сохраняется как заказ, и человек
+                       попадает на страницу благодарности. Корзина при этом
+                       не трогается. Путь к странице задан атрибутом: с этой
+                       страницы она на уровень выше корня -->
                   <button
-                    class="product__button button button--outline-pink"
+                    class="product__button product__button--cart button button--outline-pink"
                     type="button"
-                    data-modal-open="cart"
+                    data-buy-now="goods-women-03"
+                    data-buy-now-redirect="../thanks-cart.html"
+                    data-cart-size=""
                   >
                     Купить в один клик
                   </button>

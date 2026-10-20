@@ -164,6 +164,44 @@ eq(readOrder(), null, 'массив вместо заказа не считае�
 
 reset();
 
+// ── покупка в один клик ──────────────────────────────────────────────
+
+/* Заказ «в один клик» собирается из одного товара, без формы и без
+   корзины: человек нажал кнопку — и сразу попал на страницу благодарности */
+const oneClick = checkout.buildOneClickOrder('goods-women-03', { size: 'M', date });
+ok(Boolean(oneClick), 'заказ в один клик собирается');
+eq(oneClick.items.length, 1, 'в заказе одна позиция');
+eq(oneClick.items[0].id, 'goods-women-03', 'позиция — тот товар, что на странице');
+eq(oneClick.items[0].qty, 1, 'количество — одна штука');
+eq(oneClick.items[0].size, 'M', 'выбранный размер попал в заказ');
+eq(oneClick.items[0].price, 12199, 'цена из каталога, а не из разметки');
+eq(oneClick.items[0].sum, 12199, 'сумма позиции равна цене одной штуки');
+eq(oneClick.totals, {
+  products: 12199, service: 0, serviceFree: false, serviceQty: 0, total: 12199, count: 1,
+}, 'итоги заказа: без услуги, без кратности');
+eq(oneClick.number, checkout.makeOrderNumber(date), 'номер заказа из даты покупки');
+eq(oneClick.createdAt, date.toISOString(), 'время покупки из даты');
+eq(oneClick.customer.name, '', 'имени нет: форма не заполнялась');
+
+/* Размер не выбран — заказ всё равно собирается, позиция без размера */
+const noSize = checkout.buildOneClickOrder('goods-women-03', { date });
+eq(noSize.items[0].size, '', 'без выбора размера позиция идёт без размера');
+
+/* Корзина при покупке в один клик не трогается: то, что человек складывал
+   раньше, остаётся на месте */
+reset();
+cart.addItem('goods-women-01');
+checkout.buildOneClickOrder('goods-women-03', { date });
+eq(cart.getItems().map((i) => i.id), ['goods-women-01'],
+  'покупка в один клик не меняет корзину');
+
+/* Товара с таким id нет — заказа тоже нет, иначе на страницу благодарности
+   ушёл бы заказ с пустой позицией */
+eq(checkout.buildOneClickOrder('нет-такого', { date }), null,
+  'несуществующий товар не даёт заказа');
+
+reset();
+
 // ── итог ─────────────────────────────────────────────────────────────
 
 process.stdout.write(`Проверок пройдено: ${passed}\n`);

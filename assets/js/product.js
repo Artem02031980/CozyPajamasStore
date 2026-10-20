@@ -37,7 +37,6 @@ const SELECTOR = {
   card: '.product__card',
   size: '[data-product-size]',
   chosenSize: '[data-product-size-chosen]',
-  addButton: '[data-cart-add]',
   printFile: '[data-print-upload]',
   printFileNote: '[data-print-file]',
 };
@@ -67,10 +66,12 @@ function selectSize(chip) {
     chosen.setAttribute('aria-pressed', 'true');
   }
 
-  /* Размер уезжает в корзину через атрибут кнопки: cart-ui.js читает
-     data-cart-size и по нему отличает одну позицию от другой */
-  const addButton = $(SELECTOR.addButton);
-  if (addButton) addButton.dataset.cartSize = chosen?.dataset.productSize ?? '';
+  /* Размер уезжает в корзину и в покупку в один клик через атрибут кнопки:
+     cart-ui.js читает data-cart-size и по нему отличает одну позицию
+     от другой, а checkout.js берёт его для заказа */
+  $$('[data-cart-add], [data-buy-now]').forEach((button) => {
+    button.dataset.cartSize = chosen?.dataset.productSize ?? '';
+  });
 
   /* Выбранный размер показываем отдельной строкой под названием, а не
      дописываем в само название: название — имя товара, и размер в нём

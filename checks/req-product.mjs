@@ -202,16 +202,30 @@ const printFiles = {
   doc: await pickFile('документ.doc'),
 };
 
-// ─── «Купить в один клик» открывает окно корзины ───
+// ─── «Купить в один клик» ───
 
-const oneClick = document.querySelector('[data-modal-open="cart"]');
-press(oneClick);
-await frame();
-await new Promise((r) => setTimeout(r, 200));
-const modalOpen = !modal.classList.contains('is-hidden');
+/* Кнопка больше не открывает окно корзины: она сразу оформляет заказ
+   и уводит на thanks-cart.html. Сам переход проверяет сквозной
+   checks/req-checkout.mjs — здесь вкладка осталась бы на другой странице.
+   Тут только смотрим, что кнопка размечена правильно, и что окно корзины
+   по ней не открывается */
+const oneClick = document.querySelector('[data-buy-now]');
+const oneClickInfo = {
+  найдена: Boolean(oneClick),
+  товар: oneClick?.dataset.buyNow ?? null,
+  адрес: oneClick?.dataset.buyNowRedirect ?? null,
+  размер: oneClick?.dataset.cartSize ?? null,
+  текст: oneClick?.textContent.trim() ?? null,
+  открываетОкноКорзины: Boolean(oneClick?.hasAttribute('data-modal-open')),
+};
+
+// Нажатие здесь не проверяем: обработчик уводит вкладку на страницу
+// благодарности, и замер вместе с ней пропадает. Сам переход проверяет
+// сквозной checks/req-checkout.mjs
 
 // Корзину за собой убираем: проверка не должна оставлять следов
 localStorage.removeItem('cozy-pajamas:cart');
+localStorage.removeItem('cozy-pajamas:order');
 document.dispatchEvent(new CustomEvent('cart:change'));
 
 /* Через 1.4 с отзыв снимается — проверяем, что подпись вернулась
@@ -235,7 +249,8 @@ return {
   },
   принт: printFiles,
   галерея: gallery,
-  окноКорзиныОткрылось: modalOpen,
+  одинКлик: oneClickInfo,
+  окноКорзиныОткрыто: !modal.classList.contains('is-hidden'),
   счётчикВШапке: document.querySelector('[data-cart-counter]')?.textContent.trim() ?? null,
   карточекКаталога: document.querySelectorAll('.product-card').length,
 

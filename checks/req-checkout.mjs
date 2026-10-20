@@ -367,6 +367,73 @@ try {
   ok(has(empty.text, 'Заказа пока нет'), 'текст пустого состояния понятен',
     String(empty.text));
 
+  // ── 4. Покупка в один клик со страницы товара ───────────────────────
+
+  /* Кнопка «Купить в один клик» сразу оформляет заказ и уводит на страницу
+     благодарности — без корзины и без формы. Проверяем именно переход:
+     нажимаем и смотрим, где оказались. Корзину перед этим наполняем, чтобы
+     убедиться, что покупка её не трогает. */
+  await open(`${BASE}/product-pages/klubnichnye-polya.html`);
+  await evaluate(`(async () => {
+    localStorage.setItem('cozy-pajamas:cart', JSON.stringify([{ id: 'goods-women-01', qty: 1, size: '' }]));
+    localStorage.removeItem('cozy-pajamas:order');
+
+    const chip = document.querySelector('[data-product-size="XL"]');
+    chip.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+    const button = document.querySelector('[data-buy-now]');
+    button.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+  })()`);
+
+  /* Переход на другую страницу: ждём, пока адрес сменится */
+  let buyNowPath = '';
+  for (let i = 0; i < 40; i++) {
+    await sleep(250);
+    try {
+      buyNowPath = await evaluate(`location.pathname`);
+    } catch {
+      continue;
+    }
+    if (buyNowPath.includes('thanks-cart')) break;
+  }
+
+  const buyNow = await evaluate(`(() => {
+    const text = (sel) => document.querySelector(sel)?.textContent.replace(/\\s+/g, ' ').trim() ?? null;
+    const order = (() => {
+      try { return JSON.parse(localStorage.getItem('cozy-pajamas:order') ?? 'null'); } catch { return null; }
+    })();
+    const cart = (() => {
+      try { return JSON.parse(localStorage.getItem('cozy-pajamas:cart') ?? '[]'); } catch { return []; }
+    })();
+
+    return {
+      path: location.pathname,
+      greeting: text('[data-thanks-greeting]'),
+      summary: text('[data-thanks-summary]'),
+      items: [...document.querySelectorAll('[data-thanks-items] .cart__item')]
+        .map((li) => li.textContent.replace(/\\s+/g, ' ').trim()),
+      total: text('[data-thanks-items] .cart__total'),
+      bodyHidden: document.querySelector('[data-thanks-body]')?.classList.contains('is-hidden'),
+      orderItems: order?.items?.length ?? 0,
+      orderSize: order?.items?.[0]?.size ?? null,
+      orderTotal: order?.totals?.total ?? null,
+      cartAfter: cart.map((i) => i.id),
+    };
+  })()`);
+
+  ok(buyNowPath.includes('thanks-cart.html'), 'кнопка увела на страницу благодарности',
+    String(buyNowPath));
+  ok(buyNow.bodyHidden === false, 'на странице показан заказ, а не пустое состояние');
+  ok(buyNow.orderItems === 1, 'в заказе одна позиция', String(buyNow.orderItems));
+  ok(buyNow.orderSize === 'XL', 'в заказ попал выбранный размер', String(buyNow.orderSize));
+  ok(buyNow.orderTotal === 12199, 'итог заказа — цена товара', String(buyNow.orderTotal));
+  ok(buyNow.items.some((t) => has(t, 'Клубничные поля')),
+    'в составе заказа тот товар, что был на странице', JSON.stringify(buyNow.items));
+  ok(has(buyNow.summary, '1 товар'), 'сводка: один товар', String(buyNow.summary));
+  ok(JSON.stringify(buyNow.cartAfter) === JSON.stringify(['goods-women-01']),
+    'корзина при покупке в один клик не изменилась', JSON.stringify(buyNow.cartAfter));
+
   ok(logs.length === 0, 'консоль чистая', JSON.stringify(logs));
 
   // Уборка: страница благодарности остаётся без заказа
