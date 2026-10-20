@@ -36,8 +36,8 @@ export const PRINT_FILE_FORMATS = ['.pdf', '.jpg', '.jpeg', '.png', '.psd', '.ti
 /** Селекторы страницы: собраны здесь, чтобы не рассыпать строки по коду. */
 const SELECTOR = {
   card: '.product__card',
-  title: '.product__title',
   size: '[data-product-size]',
+  chosenSize: '[data-product-size-chosen]',
   dot: '[data-product-dot]',
   prev: '[data-product-prev]',
   next: '[data-product-next]',
@@ -113,14 +113,13 @@ function selectSize(chip) {
   const addButton = $(SELECTOR.addButton);
   if (addButton) addButton.dataset.cartSize = chosen?.dataset.productSize ?? '';
 
-  /* Размер видно и в названии: без него непонятно, что именно выбрано.
-     Базовое название запоминаем в data-атрибуте, иначе при снятии размера
-     к нему приклеился бы предыдущий */
-  const title = $(SELECTOR.title);
-  if (title) {
-    const base = title.dataset.baseTitle ?? title.textContent.trim();
-    title.dataset.baseTitle = base;
-    title.textContent = chosen ? `${base}, размер ${chosen.dataset.productSize}` : base;
+  /* Выбранный размер показываем отдельной строкой под названием, а не
+     дописываем в само название: название — имя товара, и размер в нём
+     читался бы как часть имени. Снимаем выбор — строку убираем совсем */
+  const note = $(SELECTOR.chosenSize);
+  if (note) {
+    note.textContent = chosen ? `Размер ${chosen.dataset.productSize}` : '';
+    note.hidden = !chosen;
   }
 }
 

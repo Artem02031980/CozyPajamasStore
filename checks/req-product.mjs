@@ -77,11 +77,17 @@ const typography = {
 
 // ─── размеры: выбор ровно одного и уход в корзину ───
 
+/* Выбранный размер показывается отдельной строкой под названием, а не
+   дописывается в само название: имя товара не должно меняться от выбора */
+const sizeNote = document.querySelector('[data-product-size-chosen]');
+const chosenNote = () => (sizeNote && !sizeNote.hidden ? sizeNote.textContent.trim() : null);
+
 const sizeSteps = [];
 sizeSteps.push({
   step: 'до выбора',
   активных: sizes.filter((s) => s.classList.contains('is-active')).length,
   dataCartSize: addButton.dataset.cartSize,
+  подпись: chosenNote(),
   заголовок: title.textContent.trim(),
 });
 
@@ -92,7 +98,11 @@ sizeSteps.push({
   активных: sizes.filter((s) => s.classList.contains('is-active')).length,
   активный: sizes.find((s) => s.classList.contains('is-active'))?.textContent.trim() ?? null,
   dataCartSize: addButton.dataset.cartSize,
+  подпись: chosenNote(),
   заголовок: title.textContent.trim(),
+  кегльПодписи: sizeNote ? cs(sizeNote).fontSize : null,
+  цветПодписи: sizeNote ? cs(sizeNote).color : null,
+  кегльНазвания: cs(title).fontSize,
   размерФона: cs(sizes.find((s) => s.classList.contains('is-active'))).backgroundColor,
 });
 
@@ -102,6 +112,7 @@ sizeSteps.push({
   step: 'переключили на XXL',
   активных: sizes.filter((s) => s.classList.contains('is-active')).length,
   dataCartSize: addButton.dataset.cartSize,
+  подпись: chosenNote(),
   заголовок: title.textContent.trim(),
 });
 
@@ -111,6 +122,7 @@ sizeSteps.push({
   step: 'сняли выбор повторным нажатием',
   активных: sizes.filter((s) => s.classList.contains('is-active')).length,
   dataCartSize: addButton.dataset.cartSize,
+  подпись: chosenNote(),
   заголовок: title.textContent.trim(),
 });
 
@@ -253,3 +265,4 @@ return {
     };
   })(),
 };
+

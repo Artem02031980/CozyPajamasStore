@@ -274,6 +274,57 @@ ok(/align-self: stretch/.test(printTitleRule),
 ok(/margin-top: var\(--space-24\)/.test(printTitleRule),
   'отступ от кнопки «Купить в один клик» — 24px');
 
+/* Выбранный размер — отдельная строка под названием, мельче названия
+   и голубым. В само название не дописывается: имя товара от выбора
+   не меняется */
+ok(html.includes('data-product-size-chosen'), 'в разметке есть строка выбранного размера');
+ok(/class="product__chosen-size"[^>]*hidden/.test(html),
+  'строка выбранного размера скрыта, пока размер не выбран');
+
+const chosenRule = (() => {
+  const text = css.replace(/\r\n/g, '\n');
+  const at = text.indexOf('.product__chosen-size {');
+  return at < 0 ? '' : text.slice(at, text.indexOf('}', at));
+})();
+
+ok(/color: var\(--color-blue\)/.test(chosenRule), 'выбранный размер голубой',
+  chosenRule.replace(/\s+/g, ' ').slice(0, 120));
+ok(/font-size: var\(--fs-18\)/.test(chosenRule),
+  'выбранный размер мельче названия: 18px против 30px');
+
+/* Ховер «Добавить в корзину» — синий, как у «Купить в один клик».
+   До этой правки у кнопки с button--pink фон уходил в тёмный */
+ok(/\.product__button--cart:hover \{[\s\S]{0,160}?background-color: var\(--color-blue\)/.test(
+  css.replace(/\r\n/g, '\n'),
+), '«Добавить в корзину» при наведении синеет');
+
+/* Иконка каталога при наведении становится белой: розовый контур на синей
+   заливке пропадал бы */
+ok(bytes('assets/images/icons/icon-catalog_white.svg'),
+  'белая иконка каталога лежит в assets/images/icons');
+ok(/\.product__button--print:hover \.product__button-icon--catalog[\s\S]{0,220}?icon-catalog_white\.svg/.test(
+  css.replace(/\r\n/g, '\n'),
+), 'при наведении иконка каталога меняется на белую');
+
+/* Иконки в ряду кнопок одного масштаба: каталог был 11px при корзине 16px */
+const catalogIconRule = (() => {
+  const text = css.replace(/\r\n/g, '\n');
+  const at = text.indexOf('.product__button-icon--catalog {');
+  return at < 0 ? '' : text.slice(at, text.indexOf('}', at));
+})();
+
+ok(!/width: 11px/.test(catalogIconRule), 'иконка каталога больше не 11px');
+
+const iconRule = (() => {
+  const text = css.replace(/\r\n/g, '\n');
+  const at = text.indexOf('.product__button-icon {');
+  return at < 0 ? '' : text.slice(at, text.indexOf('}', at));
+})();
+
+ok(/flex: none/.test(iconRule), 'иконки не сжимаются вместе с текстом кнопки');
+ok(/width: var\(--icon-size-sm\)/.test(iconRule),
+  'размер иконок — 16px, как у корзины');
+
 /* Кнопки стоят в столбик: в строку две кнопки занимают 462px, а колонка
    информации — 312px, и на 768px появлялась горизонтальная прокрутка.
    Если кто-то вернёт строку, проверка об этом скажет.

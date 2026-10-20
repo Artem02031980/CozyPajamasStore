@@ -357,6 +357,16 @@ body[data-page='product'] {
   text-transform: uppercase;
 }
 
+/* Выбранный размер под названием. Мельче названия (30px) и голубым:
+   это пометка к выбору, а не часть имени товара. Скрыт, пока размер
+   не выбран — атрибут hidden в разметке */
+.product__chosen-size {
+  margin-top: var(--space-4);
+  font-size: var(--fs-18);
+  line-height: var(--lh-snug);
+  color: var(--color-blue);
+}
+
 .product__price {
   margin-top: var(--space-8);
   font-size: var(--fs-30);
@@ -455,6 +465,9 @@ body[data-page='product'] {
 }
 
 .product__button-icon {
+  /* flex: none — иконка не сжимается вместе с текстом кнопки: без этого
+     при нехватке места во флекс-строке она ужималась до 15px вместо 16 */
+  flex: none;
   width: var(--icon-size-sm);
   height: var(--icon-size-sm);
   background-repeat: no-repeat;
@@ -466,10 +479,29 @@ body[data-page='product'] {
   background-image: url('../../images/icons/cart-white.svg');
 }
 
+/* Иконка каталога — того же размера, что иконка корзины: два рисунка в одном
+   ряду кнопок должны быть одного масштаба. Файл 11×11 растягивается
+   до 16px через background-size: contain */
 .product__button-icon--catalog {
-  width: 11px;
-  height: 11px;
   background-image: url('../../images/icons/icon-catalog.svg');
+}
+
+/* При наведении кнопки заливка становится синей, и розовый контур каталога
+   на ней пропадал бы — подменяем файл на белый. Тот же приём, что у иконок
+   соцсетей в подвале: цвет внутри SVG зашит, currentColor на него
+   не действует */
+.product__button--print:hover .product__button-icon--catalog,
+.product__button--print:focus-visible .product__button-icon--catalog {
+  background-image: url('../../images/icons/icon-catalog_white.svg');
+}
+
+/* «Добавить в корзину» при наведении синеет, как «Купить в один клик»:
+   раньше у кнопки с button--pink фон уходил в тёмный, и она выбивалась
+   из остальных кнопок страницы. Селектор позже button.css, поэтому
+   при равной специфичности побеждает это правило */
+.product__button--cart:hover {
+  color: var(--color-white);
+  background-color: var(--color-blue);
 }
 
 /* Вторая кнопка — «Купить в один клик» — и обе кнопки принта: розовая рамка
