@@ -16,8 +16,10 @@
    ========================================================================== */
 
 .footer {
-  /* Фон тот же, что у feedback: в макете это одна сплошная плита */
-  background-color: var(--color-blue-light);
+  /* Синяя плита подвала. Раньше фон был --color-blue-light, как у секции
+     feedback; по правке владельца проекта подвал стал акцентным: синий фон
+     и белая подпись */
+  background-color: var(--color-blue);
 }
 
 .footer__inner {
@@ -29,7 +31,8 @@
 .footer__copyright {
   font-size: var(--fs-16);
   line-height: var(--lh-snug);
-  /* В макете подпись чуть светлее основного текста */
-  color: var(--color-dark);
-  opacity: 0.8;
+  /* Белая подпись на синем. opacity снят: при 0.8 белый уходил бы в серый
+     и контраст с фоном падал */
+  color: var(--color-white);
+  opacity: 1;
 }

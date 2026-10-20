@@ -392,6 +392,33 @@ ok(/const buttonModifier = titleColor/.test(RENDER_JS),
   'render.js выбирает цвет кнопки по тегу titleColor',
   'в render.js не найдена строка выбора модификатора кнопки');
 
+// ─────────────── подвал ───────────────
+
+/* Подвал общий для главной и страниц товаров, поэтому проверяется здесь,
+   вместе с остальными общими стилями. Синий фон и белая подпись — правка
+   владельца проекта; до неё фон был --color-blue-light, как у feedback */
+const FOOTER_CSS = readFileSync(new URL('../assets/css/sections/footer.css', import.meta.url), 'utf8');
+
+const footerRule = (selector) => {
+  const at = FOOTER_CSS.indexOf(selector + ' {');
+  return at < 0 ? '' : FOOTER_CSS.slice(at, FOOTER_CSS.indexOf('}', at));
+};
+
+const footerBlock = footerRule('.footer');
+const footerText = footerRule('.footer__copyright');
+
+ok(/background-color: var\(--color-blue\)/.test(footerBlock), 'фон подвала синий',
+  footerBlock.replace(/\s+/g, ' ').slice(0, 100));
+ok(/color: var\(--color-white\)/.test(footerText), 'подпись подвала белая',
+  footerText.replace(/\s+/g, ' ').slice(0, 100));
+ok(/opacity: 1/.test(footerText),
+  'белый не приглушён: с opacity 0.8 контраст падал бы ещё ниже');
+
+/* Подвал есть на главной и на странице товара — проверяем, что разметка
+   не разъехалась: класс подписи один и тот же */
+ok(html.includes('class="footer__copyright"'), 'на главной есть подпись подвала',
+  'в index.html не найдена .footer__copyright');
+
 // ─────────────── сводка по чипсам ───────────────
 
 const coverageTypes = [...new Set(both.flatMap((p) => p.types))]
