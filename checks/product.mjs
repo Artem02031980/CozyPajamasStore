@@ -144,6 +144,25 @@ ok(html.includes(`src="../${product.image}"`), 'страница ссылает�
 const alt = html.match(/class="product__image"[\s\S]*?alt="([^"]+)"/)?.[1];
 eq(alt, product.alt, 'alt фото совпадает с описанием в данных');
 
+// ─────────────── состав в описании ───────────────
+
+/* Состав — первая строка под заголовком «Описание». Строка та же, что
+   subtitle в data.js: там она стоит меткой в карточке каталога, здесь —
+   в описании. Сверяем с данными, иначе после смены состава страница
+   будет показывать старый */
+const compositionMatch = html.match(/class="product__composition"[^>]*>([^<]+)</);
+ok(Boolean(compositionMatch), 'в разметке есть строка состава');
+eq(compositionMatch?.[1]?.trim(), product.subtitle, 'состав на странице совпадает с данными');
+
+/* Порядок внутри блока: заголовок → состав → текст описания */
+const descriptionBlock = (() => {
+  const start = html.indexOf('product__block-title">Описание');
+  return start < 0 ? '' : html.slice(start, html.indexOf('</section>', start));
+})();
+
+ok(descriptionBlock.indexOf('product__composition') < descriptionBlock.indexOf('product__text'),
+  'состав стоит выше текста описания');
+
 // ─────────────── элементы из макета ───────────────
 
 const REQUIRED = [
@@ -156,6 +175,7 @@ const REQUIRED = [
   ['data-product-next', 'стрелка «следующее фото»'],
   ['product__details', 'список характеристик'],
   ['product__print-title', 'подпись «Добавить принт:»'],
+  ['product__composition', 'состав товара в описании'],
 ];
 
 for (const [needle, name] of REQUIRED) {
