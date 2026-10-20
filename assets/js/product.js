@@ -5,17 +5,16 @@
  * поэтому страница читается и без скрипта. Модуль добавляет то, что без него
  * не работает:
  *
- *   1. галерея — стрелки и точки-индикаторы. Кадр сейчас один, но код
- *      рассчитан на любое число снимков: и стрелки, и точки строятся по тому,
- *      что есть в разметке. Когда у товаров появятся вторые ракурсы, менять
- *      модуль не придётся — только добавить файлы;
- *   2. выбор размера — ровно один, и он же уезжает в корзину: кнопка
+ *   1. выбор размера — ровно один, и он же уезжает в корзину: кнопка
  *      «Добавить в корзину» читает свой data-cart-size, а модуль его
  *      проставляет. Без скрипта товар добавится без размера, а не с чужим;
- *   3. выбор файла макета для нанесения принта: проверка формата и показ
+ *   2. выбор файла макета для нанесения принта: проверка формата и показ
  *      имени выбранного файла. Само окно выбора открывает браузер — кнопка
  *      «Добавить свой макет» это label для скрытого поля с файлом, поэтому
  *      работает и без скрипта.
+ *
+ * Галереи в модуле нет: кадр один, стрелки в разметке выключены, точек
+ * не осталось. Листание вернётся вместе со вторыми ракурсами товаров.
  *
  * Логика корзины не дублируется: состав, суммы и счётчик ведёт cart.js,
  * события страницы — cart-ui.js.
@@ -38,50 +37,10 @@ const SELECTOR = {
   card: '.product__card',
   size: '[data-product-size]',
   chosenSize: '[data-product-size-chosen]',
-  dot: '[data-product-dot]',
-  prev: '[data-product-prev]',
-  next: '[data-product-next]',
   addButton: '[data-cart-add]',
   printFile: '[data-print-upload]',
   printFileNote: '[data-print-file]',
 };
-
-/**
- * Показывает кадр по номеру.
- *
- * Кадр один, поэтому показывать нечего: функция переставляет активную точку
- * и гасит стрелки у краёв. Когда снимков станет больше, здесь появится
- * подмена картинки — на устройство галереи это не повлияет.
- *
- * @param {number} index номер кадра
- */
-function showFrame(index) {
-  const dots = $$(SELECTOR.dot);
-  if (!dots.length) return;
-
-  /* Зацикливать листание не будем: у края стрелка гаснет, как в ленте
-     «Других товаров» */
-  const safe = Math.min(Math.max(index, 0), dots.length - 1);
-
-  dots.forEach((dot, i) => {
-    const active = i === safe;
-    dot.classList.toggle(ACTIVE, active);
-    dot.setAttribute('aria-selected', active ? 'true' : 'false');
-  });
-
-  const prev = $(SELECTOR.prev);
-  const next = $(SELECTOR.next);
-
-  if (prev) prev.disabled = safe === 0;
-  if (next) next.disabled = safe >= dots.length - 1;
-}
-
-/** Номер текущего кадра — по активной точке. */
-function currentFrame() {
-  const index = $$(SELECTOR.dot).findIndex((dot) => dot.classList.contains(ACTIVE));
-
-  return index < 0 ? 0 : index;
-}
 
 /**
  * Показывает выбранный размер.
@@ -189,23 +148,16 @@ function initPrintUpload(input) {
 export function initProduct() {
   if (!$(SELECTOR.card)) return;
 
-  // 1. Галерея: стрелки и точки листают по одному кадру
-  $(SELECTOR.prev)?.addEventListener('click', () => showFrame(currentFrame() - 1));
-  $(SELECTOR.next)?.addEventListener('click', () => showFrame(currentFrame() + 1));
+  /* Галереи в модуле нет: кадр один, стрелки в разметке выключены, точек
+     нет. Листание вернётся вместе со вторыми ракурсами — тогда понадобится
+     и модель кадров, которой сейчас просто нечего листать */
 
-  $$(SELECTOR.dot).forEach((dot) => {
-    dot.addEventListener('click', () => showFrame(Number(dot.dataset.productDot)));
-  });
-
-  // При одном кадре обе стрелки гаснут — состояния ставит showFrame
-  showFrame(currentFrame());
-
-  // 2. Размеры
+  // 1. Размеры
   $$(SELECTOR.size).forEach((chip) => {
     chip.setAttribute('aria-pressed', 'false');
     chip.addEventListener('click', () => selectSize(chip));
   });
 
-  // 3. Выбор файла макета для принта
+  // 2. Выбор файла макета для принта
   initPrintUpload($(SELECTOR.printFile));
 }

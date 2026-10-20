@@ -152,7 +152,6 @@ const REQUIRED = [
   ['data-modal-open="cart"', '«Купить в один клик» открывает окно корзины'],
   ['data-print-upload', 'поле выбора файла макета'],
   ['product__sizes', 'блок размеров'],
-  ['product__dots', 'точки-индикаторы галереи'],
   ['data-product-prev', 'стрелка «предыдущее фото»'],
   ['data-product-next', 'стрелка «следующее фото»'],
   ['product__details', 'список характеристик'],
@@ -162,6 +161,20 @@ const REQUIRED = [
 for (const [needle, name] of REQUIRED) {
   ok(html.includes(needle), name);
 }
+
+/* Точек-индикаторов нет: при одном кадре они ничего не показывали,
+   а при появлении вторых ракурсов индикатор вернётся вместе с листанием.
+   Разметку и модуль проверяем здесь, стили — ниже, где читается CSS */
+ok(!html.includes('product__dots'), 'точек-индикаторов нет в разметке');
+ok(!html.includes('data-product-dot'), 'разметки точек не осталось');
+ok(!read('assets/js/product.js').includes('data-product-dot'),
+  'в модуле нет логики точек');
+
+/* Стрелки остались, но кадр один — обе выключены в разметке */
+ok(/class="product__arrow product__arrow--prev"[\s\S]{0,200}?disabled/.test(html),
+  'стрелка «назад» выключена: кадр один');
+ok(/class="product__arrow product__arrow--next"[\s\S]{0,200}?disabled/.test(html),
+  'стрелка «вперёд» выключена: кадр один');
 
 // ─────────────── нанесение принта ───────────────
 
@@ -225,7 +238,7 @@ if (bg) {
   eq([bg.readUInt32BE(16), bg.readUInt32BE(20)], [1536, 864], 'размер фона из макета');
 }
 
-for (const icon of ['icon-catalog.svg', 'page-dot.svg']) {
+for (const icon of ['icon-catalog.svg', 'icon-catalog_white.svg']) {
   const file = bytes(`assets/images/icons/${icon}`);
   ok(Boolean(file), `иконка ${icon} лежит в assets/images/icons`);
   ok(file?.toString('utf8').includes('<svg'), `${icon} — это SVG`);
@@ -246,9 +259,16 @@ ok(read('assets/css/style.css').includes("url('pages/product.css')"),
 
 ok(css.includes('bg.png'), 'фон страницы подключён в стилях');
 ok(css.includes('icon-catalog.svg'), 'иконка каталога подключена в стилях');
-ok(css.includes('page-dot.svg'), 'точка-индикатор подключена в стилях');
 ok(css.includes('cart-white.svg'), 'иконка корзины в кнопке — существующая в проекте');
 ok(!css.includes('icon-cart.svg'), 'в стилях нет ссылки на дубль иконки корзины');
+
+/* Точек-индикаторов нет ни в разметке, ни в стилях, ни в модуле:
+   при одном кадре они ничего не показывали. Файл page-dot.svg вместе с ними
+   остался бы мусором в assets — его тоже не должно быть */
+ok(!css.includes('product__dot'), 'стилей точек не осталось');
+ok(!css.includes('page-dot.svg'), 'в стилях нет ссылки на точку-индикатор');
+ok(!existsSync(at('assets/images/icons/page-dot.svg')),
+  'файла точки-индикатора в проекте не осталось');
 
 ok(/@media \(min-width: 768px\)/.test(css), 'у страницы есть планшетная раскладка');
 ok(/grid-template-columns/.test(css), 'галерея и информация раскладываются сеткой');
@@ -512,7 +532,8 @@ process.stdout.write(`Проверок пройдено: ${passed}\n`);
 process.stdout.write(`Страница: ${PAGE} (${html.length} байт)\n`);
 process.stdout.write(`Товар: ${product.title} — ${product.price} ₽, размеры ${product.sizes.join(', ')}\n`);
 process.stdout.write(`Файлы из макета: bg.png ${bg ? Math.round(bg.length / 1024) + ' КБ' : 'нет'}, `
-  + `иконок ${['icon-catalog.svg', 'page-dot.svg'].filter((i) => bytes(`assets/images/icons/${i}`)).length}\n`);
+  + `иконок ${['icon-catalog.svg', 'icon-catalog_white.svg']
+    .filter((i) => bytes(`assets/images/icons/${i}`)).length}\n`);
 
 if (failures.length) {
   process.stdout.write(`\nНЕ ПРОШЛО: ${failures.length}\n`);

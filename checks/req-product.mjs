@@ -27,8 +27,6 @@ const title = document.querySelector('.product__title');
 const price = document.querySelector('.product__price');
 const sizes = [...document.querySelectorAll('[data-product-size]')];
 const addButton = document.querySelector('[data-cart-add]');
-const dots = [...document.querySelectorAll('[data-product-dot]')];
-const dotsBox = document.querySelector('.product__dots');
 const prev = document.querySelector('[data-product-prev]');
 const next = document.querySelector('[data-product-next]');
 const modal = document.querySelector('[data-modal="cart"]');
@@ -50,17 +48,12 @@ const layout = {
   ширинаФото: box(image).width,
   высотаФото: box(image).height,
 
-  /* Точки-индикаторы: видимость считаем у их контейнера, а не у самой
-     кнопки. У кнопки display считается по её собственному значению и про
-     скрытие контейнера ничего не говорит — на этом я уже ошибся */
-  точкиВидимы: cs(dotsBox).display !== 'none',
-  размерТочки: box(dots[0] ?? card).width,
+  /* Точек-индикаторов быть не должно: их убрали при одном кадре */
+  точекуНаСтранице: document.querySelectorAll('[data-product-dot]').length,
 
-  /* Стрелки: в макете 320 они лежат внутри карточки, на 1280 — за ней.
-     Считаем от края карточки: отрицательное число означает «за карточкой».
-     Раньше здесь была ошибка: расстояние справа считалось от края карточки,
-     хотя стрелка стоит относительно галереи — половина карточки в счёт
-     не входила, и замер показывал 328px вместо 48 */
+  /* Стрелки: до 768px лежат внутри галереи, дальше — внутри карточки
+     у её краёв. Считаем от края карточки: отрицательное число означает
+     «за карточкой» */
   стрелкаСлева: box(prev).left - box(card).left,
   стрелкаСправаОтГалереи: box(document.querySelector('.product__gallery')).right
     - box(next).right,
@@ -152,14 +145,16 @@ const cartAfterAdd = JSON.parse(localStorage.getItem('cozy-pajamas:cart') ?? '[]
 
 // ─── галерея при одном кадре ───
 
+/* Точек нет, стрелки выключены в разметке. Клик по выключенной стрелке
+   не должен ничего менять и не должен ронять страницу */
 const gallery = {
-  кадров: dots.length,
-  активныхТочек: dots.filter((d) => d.classList.contains('is-active')).length,
+  точекуНаСтранице: document.querySelectorAll('[data-product-dot]').length,
+  контейнерТочек: Boolean(document.querySelector('.product__dots')),
   стрелкаНазадВыключена: prev.disabled,
   стрелкаВперёдВыключена: next.disabled,
   кликВперёдНеПадает: (() => {
     press(next);
-    return dots.filter((d) => d.classList.contains('is-active')).length;
+    return document.querySelector('.product__image') !== null;
   })(),
 };
 
@@ -260,7 +255,6 @@ return {
     return {
       cartIcon: name(document.querySelector('.product__button-icon--cart')),
       catalogIcon: name(document.querySelector('.product__button-icon--catalog')),
-      pageDot: name(dots[0]),
       pageBackground: name(document.body),
     };
   })(),
