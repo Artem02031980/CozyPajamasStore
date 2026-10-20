@@ -81,6 +81,14 @@ function selectSize(chip) {
     note.textContent = chosen ? `Размер ${chosen.dataset.productSize}` : '';
     note.hidden = !chosen;
   }
+
+  /* Выбрали размер — сообщение «Выберите размер» больше не нужно.
+     Правило то же, что у ошибок форм: ошибка уходит, как только её
+     причину исправили, не дожидаясь повторного нажатия */
+  if (chosen) {
+    const error = $('[data-buy-now-error]');
+    if (error) error.hidden = true;
+  }
 }
 
 /**

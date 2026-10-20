@@ -179,6 +179,14 @@
                       <button class="product__size" type="button" data-product-size="XXL">XXL</button>
                     </li>
                   </ul>
+
+                  <!-- Сообщение «Выберите размер»: показывается, если нажать
+                       «Купить в один клик», не выбрав размер. Скрыто, пока
+                       всё в порядке; role="alert" — чтобы его прочитали
+                       сразу, не дожидаясь ухода фокуса -->
+                  <p class="product__sizes-error" data-buy-now-error role="alert" hidden>
+                    Выберите размер
+                  </p>
                 </div>
 
                 <div class="product__buttons">

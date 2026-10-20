@@ -334,12 +334,38 @@ function buyNowRedirectFrom(button) {
 }
 
 /**
+ * Показывает или скрывает сообщение «Выберите размер».
+ *
+ * Где искать сообщение и что именно проверять, решает разметка, а не модуль:
+ * если рядом с кнопкой есть элемент с data-buy-now-error, значит для этой
+ * кнопки размер обязателен, и текст ошибки лежит в этом элементе. Так модуль
+ * не знает ни про размеры, ни про то, как они называются на странице.
+ *
+ * @param {HTMLElement} trigger кнопка «Купить в один клик»
+ * @param {boolean} show
+ * @returns {boolean} true, если сообщение найдено
+ */
+function toggleBuyNowError(trigger, show) {
+  const scope = trigger.closest('article') ?? document;
+  const box = scope.querySelector('[data-buy-now-error]');
+  if (!box) return false;
+
+  box.hidden = !show;
+  return true;
+}
+
+/**
  * Подключает кнопки «Купить в один клик».
  *
  * Покупка сразу становится заказом: он сохраняется в хранилище, и человек
  * попадает на страницу благодарности с составом и суммой. Корзина не
  * используется вовсе — ни добавляется в неё товар, ни очищается: то, что
  * человек складывал раньше, остаётся на месте.
+ *
+ * Если у кнопки есть сообщение об ошибке в разметке, покупка без размера
+ * не проходит: вместо перехода показывается «Выберите размер» и фокус
+ * уходит на ряд размеров. Иначе в заказ ушла бы позиция без размера,
+ * а человек даже не заметил бы, что не выбрал.
  *
  * Проект учебный, поэтому заказ создаётся без имени и телефона и никто
  * ни с кем не связывается — страница благодарности об этом честно
@@ -358,11 +384,28 @@ export function initBuyNow() {
 
     event.preventDefault();
 
-    const order = buildOneClickOrder(trigger.dataset.buyNow, {
-      size: trigger.dataset.cartSize ?? '',
-    });
+    const size = trigger.dataset.cartSize ?? '';
+    const scope = trigger.closest('article') ?? document;
+
+    /* Размер обязателен только там, где в разметке есть сообщение.
+       Проверяем до сборки заказа: заказ с пустым размером уже нельзя
+       отличить от заказа товара, у которого размеров нет */
+    const sizeRequired = Boolean(scope.querySelector('[data-buy-now-error]'));
+
+    if (sizeRequired && !size) {
+      toggleBuyNowError(trigger, true);
+
+      /* Фокус на первый размер: сообщение объясняет, что делать, а фокус
+         избавляет от поиска ряда с размерами */
+      scope.querySelector('[data-product-size]')?.focus();
+
+      return;
+    }
+
+    const order = buildOneClickOrder(trigger.dataset.buyNow, { size });
     if (!order) return;
 
+    toggleBuyNowError(trigger, false);
     writeOrder(order);
     window.location.href = buyNowRedirectFrom(trigger);
   });

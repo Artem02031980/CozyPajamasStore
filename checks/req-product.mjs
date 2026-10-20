@@ -202,26 +202,61 @@ const printFiles = {
   doc: await pickFile('документ.doc'),
 };
 
-// ─── «Купить в один клик» ───
+// ─── «Купить в один клик» требует размер ───
 
-/* Кнопка больше не открывает окно корзины: она сразу оформляет заказ
-   и уводит на thanks-cart.html. Сам переход проверяет сквозной
-   checks/req-checkout.mjs — здесь вкладка осталась бы на другой странице.
-   Тут только смотрим, что кнопка размечена правильно, и что окно корзины
-   по ней не открывается */
+/* Кнопка оформляет заказ и уводит на thanks-cart.html, но только когда
+   размер выбран. Без размера вкладка остаётся на месте, а рядом
+   с размерами появляется «Выберите размер» — вот это и проверяем:
+   переход сюда не входит, его проверяет сквозной checks/req-checkout.mjs */
 const oneClick = document.querySelector('[data-buy-now]');
+const sizeError = document.querySelector('[data-buy-now-error]');
+const firstSize = document.querySelector('[data-product-size]');
+
 const oneClickInfo = {
   найдена: Boolean(oneClick),
   товар: oneClick?.dataset.buyNow ?? null,
   адрес: oneClick?.dataset.buyNowRedirect ?? null,
-  размер: oneClick?.dataset.cartSize ?? null,
   текст: oneClick?.textContent.trim() ?? null,
   открываетОкноКорзины: Boolean(oneClick?.hasAttribute('data-modal-open')),
 };
 
-// Нажатие здесь не проверяем: обработчик уводит вкладку на страницу
-// благодарности, и замер вместе с ней пропадает. Сам переход проверяет
-// сквозной checks/req-checkout.mjs
+/* Снимаем размер, если он остался от предыдущих шагов, и жмём «Купить» */
+document.querySelectorAll('[data-product-size]').forEach((chip) => {
+  chip.classList.remove('is-active');
+  chip.setAttribute('aria-pressed', 'false');
+});
+document.querySelectorAll('[data-cart-size]').forEach((button) => {
+  button.dataset.cartSize = '';
+});
+
+const errorBefore = {
+  скрыто: sizeError?.hidden ?? null,
+  текст: sizeError?.textContent.trim() ?? null,
+};
+
+press(oneClick);
+await frame();
+await new Promise((r) => setTimeout(r, 100));
+
+const afterClickWithoutSize = {
+  ошибкаПоказана: sizeError ? !sizeError.hidden : null,
+  текст: sizeError?.textContent.trim() ?? null,
+  фокусНаРазмере: document.activeElement === firstSize,
+  путь: location.pathname,
+  заказНеСоздан: localStorage.getItem('cozy-pajamas:order') === null,
+  размерУКнопки: oneClick?.dataset.cartSize ?? null,
+};
+
+/* Выбрали размер — сообщение уходит, не дожидаясь повторного нажатия */
+press(document.querySelector('[data-product-size="M"]'));
+await frame();
+await new Promise((r) => setTimeout(r, 100));
+
+const afterSizeChosen = {
+  ошибкаСкрыта: sizeError?.hidden ?? null,
+  размерУКнопки: oneClick?.dataset.cartSize ?? null,
+  подписьРазмера: document.querySelector('[data-product-size-chosen]')?.textContent.trim() ?? null,
+};
 
 // Корзину за собой убираем: проверка не должна оставлять следов
 localStorage.removeItem('cozy-pajamas:cart');
@@ -249,7 +284,12 @@ return {
   },
   принт: printFiles,
   галерея: gallery,
-  одинКлик: oneClickInfo,
+  одинКлик: {
+    ...oneClickInfo,
+    ошибкаДоНажатия: errorBefore,
+    безРазмера: afterClickWithoutSize,
+    послеВыбора: afterSizeChosen,
+  },
   окноКорзиныОткрыто: !modal.classList.contains('is-hidden'),
   счётчикВШапке: document.querySelector('[data-cart-counter]')?.textContent.trim() ?? null,
   карточекКаталога: document.querySelectorAll('.product-card').length,
