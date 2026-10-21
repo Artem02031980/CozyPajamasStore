@@ -136,25 +136,39 @@ const withColors = (colors) => ({ ...emptyFilters(), colors });
 const withPrices = (prices) => ({ ...emptyFilters(), prices });
 
 eq(hasAnyFilter(emptyFilters()), false, 'пустой набор фильтров ничего не выбирает');
-eq(hasAnyFilter(withTypes(['Пижама'])), true, 'непустой набор считается выбранным');
+eq(hasAnyFilter(withTypes(['Брюки'])), true, 'непустой набор считается выбранным');
 
 eq(selectProducts(women, emptyFilters()).length, women.length,
   'без фильтров видны все товары секции');
-contains(selectProducts(women, withTypes(['Халатик'])).map((p) => p.title),
-  ['Розовые поля', 'Спокойный сон III'], 'тип «Халатик» в женской коллекции');
-contains(selectProducts(men, withTypes(['Халатик'])).map((p) => p.title),
-  ['Снежный халат', 'Акварельное утро'], 'тип «Халатик» в мужской коллекции');
-contains(selectProducts(women, withTypes(['Свитшот'])).map((p) => p.title),
-  ['Тёмная ночь V'], 'тип «Свитшот»');
+
+/* Отбор по метке сверяем с данными, а не с вписанными названиями: состав
+   и метки задаёт таблица prompts/женские пижамы.xlsx, и они меняются
+   без правки проверок. Так проверка ловит и потерю метки, и её дубли */
+const byTag = (list, field, tag) => list.filter((p) => p[field].includes(tag)).map((p) => p.id);
+const selection = (list, filters) => selectProducts(list, filters).map((p) => p.id);
+
+eq(selection(women, withTypes(['Халатик'])), byTag(women, 'types', 'Халатик'),
+  'тип «Халатик» в женской коллекции: отбор совпадает с метками');
+eq(selection(men, withTypes(['Халатик'])), byTag(men, 'types', 'Халатик'),
+  'тип «Халатик» в мужской коллекции: отбор совпадает с метками');
+eq(selection(women, withTypes(['Свитшот'])), byTag(women, 'types', 'Свитшот'),
+  'тип «Свитшот»: отбор совпадает с метками');
+eq(selection(women, withTypes(['Комбинезон'])), byTag(women, 'types', 'Комбинезон'),
+  'новый тип «Комбинезон» из таблицы работает');
+eq(selection(women, withTypes(['Шорты'])), byTag(women, 'types', 'Шорты'),
+  'новый тип «Шорты» из таблицы работает');
 
 // Внутри группы — «или»
-contains(selectProducts(women, withTypes(['Свитшот', 'Топ'])).map((p) => p.title),
-  ['Розовые поля', 'Тёмная ночь V'], 'два типа в одной группе складываются');
+const twoTypes = selectProducts(women, withTypes(['Свитшот', 'Топик'])).map((p) => p.id);
+eq(twoTypes, women
+  .filter((p) => p.types.includes('Свитшот') || p.types.includes('Топик'))
+  .map((p) => p.id), 'два типа в одной группе складываются по «или»');
 
 // Цвета: отбор не должен пустеть, а метка — теряться
 const green = selectProducts(both, withColors(['Зелёный']));
 contains(green.map((p) => p.title), ['Изумрудный сад'], 'цвет «Зелёный»: есть ожидаемый товар');
 ok(green.every((p) => p.colors.includes('Зелёный')), 'цвет «Зелёный»: все товары с этой меткой');
+eq(green.map((p) => p.id), byTag(both, 'colors', 'Зелёный'), 'цвет «Зелёный»: отбор совпадает с метками');
 
 const grey = selectProducts(both, withColors(['Серый']));
 contains(grey.map((p) => p.title), ['Тихое серебро'], 'цвет «Серый»: есть ожидаемый товар');
@@ -166,8 +180,14 @@ ok(pinkItems.length > 0 && pinkItems.every((p) => p.colors.includes('Розов�
   'цвет «Розовый»: отбор по метке', String(pinkItems.length));
 ok(whiteItems.length > 0 && whiteItems.every((p) => p.colors.includes('Белый')),
   'цвет «Белый»: отбор по метке', String(whiteItems.length));
-contains(selectProducts(both, withColors(['Мятный'])).map((p) => p.title),
-  ['Синий бриз', 'Мятный вечер'], 'цвет «Мятный» — новый кружок в палитре');
+
+/* Новые цвета женской палитры из таблицы: голубой и фиолетовый */
+for (const colour of ['Голубой', 'Фиолетовый']) {
+  const found = selectProducts(women, withColors([colour]));
+  ok(found.length > 0, `цвет «${colour}» из таблицы: есть товары`, String(found.length));
+  eq(found.map((p) => p.id), byTag(women, 'colors', colour),
+    `цвет «${colour}»: отбор совпадает с метками`);
+}
 
 // Между группами — «и»
 const pinkGirls = selectProducts(both, { ...emptyFilters(), colors: ['Розовый'], ages: ['Для девушек'] });
