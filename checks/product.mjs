@@ -191,6 +191,18 @@ ok(specsForDivider.indexOf('product__divider') < specsForDivider.indexOf('Хар
    с фонами, поэтому здесь он свой — иначе переменная ещё не существует */
 const COLLECTIONS = ['women', 'men', 'other'];
 
+/* Разделитель стоит по левому краю колонки, как текст над ним. Проверяем
+   правило, а не картинку: вернуть центровку — одна строка, и без этой
+   проверки она пройдёт незамеченной */
+const DIVIDER_CSS = read('assets/css/pages/product.css');
+const dividerRule = DIVIDER_CSS.slice(
+  DIVIDER_CSS.indexOf('.product__divider {'),
+  DIVIDER_CSS.indexOf('}', DIVIDER_CSS.indexOf('.product__divider {')),
+);
+
+ok(!/margin-inline:\s*auto/.test(dividerRule),
+  'разделитель не центрируется — он прижат влево', dividerRule.replace(/\s+/g, ' '));
+
 for (const section of COLLECTIONS) {
   const file = bytes(`assets/images/icons/icon-circle_${section}.svg`);
   ok(Boolean(file), `кольцо коллекции «${section}» лежит на месте`,
