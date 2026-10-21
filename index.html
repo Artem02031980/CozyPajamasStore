@@ -755,6 +755,35 @@
       </div>
     </div>
 
+    <!-- ====================================================================
+         Модальное окно выбора размера.
+         Открывает: кнопка «В корзину» в карточках каталога — размер там
+         не выбран, и добавлять без него нельзя.
+         Наполняет: size-picker.js — товар и его размеры зависят от карточки,
+         поэтому в разметке пустой контейнер. Поведение окна — modal.js.
+         ==================================================================== -->
+    <div
+      class="modal is-hidden"
+      data-modal="size"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="size-title"
+      aria-hidden="true"
+    >
+      <div class="modal__overlay" data-modal-close></div>
+
+      <div class="modal__dialog">
+        <div class="modal__head">
+          <h2 class="modal__title" id="size-title">Выберите размер</h2>
+          <button class="modal__close" type="button" data-modal-close aria-label="Закрыть окно">
+            ×
+          </button>
+        </div>
+
+        <div class="size-picker" data-size-picker></div>
+      </div>
+    </div>
+
     <!-- Единственный подключаемый скрипт: точка входа с импортами модулей -->
     <script type="module" src="assets/js/script.js"></script>
   </body>

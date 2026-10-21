@@ -17,10 +17,11 @@
  *   render-cart.js — разметка корзины
  *   cart-ui.js     — кнопки корзины, окно, счётчик в шапке
  *   modal.js       — модальные окна: ESC, фокус, блокировка прокрутки
- *   checkout.js    — форма оформления заказа
+ *   checkout.js    — форма оформления заказа и покупка в один клик
  *   thanks.js      — показ заказа и вопроса на страницах благодарности
  *   feedback.js    — форма обратной связи
- *   product.js     — галерея, размеры и услуга на странице товара
+ *   product.js     — размеры и выбор файла макета на странице товара
+ *   size-picker.js — выбор размера в окне перед добавлением в корзину
  *
  * Какая страница что запускает, решает атрибут data-page на <body>:
  *   home             — каталог, фильтры, корзина, оформление, форма вопроса
@@ -34,6 +35,7 @@ import { renderCatalog } from './render.js';
 import { initFilters } from './filters.js';
 import { initModal } from './modal.js';
 import { initCart } from './cart-ui.js';
+import { initSizePicker } from './size-picker.js';
 import { initCheckout, initBuyNow } from './checkout.js';
 import { initThanks, initThanksFeedback } from './thanks.js';
 import { initFeedback } from './feedback.js';
@@ -53,6 +55,9 @@ function initHome() {
   initHeader();
   initModal();
   initCart();
+  /* После initCart: кнопки карточек помечены data-select-size, cart-ui
+     такие клики пропускает, а окно выбора размера их перехватывает */
+  initSizePicker();
   initCheckout();
   initFeedback();
 }

@@ -92,7 +92,7 @@ function refresh() {
  *
  * @param {HTMLButtonElement} button
  */
-function showAdded(button) {
+export function showAdded(button) {
   const label = button.querySelector('[data-cart-label]');
   const target = label ?? button;
 
@@ -122,6 +122,12 @@ export function initCart() {
     // 1. Добавить товар или услугу
     const addButton = target.closest('[data-cart-add]');
     if (addButton) {
+      /* Кнопки карточек помечены data-select-size: размер там не выбран,
+         и добавлять без него нельзя. Такие клики обрабатывает
+         size-picker.js — он откроет окно выбора размера, а в корзину
+         товар попадёт уже с размером */
+      if (addButton.hasAttribute('data-select-size')) return;
+
       event.preventDefault();
       const id = addButton.dataset.cartAdd;
 

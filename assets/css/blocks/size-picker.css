@@ -1,0 +1,79 @@
+/* ==========================================================================
+   size-picker.css — выбор размера в окне
+
+   Появляется, когда в карточке каталога нажимают «В корзину»: там размер
+   ещё не выбран, и товар уходит в корзину только после подтверждения.
+   Живёт в blocks/, а не в секции: окно одно на всю страницу, а карточки
+   с кнопкой встречаются в четырёх секциях.
+
+   Разметку собирает size-picker.js:
+     <p class="size-picker__product">…</p>
+     <div class="size-picker__sizes">
+       <button class="size-picker__size is-active" data-picker-size="M">M</button>
+     </div>
+     <p class="size-picker__error" role="alert">Выберите размер</p>
+     <button class="size-picker__confirm button" data-size-confirm>Добавить в корзину</button>
+   ========================================================================== */
+
+.size-picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+/* Название товара — чтобы было видно, к чему выбирают размер */
+.size-picker__product {
+  font-size: var(--fs-18);
+  line-height: var(--lh-snug);
+  color: var(--color-pink);
+}
+
+.size-picker__sizes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+
+/* Чипс размера: то же оформление, что у размеров на странице товара —
+   рамка цвета акцента, при выборе заливка. Размеры одной природы должны
+   выглядеть одинаково в обоих местах */
+.size-picker__size {
+  min-width: var(--control-height);
+  min-height: var(--control-height);
+  padding-inline: var(--space-12);
+  font-family: var(--font-body);
+  font-size: var(--fs-16);
+  color: var(--color-dark);
+  background-color: var(--color-white);
+  border: var(--border-width-thin) solid var(--color-pink);
+  border-radius: var(--radius-xs);
+  transition: color var(--transition-fast) var(--transition-timing),
+    background-color var(--transition-fast) var(--transition-timing);
+}
+
+.size-picker__size:hover,
+.size-picker__size.is-active {
+  color: var(--color-white);
+  background-color: var(--color-pink);
+}
+
+/* «Выберите размер» — под рядами размеров, красным, как ошибки форм */
+.size-picker__error {
+  font-size: var(--fs-14);
+  line-height: var(--lh-snug);
+  color: #fe0000;
+}
+
+/* Кнопка подтверждения: розовая, при наведении синяя — как «Добавить
+   в корзину» на странице товара. Класс button--pink не ставится: у него
+   своё правило :hover с тёмным фоном, и они спорили бы по специфичности */
+.size-picker__confirm {
+  align-self: center;
+  border-radius: var(--radius-sm);
+  color: var(--color-white);
+  background-color: var(--color-pink);
+}
+
+.size-picker__confirm:hover {
+  background-color: var(--color-blue);
+}

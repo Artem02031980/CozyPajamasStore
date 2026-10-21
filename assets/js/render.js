@@ -63,13 +63,16 @@ export function renderCard(product) {
       <p class="product-card__subtitle">${subtitle}</p>
       <p class="product-card__price">${formatPrice(price)}</p>
       <!-- Кнопка «В корзину». Не внутри ссылки: клик по ней не должен
-           уводить на страницу товара. Размер выбирается на странице товара,
-           поэтому здесь позиция добавляется без размера.
+           уводить на страницу товара.
+           data-select-size — признак того, что размер ещё не выбран:
+           по нему size-picker.js открывает окно выбора, а cart-ui.js
+           отступает и не кладёт товар в корзину сразу.
            Класса button--block нет намеренно: кнопка по ширине надписи -->
       <button
         class="product-card__button button ${buttonModifier}"
         type="button"
         data-cart-add="${product.id}"
+        data-select-size
       >В корзину</button>
     </article>`;
 }

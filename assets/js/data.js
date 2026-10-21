@@ -2149,3 +2149,37 @@ export function getProduct(id) {
 export function getProductsCount() {
   return PRODUCTS.length;
 }
+
+/**
+ * Размеры, которые предлагаются у товара, если у него нет своих.
+ *
+ * Одежда продаётся размерами S–XXL, как в макете. У «Других товаров»
+ * размера нет: подушка, плед или беруши не бывают S или M, поэтому там
+ * единственный вариант — «Единый размер». Он нужен не для выбора, а чтобы
+ * в заказе было видно, что размер у позиции вообще спрашивали.
+ *
+ * @type {Record<string, string[]>}
+ */
+export const SIZES_BY_SECTION = {
+  new: ['S', 'M', 'XL', 'XXL'],
+  women: ['S', 'M', 'XL', 'XXL'],
+  men: ['S', 'M', 'XL', 'XXL'],
+  other: ['Единый размер'],
+};
+
+/**
+ * Размеры конкретного товара.
+ *
+ * Свои размеры у товара важнее общих: если у него в данных есть поле sizes,
+ * берём его. Иначе — список своей секции. Товара нет — пустой список,
+ * и окно выбора размера тогда не откроется.
+ *
+ * @param {object} product товар из каталога
+ * @returns {string[]}
+ */
+export function getSizes(product) {
+  if (!product) return [];
+  if (Array.isArray(product.sizes) && product.sizes.length) return product.sizes;
+
+  return SIZES_BY_SECTION[product.section] ?? [];
+}

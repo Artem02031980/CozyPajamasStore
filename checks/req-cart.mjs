@@ -19,8 +19,33 @@ const pressKey = (key) => document.dispatchEvent(new KeyboardEvent('keydown', { 
 
 const counter = document.querySelector('[data-cart-counter]');
 const cartModal = document.querySelector('[data-modal="cart"]');
+const sizeModal = document.querySelector('[data-modal="size"]');
 const cartBody = document.querySelector('[data-cart-body]');
 const cartOpen = document.querySelector('[data-cart-open]');
+
+/**
+ * Добавляет товар из карточки так же, как это делает человек: нажимает
+ * «В корзину», выбирает размер в открывшемся окне и подтверждает.
+ *
+ * Раньше здесь хватало одного нажатия, но с окном выбора размера товар
+ * без размера в корзину не попадает — и проверка должна идти тем же путём,
+ * что и покупатель.
+ *
+ * @param {HTMLElement} button кнопка «В корзину» в карточке
+ * @param {number} [sizeIndex] какой размер выбрать; по умолчанию первый
+ */
+const addFromCard = async (button, sizeIndex = 0) => {
+  press(button);
+  await frame();
+
+  const picker = sizeModal.querySelector('[data-size-picker]');
+  const chip = [...picker.querySelectorAll('[data-picker-size]')][sizeIndex];
+
+  press(chip);
+  await frame();
+  press(picker.querySelector('[data-size-confirm]'));
+  await frame();
+};
 
 /** Снимок состояния корзины и окна. */
 const snap = (step) => ({
@@ -54,20 +79,17 @@ steps.push(snap('старт с пустой корзиной'));
 // 1. Кнопка «В корзину» на первой карточке
 const addButton = document.querySelector('.goods-new__grid [data-cart-add]');
 const addedId = addButton.dataset.cartAdd;
-press(addButton);
-await frame();
+await addFromCard(addButton);
 steps.push({ ...snap('после «В корзину»'), buttonLabel: addButton.textContent.trim(), buttonDisabled: addButton.disabled });
 
 // 2. Вторая карточка — другой товар
 const secondButton = [...document.querySelectorAll('.goods-new__grid [data-cart-add]')][1];
-press(secondButton);
-await frame();
+await addFromCard(secondButton);
 steps.push(snap('после второго товара'));
 
-// 3. Повторное нажатие той же кнопки: количество растёт, позиция не дублируется
-press(secondButton);
-await frame();
-steps.push(snap('повторное нажатие второго товара'));
+// 3. Повторное добавление того же товара: количество растёт, позиция не дублируется
+await addFromCard(secondButton);
+steps.push(snap('повторное добавление второго товара'));
 
 // 4. Открываем окно корзины кнопкой в шапке
 press(cartOpen);
