@@ -10,7 +10,7 @@
  * вид не должен измениться от того, что карточки стали данными.
  */
 
-import { getProducts } from './data.js';
+import { getProducts, getSizes } from './data.js';
 import { formatPrice, $ } from './utils.js';
 
 /**
@@ -26,6 +26,13 @@ import { formatPrice, $ } from './utils.js';
  */
 export function renderCard(product) {
   const { title, subtitle, price, image, alt, width, height, titleColor } = product;
+
+  /* Размер выбирают только там, где есть из чего выбирать: у пижам это
+     S–XXL, у «Других товаров» размер один («Единый размер»), и окно выбора
+     для них было бы пустым шагом. Поэтому признак data-select-size ставится
+     по числу размеров, а не по названию секции: появится у товара второй
+     размер — окно включится само */
+  const selectSize = getSizes(product).length > 1 ? ' data-select-size' : '';
 
   /* Модификатор цвета названия — по БЭМ: отдельный класс, а не инлайн-стиль.
      Розовый — базовый цвет из блока, поэтому класс ставим только голубому. */
@@ -66,13 +73,13 @@ export function renderCard(product) {
            уводить на страницу товара.
            data-select-size — признак того, что размер ещё не выбран:
            по нему size-picker.js открывает окно выбора, а cart-ui.js
-           отступает и не кладёт товар в корзину сразу.
+           отступает и не кладёт товар в корзину сразу. Ставится только
+           товарам, у которых размеров больше одного.
            Класса button--block нет намеренно: кнопка по ширине надписи -->
       <button
         class="product-card__button button ${buttonModifier}"
         type="button"
-        data-cart-add="${product.id}"
-        data-select-size
+        data-cart-add="${product.id}"${selectSize}
       >В корзину</button>
     </article>`;
 }

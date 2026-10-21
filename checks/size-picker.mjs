@@ -69,6 +69,20 @@ eq([...new Set(getProducts('other').map((p) => getSizes(p).length))], [1],
 const dirty = PRODUCTS.filter((p) => getSizes(p).some((s) => s !== s.trim() || !s));
 eq(dirty.map((p) => p.id), [], 'в размерах нет пустых строк и пробелов по краям');
 
+/* Окно выбора размера нужно там, где есть из чего выбирать. У пижам это
+   четыре размера, у «Других товаров» — один: окно для них было бы пустым
+   шагом, поэтому карточки этой секции кладут товар в корзину сразу */
+const needsChoice = (product) => getSizes(product).length > 1;
+
+eq([...new Set(getProducts('other').map(needsChoice))], [false],
+  'у «Других товаров» окно выбора не открывается: размер один');
+eq([...new Set(getProducts('women').map(needsChoice))], [true],
+  'женским пижамам окно нужно');
+eq([...new Set(getProducts('men').map(needsChoice))], [true],
+  'мужским пижамам окно нужно');
+eq([...new Set(getProducts('new').map(needsChoice))], [true],
+  'пижамам «Новой коллекции» окно нужно');
+
 // ─────────────── связка модулей ───────────────
 
 const RENDER_JS = read('assets/js/render.js');
@@ -80,9 +94,13 @@ const CSS = read('assets/css/blocks/size-picker.css');
 const STYLE_CSS = read('assets/css/style.css');
 
 ok(RENDER_JS.includes('data-select-size'),
-  'кнопка карточки помечена data-select-size',
+  'render.js умеет ставить признак выбора размера',
   'в render.js нет признака выбора размера');
-ok(/data-cart-add="\$\{product\.id\}"[\s\S]{0,120}?data-select-size/.test(RENDER_JS),
+ok(/getSizes\(product\)\.length > 1/.test(RENDER_JS),
+  'признак ставится по числу размеров, а не по названию секции');
+ok(/\$\{selectSize\}/.test(RENDER_JS),
+  'признак подставляется в разметку кнопки условно');
+ok(/data-cart-add="\$\{product\.id\}"\$\{selectSize\}/.test(RENDER_JS),
   'признак стоит на той же кнопке, что и data-cart-add');
 
 /* cart-ui.js обязан отступить: иначе товар добавится без размера,
@@ -120,6 +138,21 @@ ok(CSS.length > 0, 'size-picker.css не пустой', `${CSS.length} байт`
 ok(STYLE_CSS.includes("url('blocks/size-picker.css')"), 'size-picker.css подключён в style.css');
 ok(/\.size-picker__size\.is-active/.test(CSS), 'у выбранного размера есть оформление');
 ok(/#fe0000/.test(CSS), 'сообщение об ошибке красное, как в остальных формах');
+
+/* Содержимое окна выровнено по центру: название, ряды размеров и кнопка
+   стоят на одной оси. Раньше чипсы прижимались влево, а кнопка — в центр,
+   и окно выглядело собранным из двух разных блоков */
+const cssRule = (selector) => {
+  const at = CSS.indexOf(selector + ' {');
+  return at < 0 ? '' : CSS.slice(at, CSS.indexOf('}', at));
+};
+
+ok(/text-align:\s*center/.test(cssRule('.size-picker__product')),
+  'название товара по центру окна', cssRule('.size-picker__product').replace(/\s+/g, ' '));
+ok(/justify-content:\s*center/.test(cssRule('.size-picker__sizes')),
+  'ряды размеров по центру окна', cssRule('.size-picker__sizes').replace(/\s+/g, ' '));
+ok(/align-self:\s*center/.test(cssRule('.size-picker__confirm')),
+  'кнопка подтверждения по центру окна');
 
 // ─────────────── итог ───────────────
 

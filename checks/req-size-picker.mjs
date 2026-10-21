@@ -78,32 +78,46 @@ localStorage.removeItem('cozy-pajamas:cart');
 document.dispatchEvent(new CustomEvent('cart:change'));
 await frame();
 
-const otherButton = document.querySelector('.goods-other__item [data-select-size]');
+/* 5. «Другие товары» кладутся в корзину сразу: у них размер один
+   («Единый размер»), и окно выбора было бы пустым шагом */
+localStorage.removeItem('cozy-pajamas:cart');
+document.dispatchEvent(new CustomEvent('cart:change'));
+await frame();
+
+const otherButton = document.querySelector('.goods-other__item [data-cart-add]');
 press(otherButton);
 await frame();
 await wait(120);
 
-const otherPicker = {
+const otherClick = {
+  признакВыбора: otherButton.hasAttribute('data-select-size'),
   окноОткрыто: !modal.classList.contains('is-hidden'),
-  размеров: body.querySelectorAll('[data-picker-size]').length,
-  подписи: [...body.querySelectorAll('[data-picker-size]')].map((c) => c.textContent.trim()),
-  корзинаПуста: cartItems().length === 0,
+  корзина: cartItems(),
+  подписьКнопки: otherButton.textContent.trim(),
 };
 
-/* Закрываем окно и убираем за собой */
-press(modal.querySelector('[data-modal-close]'));
-await frame();
+/* Убираем за собой */
 localStorage.removeItem('cozy-pajamas:cart');
 document.dispatchEvent(new CustomEvent('cart:change'));
 
-/* Сколько кнопок вообще открывают окно: на главной это все карточки */
+/* Кто открывает окно: пижамы («Новая коллекция», женская и мужская),
+   а «Другие товары» кладутся сразу */
+const counts = {};
+for (const section of ['goods-new', 'goods-women', 'goods-men', 'goods-other']) {
+  const buttons = [...document.querySelectorAll(`.${section} [data-cart-add]`)];
+  counts[section] = {
+    всего: buttons.length,
+    сОкном: buttons.filter((b) => b.hasAttribute('data-select-size')).length,
+  };
+}
+
 return {
   шаги: steps,
   товарКарточки: cardTitle,
   размерПослеДобавления: sizeAfter,
-  другиеТовары: otherPicker,
-  кнопокСВыборомРазмера: document.querySelectorAll('[data-select-size]').length,
-  карточекНаСтранице: document.querySelectorAll('.product-card').length,
+  другиеТовары: otherClick,
+  посекциям: counts,
   кнопкаПринтаБезВыбора: document.querySelectorAll('[data-cart-add="print"]:not([data-select-size])').length,
   окноКорзиныТронуто: cartModal ? !cartModal.classList.contains('is-hidden') : null,
 };
+
