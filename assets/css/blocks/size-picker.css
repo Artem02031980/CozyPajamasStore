@@ -85,3 +85,37 @@
 .size-picker__confirm:hover {
   background-color: var(--color-blue);
 }
+
+/* ==========================================================================
+   Акцент по виду товара
+   Женская коллекция остаётся розовой — это базовые правила выше. Мужская
+   идёт в голубом, как её карточки в каталоге: иначе окно выбивалось бы
+   из секции, откуда его открыли. Вид товара пишет size-picker.js
+   в data-section у контейнера.
+   ========================================================================== */
+
+.size-picker[data-section='men'] .size-picker__product {
+  color: var(--color-blue);
+}
+
+.size-picker[data-section='men'] .size-picker__size {
+  border-color: var(--color-blue);
+}
+
+.size-picker[data-section='men'] .size-picker__size:hover,
+.size-picker[data-section='men'] .size-picker__size.is-active {
+  color: var(--color-white);
+  background-color: var(--color-blue);
+}
+
+/* У мужской коллекции наведение и покой меняются местами: кнопка голубая,
+   при наведении розовая */
+.size-picker[data-section='men'] .size-picker__confirm {
+  color: var(--color-white);
+  background-color: var(--color-blue);
+}
+
+.size-picker[data-section='men'] .size-picker__confirm:hover {
+  color: var(--color-white);
+  background-color: var(--color-pink);
+}

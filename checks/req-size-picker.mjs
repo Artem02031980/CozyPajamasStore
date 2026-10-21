@@ -100,6 +100,32 @@ const otherClick = {
 localStorage.removeItem('cozy-pajamas:cart');
 document.dispatchEvent(new CustomEvent('cart:change'));
 
+/* 6. Акцент окна по виду товара: женская коллекция розовая, мужская
+   голубая. Наведение проверяет отдельный прогон с настоящим курсором —
+   здесь смотрим цвета в покое */
+const coloursOf = async (sectionSelector) => {
+  press(document.querySelector(`${sectionSelector} [data-select-size]`));
+  await frame();
+  await wait(150);
+
+  const picker = modal.querySelector('[data-size-picker]');
+  const cs = (el) => getComputedStyle(el);
+  const result = {
+    раздел: picker.dataset.section ?? null,
+    товар: picker.querySelector('.size-picker__product')?.textContent.trim() ?? null,
+    название: cs(picker.querySelector('.size-picker__product')).color,
+    рамкаРазмера: cs(picker.querySelector('[data-picker-size]')).borderTopColor,
+    кнопка: cs(picker.querySelector('[data-size-confirm]')).backgroundColor,
+  };
+
+  press(modal.querySelector('[data-modal-close]'));
+  await frame();
+  return result;
+};
+
+const womenColours = await coloursOf('.goods-women');
+const menColours = await coloursOf('.goods-men');
+
 /* Кто открывает окно: пижамы («Новая коллекция», женская и мужская),
    а «Другие товары» кладутся сразу */
 const counts = {};
@@ -116,6 +142,7 @@ return {
   товарКарточки: cardTitle,
   размерПослеДобавления: sizeAfter,
   другиеТовары: otherClick,
+  цвета: { женская: womenColours, мужская: menColours },
   посекциям: counts,
   кнопкаПринтаБезВыбора: document.querySelectorAll('[data-cart-add="print"]:not([data-select-size])').length,
   окноКорзиныТронуто: cartModal ? !cartModal.classList.contains('is-hidden') : null,

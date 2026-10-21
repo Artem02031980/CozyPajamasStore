@@ -54,6 +54,10 @@ function render(product) {
 
   const sizes = getSizes(product);
 
+  /* Вид товара в атрибуте: по нему стили выбирают акцент окна.
+     У мужской коллекции он голубой, у остальных — розовый, как в макете */
+  body.dataset.section = product.section ?? '';
+
   body.innerHTML = `
     <p class="size-picker__product">${product.title}</p>
 
