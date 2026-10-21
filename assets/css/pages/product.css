@@ -620,6 +620,34 @@ body[data-page='product'][data-section='other'] {
   line-height: var(--lh-base);
 }
 
+/* Декоративный разделитель между описанием и характеристиками — кольцо
+   из макета. Файл выбирается по виду товара так же, как фон страницы:
+   у женской коллекции кольцо розовое, у мужской голубое, у «других
+   товаров» бежевое — каждое в тон своей секции каталога.
+   Размер 40px — родной размер файла, поэтому задан числом: токена ровно
+   на 40 в шкале иконок нет (--icon-size-lg — 32px). */
+.product__divider {
+  width: 40px;
+  height: 40px;
+  margin-top: var(--space-24);
+  margin-inline: auto;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+body[data-section='women'] .product__divider {
+  background-image: url('../../images/icons/icon-circle_women.svg');
+}
+
+body[data-section='men'] .product__divider {
+  background-image: url('../../images/icons/icon-circle_men.svg');
+}
+
+body[data-section='other'] .product__divider {
+  background-image: url('../../images/icons/icon-circle_other.svg');
+}
+
 /* Характеристики — список пар «название — значение», поэтому dl, а не
    таблица: это не табличные данные. Значение стоит на той же строке,
    что и название, поэтому две колонки */

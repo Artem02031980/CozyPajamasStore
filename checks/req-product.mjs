@@ -143,6 +143,35 @@ const feedback = {
 
 const cartAfterAdd = JSON.parse(localStorage.getItem('cozy-pajamas:cart') ?? '[]');
 
+// ─── декоративный разделитель ───
+
+/* Кольцо между описанием и характеристиками. Проверяем, что браузер взял
+   файл своей коллекции (а не 404 и не чужой), что оно 40×40 и стоит ровно
+   между текстом описания и заголовком характеристик */
+const divider = document.querySelector('.product__divider');
+const descriptionText = document.querySelector('.product__text');
+const detailsTitle = [...document.querySelectorAll('.product__block-title')]
+  .find((el) => el.textContent.trim().startsWith('Характеристики'));
+
+const dividerInfo = (() => {
+  if (!divider) return { найден: false };
+
+  const b = box(divider);
+  const url = cs(divider).backgroundImage;
+
+  return {
+    найден: true,
+    картинка: url && url !== 'none' ? url.split('/').pop().replace(/["')]/g, '') : 'нет картинки',
+    ширина: b.width,
+    высота: b.height,
+    ariaHidden: divider.getAttribute('aria-hidden'),
+    текстВнутри: divider.textContent.trim(),
+    порядокВерный: Boolean(descriptionText && detailsTitle)
+      && b.top >= box(descriptionText).bottom
+      && box(detailsTitle).top >= b.top,
+  };
+})();
+
 // ─── галерея при одном кадре ───
 
 /* Точек нет, стрелки выключены в разметке. Клик по выключенной стрелке
@@ -283,6 +312,7 @@ return {
     послеДобавления: cartAfterAdd,
   },
   принт: printFiles,
+  разделитель: dividerInfo,
   галерея: gallery,
   одинКлик: {
     ...oneClickInfo,

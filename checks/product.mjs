@@ -163,6 +163,46 @@ const descriptionBlock = (() => {
 ok(descriptionBlock.indexOf('product__composition') < descriptionBlock.indexOf('product__text'),
   'состав стоит выше текста описания');
 
+// ─────────────── разделитель между описанием и характеристиками ───────────────
+
+/* Декоративное кольцо из макета. Файл свой у каждого вида товара, выбор —
+   по data-section у <body>, как у фона страницы */
+const dividerMatch = html.match(/<div[^>]*class="product__divider"[^>]*>/);
+ok(Boolean(dividerMatch), 'в разметке есть декоративный разделитель',
+  String(dividerMatch?.[0]));
+ok(/aria-hidden="true"/.test(dividerMatch?.[0] ?? ''),
+  'разделитель скрыт от скринридера: смысла в нём нет');
+
+/* Порядок в разметке: описание → разделитель → характеристики.
+   Имена локальные: ниже, в блоке про колонки, уже есть specsHtml,
+   и повторное объявление — ошибка */
+const specsForDivider = html
+  .slice(html.indexOf('class="product__specs"'), html.indexOf('</article>'))
+  .replace(/<!--[\s\S]*?-->/g, '');
+
+ok(specsForDivider.indexOf('product__text') < specsForDivider.indexOf('product__divider'),
+  'разделитель идёт после текста описания',
+  `текст ${specsForDivider.indexOf('product__text')}, разделитель ${specsForDivider.indexOf('product__divider')}`);
+ok(specsForDivider.indexOf('product__divider') < specsForDivider.indexOf('Характеристики'),
+  'и перед характеристиками',
+  `разделитель ${specsForDivider.indexOf('product__divider')}, характеристики ${specsForDivider.indexOf('Характеристики')}`);
+
+/* Иконки: по файлу на коллекцию. Список коллекций объявлен ниже, вместе
+   с фонами, поэтому здесь он свой — иначе переменная ещё не существует */
+const COLLECTIONS = ['women', 'men', 'other'];
+
+for (const section of COLLECTIONS) {
+  const file = bytes(`assets/images/icons/icon-circle_${section}.svg`);
+  ok(Boolean(file), `кольцо коллекции «${section}» лежит на месте`,
+    `assets/images/icons/icon-circle_${section}.svg`);
+  if (!file) continue;
+
+  const content = file.toString('utf8');
+  ok(content.includes('<svg'), `icon-circle_${section}.svg — это SVG`);
+  ok(/viewBox="0 0 40 40"/.test(content), `кольцо «${section}» нарисовано в сетке 40×40`);
+  ok(/#[0-9A-Fa-f]{6}/.test(content), `у кольца «${section}» свой цвет заливки`);
+}
+
 // ─────────────── элементы из макета ───────────────
 
 const REQUIRED = [
