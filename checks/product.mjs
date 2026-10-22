@@ -400,6 +400,29 @@ for (const section of SECTIONS_WITH_BG) {
   ok(css.includes(`bg_${section}.png`), `в стилях подключён фон «${section}»`);
 }
 
+/* Фон рисует закреплённый слой (body::before с position: fixed), а не сам
+   body с background-attachment: fixed. Причина: в Chrome на Windows
+   фиксированный фон body перерисовывается на каждом кадре прокрутки,
+   и на картинке в 1.4 МБ это видно как мигание экрана.
+   Комментарии из CSS вырезаем: про этот приём в файле написано словами,
+   и поиск по тексту ловил бы объяснение, а не правило */
+const cssRules = css.replace(/\/\*[\s\S]*?\*\//g, '');
+
+ok(/body\[data-page='product'\]::before/.test(cssRules),
+  'фон рисует псевдоэлемент body::before');
+ok(!/background-attachment:\s*fixed/.test(cssRules),
+  'фиксированный attachment у фона не используется — он и мигал',
+  'в стилях остался background-attachment: fixed');
+ok(/position:\s*fixed;[\s\S]{0,400}?inset:\s*0/.test(cssRules),
+  'слой фона закреплён за окном');
+
+/* Шапка вынесена в собственный слой: иначе на Windows с масштабом экрана
+   липкая шапка подмигивает при прокрутке */
+const headerCss = read('assets/css/sections/header.css');
+ok(/\.header \{[\s\S]{0,900}?will-change:\s*transform/.test(headerCss),
+  'липкая шапка заранее вынесена в отдельный слой',
+  'в правилах .header нет will-change: transform');
+
 /* Точек-индикаторов нет ни в разметке, ни в стилях, ни в модуле:
    при одном кадре они ничего не показывали. Файл page-dot.svg вместе с ними
    остался бы мусором в assets — его тоже не должно быть */

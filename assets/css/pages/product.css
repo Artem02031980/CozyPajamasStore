@@ -43,27 +43,36 @@ body[data-page='product'][data-section='other'] {
 }
 
 @media (min-width: 768px) {
-  body[data-page='product'][data-section='women'] {
-    background-image: url('../../images/product-page/bg_women.png');
-  }
-
-  body[data-page='product'][data-section='men'] {
-    background-image: url('../../images/product-page/bg_men.png');
-  }
-
-  body[data-page='product'][data-section='other'] {
-    background-image: url('../../images/product-page/bg_other.png');
-  }
-
-  /* Общие свойства фона для всех трёх: различается только файл */
-  body[data-page='product'] {
+  /* Фон рисует псевдоэлемент, закреплённый за окном, а не сам body
+     с background-attachment: fixed.
+     Причина: в Chrome на Windows фиксированный фон body перерисовывается
+     целиком на каждом кадре прокрутки, и на больших картинках (у нас
+     по 1.4 МБ) это видно как мигание экрана. Слой с position: fixed
+     даёт ровно ту же картинку — она стоит на месте, пока содержимое
+     едет, — но композитор держит её отдельным слоем и не перерисовывает.
+     z-index: -1 кладёт слой под содержимое страницы; кликам он
+     не мешает (pointer-events: none) */
+  body[data-page='product']::before {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    content: '';
+    pointer-events: none;
     background-repeat: no-repeat;
     background-position: top center;
     background-size: cover;
+  }
 
-    /* Фон закреплён за окном: карточка товара выше экрана, и при прокрутке
-       иллюстрация не уезжает вверх вместе с содержимым */
-    background-attachment: fixed;
+  body[data-page='product'][data-section='women']::before {
+    background-image: url('../../images/product-page/bg_women.png');
+  }
+
+  body[data-page='product'][data-section='men']::before {
+    background-image: url('../../images/product-page/bg_men.png');
+  }
+
+  body[data-page='product'][data-section='other']::before {
+    background-image: url('../../images/product-page/bg_other.png');
   }
 }
 
