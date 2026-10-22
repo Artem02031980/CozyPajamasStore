@@ -1,0 +1,136 @@
+#!/usr/bin/env node
+/**
+ * Проверка связей между страницами и позиции «Свой макет» — без браузера.
+ *
+ * Что стережётся:
+ *   1. карточка «Клубничные поля» на главной ведёт на свою страницу товара,
+ *      а товары без страницы — на прежнюю заглушку;
+ *   2. ссылка «Выбрать из каталога» на странице товара ведёт в каталог
+ *      принтов (prints.html);
+ *   3. загруженный макет становится позицией корзины «Свой макет»:
+ *      нулевая сумма, пометка про менеджера и иконка файла;
+ *   4. картинка товара в корзине строится от корня проекта, а не от текущей
+ *      страницы — иначе на странице товара она не находилась бы.
+ *
+ * Клики и загрузку файла проверяет checks/req-product.mjs в браузере.
+ *
+ * Запуск: node checks/links.mjs
+ */
+
+import { readFileSync, existsSync } from 'node:fs';
+import { PRODUCTS, getProduct } from '../assets/js/data.js';
+
+let passed = 0;
+const failures = [];
+
+const ok = (condition, name, detail = '') => {
+  if (condition) { passed++; return; }
+  failures.push(`${name}${detail ? ' -> ' + detail : ''}`);
+};
+
+const eq = (actual, expected, name) => {
+  const a = JSON.stringify(actual);
+  const e = JSON.stringify(expected);
+  ok(a === e, name, `получено ${a}, ожидалось ${e}`);
+};
+
+const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
+const exists = (path) => existsSync(new URL(`../${path}`, import.meta.url));
+
+const RENDER = read('assets/js/render.js');
+const CART = read('assets/js/cart.js');
+const RENDER_CART = read('assets/js/render-cart.js');
+const PRODUCT_JS = read('assets/js/product.js');
+const PRODUCT_HTML = read('product-pages/klubnichnye-polya.html');
+
+// ─────────────── карточка ведёт на страницу товара ───────────────
+
+/* Адрес страницы живёт в данных: у товара есть поле page */
+const withPage = PRODUCTS.filter((product) => product.page);
+eq(withPage.map((product) => product.id), ['goods-women-03'],
+  'страница пока размечена у одного товара — «Клубничные поля»');
+eq(getProduct('goods-women-03').page, 'product-pages/klubnichnye-polya.html',
+  'адрес страницы «Клубничных полей»');
+ok(exists('product-pages/klubnichnye-polya.html'), 'файл страницы на месте');
+
+ok(/product\.page \?\? 'product-pages\/'/.test(RENDER),
+  'render.js берёт адрес из данных, а без него оставляет заглушку');
+ok(/href="\$\{href\}"/.test(RENDER), 'href карточки подставляется переменной');
+ok(!/href="product-pages\/"[\s\S]{0,40}data-product-id/.test(RENDER),
+  'жёсткой ссылки на папку в шаблоне не осталось');
+
+// ─────────────── каталог принтов ───────────────
+
+ok(/href="\.\.\/prints\.html"/.test(PRODUCT_HTML),
+  '«Выбрать из каталога» ведёт на prints.html');
+ok(exists('prints.html'), 'страница каталога принтов существует');
+
+// ─────────────── позиция «Свой макет» ───────────────
+
+ok(/export const CUSTOM_PRINT_ID = 'print-custom'/.test(CART),
+  'в cart.js есть идентификатор позиции «свой макет»');
+ok(CART.includes('CUSTOM_PRINT_ID'), 'cart.js знает эту позицию в toLine/addItem');
+ok(/file: typeof line\.file === 'string'/.test(CART),
+  'состав позиции хранит имя файла');
+ok(/options\.file|file = ''/.test(CART), 'addItem принимает имя файла');
+
+/* Цена неизвестна: позиция не должна попадать в сумму товаров */
+ok(/sum: 0/.test(CART), 'у позиции «Свой макет» нулевая сумма');
+ok(/Стоимость уточнит менеджер|уточнит стоимость/.test(CART)
+  || /уточнит менеджер/.test(RENDER_CART),
+  'пометка про менеджера есть в модулях');
+
+ok(RENDER_CART.includes('CUSTOM_PRINT_ID'), 'render-cart.js знает позицию «Свой макет»');
+ok(/cart__image--file/.test(RENDER_CART), 'в корзине рисуется плашка с иконкой файла');
+ok(/по согласованию/.test(RENDER_CART), 'цена показана как «по согласованию»');
+ok(exists('assets/images/icons/icon-file.svg'), 'иконка файла лежит в assets');
+
+const cartCss = read('assets/css/blocks/cart.css');
+ok(/\.cart__image--file[\s\S]{0,200}?icon-file\.svg/.test(cartCss),
+  'иконка файла подключена в стилях корзины');
+
+// ─────────────── загрузка макета на странице товара ───────────────
+
+ok(/import \{ addItem, CUSTOM_PRINT_ID \} from '\.\/cart\.js'/.test(PRODUCT_JS),
+  'product.js кладёт макет в корзину через модуль корзины');
+ok(/addItem\(CUSTOM_PRINT_ID, \{ qty: 1, file: name \}\)/.test(PRODUCT_JS),
+  'имя файла уезжает в позицию корзины');
+ok(/product__print-file-icon/.test(PRODUCT_JS),
+  'подпись после загрузки собирается с иконкой файла');
+ok(/Макет добавлен в корзину/.test(PRODUCT_JS),
+  'подпись говорит, что макет добавлен');
+ok(/уточнит менеджер/.test(PRODUCT_JS),
+  'подпись предупреждает, что стоимость уточнит менеджер');
+ok(/product__print-file--added/.test(read('assets/css/pages/product.css')),
+  'у подписи «файл добавлен» есть оформление');
+
+/* Неподходящий формат не должен попадать в корзину: проверка стоит
+   до вызова addItem */
+const uploadBody = PRODUCT_JS.slice(PRODUCT_JS.indexOf('function initPrintUpload'));
+const addAt = uploadBody.indexOf('addItem(');
+const guardAt = uploadBody.indexOf('if (!ok)');
+ok(guardAt > 0 && guardAt < addAt, 'неподходящий файл отсекается до добавления',
+  `проверка ${guardAt}, добавление ${addAt}`);
+
+// ─────────────── картинка в корзине ───────────────
+
+ok(/export function assetUrl/.test(read('assets/js/utils.js')),
+  'в utils.js есть построение абсолютного адреса');
+ok(/assetUrl\(product\.image\)/.test(RENDER_CART),
+  'картинка в корзине строится через assetUrl');
+ok(!/src="\$\{product\.image\}"/.test(RENDER_CART),
+  'прямого относительного пути к картинке в корзине не осталось');
+
+// ─────────────── итог ───────────────
+
+process.stdout.write(`Проверок пройдено: ${passed}\n`);
+process.stdout.write(`Карточка «Клубничные поля» → product-pages/klubnichnye-polya.html\n`);
+process.stdout.write(`Ссылка «Выбрать из каталога» → prints.html\n`);
+
+if (failures.length) {
+  process.stdout.write(`\nНЕ ПРОШЛО: ${failures.length}\n`);
+  failures.forEach((failure) => process.stdout.write(`  FAIL ${failure}\n`));
+  process.exit(1);
+}
+
+process.stdout.write('\nВсё чисто.\n');

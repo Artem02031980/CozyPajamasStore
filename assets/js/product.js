@@ -8,10 +8,12 @@
  *   1. выбор размера — ровно один, и он же уезжает в корзину: кнопка
  *      «Добавить в корзину» читает свой data-cart-size, а модуль его
  *      проставляет. Без скрипта товар добавится без размера, а не с чужим;
- *   2. выбор файла макета для нанесения принта: проверка формата и показ
- *      имени выбранного файла. Само окно выбора открывает браузер — кнопка
- *      «Добавить свой макет» это label для скрытого поля с файлом, поэтому
- *      работает и без скрипта.
+ *   2. выбор файла макета для нанесения принта: проверка формата, показ
+ *      имени выбранного файла и заявка в корзину. Своего макета нет
+ *      в каталоге, и цену за него называет менеджер, поэтому в корзину
+ *      уходит позиция «Свой макет» с нулевой суммой и пометкой. Само окно
+ *      выбора открывает браузер — кнопка «Добавить свой макет» это label
+ *      для скрытого поля с файлом, поэтому работает и без скрипта.
  *
  * Галереи в модуле нет: кадр один, стрелки в разметке выключены, точек
  * не осталось. Листание вернётся вместе со вторыми ракурсами товаров.
@@ -21,6 +23,7 @@
  */
 
 import { $, $$ } from './utils.js';
+import { addItem, CUSTOM_PRINT_ID } from './cart.js';
 
 /** Класс выбранного размера — тот же, что у выбранного чипса фильтра. */
 const ACTIVE = 'is-active';
@@ -111,20 +114,56 @@ export function checkPrintFile(file) {
 /**
  * Показывает итог выбора файла под кнопками.
  *
+ * Подпись собирается с иконкой файла: она и означает «файл добавлен».
+ * Иконка — фоном пустого элемента (как у кнопки «Выбрать из каталога»),
+ * поэтому текст остаётся текстом, а скринридер не читает имя картинки.
+ *
  * @param {HTMLElement|null} note
- * @param {string} text
- * @param {boolean} isError
+ * @param {{name: string, ok: boolean}|null} file
+ * @param {string} [error] текст ошибки; при нём иконки нет
  */
-function showPrintFileNote(note, text, isError) {
+function showPrintFileNote(note, file, error = '') {
   if (!note) return;
 
-  note.textContent = text;
-  note.classList.toggle('product__print-file--error', isError);
-  note.hidden = !text;
+  if (error) {
+    note.textContent = error;
+    note.classList.add('product__print-file--error');
+    note.classList.remove('product__print-file--added');
+    note.hidden = false;
+    return;
+  }
+
+  if (!file) {
+    note.textContent = '';
+    note.classList.remove('product__print-file--error', 'product__print-file--added');
+    note.hidden = true;
+    return;
+  }
+
+  note.classList.remove('product__print-file--error');
+  note.classList.add('product__print-file--added');
+  note.textContent = '';
+
+  const icon = document.createElement('span');
+  icon.className = 'product__print-file-icon';
+  icon.setAttribute('aria-hidden', 'true');
+
+  const text = document.createElement('span');
+  text.className = 'product__print-file-text';
+  text.textContent = `Макет добавлен в корзину: ${file.name}. `
+    + 'Стоимость уточнит менеджер — он свяжется с вами отдельно.';
+
+  note.append(icon, text);
+  note.hidden = false;
 }
 
 /**
  * Подключает выбор файла макета.
+ *
+ * Подходящий файл становится позицией корзины «Свой макет»: цены у неё нет,
+ * её называет менеджер после просмотра. Неподходящий не берём вовсе —
+ * иначе человек думает, что макет принят.
+ *
  * @param {HTMLInputElement|null} input
  */
 function initPrintUpload(input) {
@@ -135,21 +174,23 @@ function initPrintUpload(input) {
   input.addEventListener('change', () => {
     const file = input.files?.[0] ?? null;
     if (!file) {
-      showPrintFileNote(note, '', false);
+      showPrintFileNote(note, null);
       return;
     }
 
     const { name, ok } = checkPrintFile(file);
 
-    if (ok) {
-      showPrintFileNote(note, `Выбран файл: ${name}`, false);
+    if (!ok) {
+      showPrintFileNote(note, null, 'Файл не подходит. Нужен PDF, JPG, PNG, PSD или TIFF.');
+      input.value = '';
       return;
     }
 
-    /* Файл неподходящего формата не держим в поле: иначе человек думает,
-       что макет принят. Сбрасываем выбор и говорим, что нужно */
-    showPrintFileNote(note, 'Файл не подходит. Нужен PDF, JPG, PNG, PSD или TIFF.', true);
-    input.value = '';
+    showPrintFileNote(note, { name, ok });
+
+    /* Позиция одна на все макеты: повторная загрузка заменяет файл,
+       а не плодит вторую заявку (см. addItem в cart.js) */
+    addItem(CUSTOM_PRINT_ID, { qty: 1, file: name });
   });
 }
 

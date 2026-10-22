@@ -10,8 +10,8 @@
  * и на странице благодарности, поэтому разметка здесь одна на всех.
  */
 
-import { formatPrice, plural } from './utils.js';
-import { SERVICE_ID } from './cart.js';
+import { formatPrice, plural, assetUrl } from './utils.js';
+import { SERVICE_ID, CUSTOM_PRINT_ID } from './cart.js';
 
 /**
  * Одна позиция корзины.
@@ -19,28 +19,47 @@ import { SERVICE_ID } from './cart.js';
  * Размер показывается, только если он выбран: на главной товар кладут
  * в корзину без размера, и подпись «Размер: —» выглядела бы ошибкой.
  *
+ * У двух особых позиций вместо фотографии — плашка: у услуги «ПРИНТ»
+ * надпись, у своего макета иконка файла (файл загружен, но картинки
+ * у него ещё нет — её увидит менеджер).
+ *
  * @param {object} line позиция с данными товара (см. cart.js: toLine)
  * @returns {string}
  */
 export function renderCartItem(line) {
   const { product, qty, size, sum } = line;
   const isService = line.id === SERVICE_ID;
+  const isCustom = line.id === CUSTOM_PRINT_ID;
 
   const meta = [
     size ? `Размер: ${size}` : '',
-    isService ? product.subtitle : '',
+    isService || isCustom ? product.subtitle : '',
   ].filter(Boolean).join(' · ');
+
+  /* Файл вынесен отдельной строкой: имя бывает длинным, и в общей подписи
+     через точку оно терялось бы */
+  const note = isCustom
+    ? `<p class="cart__note cart__note--item">Стоимость уточнит менеджер: свяжется с вами отдельно</p>`
+    : '';
+
+  const picture = (() => {
+    if (isService) return '<div class="cart__image cart__image--service" aria-hidden="true">ПРИНТ</div>';
+    if (isCustom) return '<div class="cart__image cart__image--file" aria-hidden="true"></div>';
+
+    /* Картинку подставляет скрипт, а страница товара лежит на уровень
+       глубже корня: assetUrl считает адрес от корня проекта */
+    return `<img class="cart__image" src="${assetUrl(product.image)}" alt="${product.alt ?? ''}" width="80" height="107" />`;
+  })();
 
   return `
       <li class="cart__item" data-cart-line="${line.id}" data-cart-size="${size}">
-        ${isService
-          ? '<div class="cart__image cart__image--service" aria-hidden="true">ПРИНТ</div>'
-          : `<img class="cart__image" src="${product.image}" alt="${product.alt ?? ''}" width="80" height="107" />`}
+        ${picture}
 
         <div class="cart__info">
           <p class="cart__title">${product.title}</p>
           ${meta ? `<p class="cart__meta">${meta}</p>` : ''}
-          <p class="cart__price">${formatPrice(sum)}</p>
+          <p class="cart__price">${isCustom ? 'по согласованию' : formatPrice(sum)}</p>
+          ${note}
         </div>
 
         <div class="quantity">

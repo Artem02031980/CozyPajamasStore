@@ -585,6 +585,31 @@ body[data-page='product'][data-section='other'] {
   color: #fe0000;
 }
 
+/* Файл добавлен: подпись идёт с иконкой файла, поэтому флекс-строкой.
+   Иконка фоном пустого элемента — как у кнопки «Выбрать из каталога»,
+   а flex: none не даёт ей сжаться, если подпись длинная */
+.product__print-file--added {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-8);
+  color: var(--color-dark);
+}
+
+.product__print-file-icon {
+  flex: none;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  background-image: url('../../images/icons/icon-file.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.product__print-file-text {
+  flex: 1;
+  min-width: 0;
+}
+
 /* Поле выбора файла скрыто визуально, но остаётся в порядке табуляции:
    Enter или пробел на нём открывают системное окно. Пока фокус на поле,
    подсвечиваем кнопку-подпись — иначе человек с клавиатуры не видит,

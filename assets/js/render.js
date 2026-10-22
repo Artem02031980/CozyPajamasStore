@@ -52,10 +52,15 @@ export function renderCard(product) {
     ? `product-card__button--${titleColor}`
     : 'product-card__button--other';
 
+  /* Адрес страницы товара. Он есть в данных только у товаров, для которых
+     страница уже свёрстана (пока это «Клубничные поля»). У остальных
+     остаётся прежняя заглушка: папка product-pages/, — чтобы ссылка
+     не вела на несуществующий файл с чужим id */
+  const href = product.page ?? 'product-pages/';
+
   return `
     <article class="product-card">
-      <!-- href — заглушка: здесь будет адрес страницы товара -->
-      <a class="product-card__link" href="product-pages/" data-product-id="${product.id}">
+      <a class="product-card__link" href="${href}" data-product-id="${product.id}">
         <div class="product-card__media">
           <img
             class="product-card__image"

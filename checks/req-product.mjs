@@ -202,6 +202,15 @@ const chooseLink = {
   адрес: printChoose?.getAttribute('href') ?? null,
 };
 
+/** Что сейчас в хранилище корзины. */
+const storedCart = () => {
+  try {
+    return JSON.parse(localStorage.getItem('cozy-pajamas:cart') ?? '[]');
+  } catch {
+    return 'битый JSON';
+  }
+};
+
 /** Кладёт в поле файл с заданным именем и шлёт change. */
 const pickFile = async (name) => {
   const transfer = new DataTransfer();
@@ -211,14 +220,26 @@ const pickFile = async (name) => {
   await frame();
   await new Promise((r) => setTimeout(r, 60));
 
+  const custom = storedCart().find?.((line) => line.id === 'print-custom') ?? null;
+
   return {
     имя: name,
-    подпись: printNote?.textContent.trim() ?? null,
+    подпись: printNote?.textContent.replace(/\s+/g, ' ').trim() ?? null,
     подписьВидна: printNote ? !printNote.hidden : null,
+    иконка: Boolean(printNote?.querySelector('.product__print-file-icon')),
     ошибка: printNote?.classList.contains('product__print-file--error') ?? null,
     осталосьВПоле: printFile.files.length,
+
+    /* Свой макет уходит в корзину только при подходящем формате */
+    вКорзине: custom,
   };
 };
+
+/* Перед проверкой макетов корзину очищаем: в ней мог остаться товар
+   от предыдущих шагов */
+localStorage.removeItem('cozy-pajamas:cart');
+document.dispatchEvent(new CustomEvent('cart:change'));
+await frame();
 
 const printFiles = {
   текст: printTitle?.textContent.trim() ?? null,
@@ -230,6 +251,19 @@ const printFiles = {
   psd: await pickFile('макет.psd'),
   doc: await pickFile('документ.doc'),
 };
+
+/* Один макет — одна позиция: повторная загрузка заменяет файл,
+   а не добавляет вторую заявку */
+const customLines = storedCart().filter((line) => line.id === 'print-custom');
+
+const customInCart = {
+  позиций: customLines.length,
+  файл: customLines[0]?.file ?? null,
+  количество: customLines[0]?.qty ?? null,
+};
+
+localStorage.removeItem('cozy-pajamas:cart');
+document.dispatchEvent(new CustomEvent('cart:change'));
 
 // ─── «Купить в один клик» требует размер ───
 
@@ -312,6 +346,7 @@ return {
     послеДобавления: cartAfterAdd,
   },
   принт: printFiles,
+  свойМакет: customInCart,
   разделитель: dividerInfo,
   галерея: gallery,
   одинКлик: {
@@ -344,4 +379,5 @@ return {
     };
   })(),
 };
+
 

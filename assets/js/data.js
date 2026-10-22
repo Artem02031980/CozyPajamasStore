@@ -163,6 +163,7 @@ export const PRODUCTS = [
     types: ['Брюки', 'Сорочка', 'Майка'],
     ages: ['Для девушек'],
     colors: ['Розовый'],
+      page: 'product-pages/klubnichnye-polya.html',
     price: 12199,
     image: 'assets/images/products/women/w03.png',
     alt: 'Пижама с розовым цветочным принтом и красным поясом',

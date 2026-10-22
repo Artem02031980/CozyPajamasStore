@@ -24,12 +24,22 @@ import { variantKey } from './utils.js';
 /** Идентификатор услуги «ПРИНТ». */
 export const SERVICE_ID = 'print';
 
+/**
+ * Идентификатор позиции «свой макет».
+ *
+ * Человек загружает файл со своим дизайном, и стоимость такой печати
+ * заранее неизвестна: её называет менеджер после просмотра макета.
+ * Поэтому позиция идёт с нулевой ценой и пометкой в корзине — она
+ * не товар каталога, а заявка.
+ */
+export const CUSTOM_PRINT_ID = 'print-custom';
+
 /** Имя события, на которое подписывается интерфейс. */
 export const CART_CHANGED = 'cart:change';
 
 /**
  * Все позиции корзины в нормальном виде.
- * @returns {Array<{id: string, qty: number, size: string}>}
+ * @returns {Array<{id: string, qty: number, size: string, file: string}>}
  */
 export function getItems() {
   return readCart()
@@ -38,6 +48,7 @@ export function getItems() {
       id: line.id,
       qty: Math.max(1, Math.round(Number(line.qty) || 1)),
       size: typeof line.size === 'string' ? line.size : '',
+      file: typeof line.file === 'string' ? line.file : '',
     }));
 }
 
@@ -67,6 +78,22 @@ export function toLine(line, terms = getServiceTerms()) {
         price: terms.price,
       },
       sum: terms.price * line.qty,
+    };
+  }
+
+  /* Свой макет: цена неизвестна до просмотра файла, поэтому ноль и пометка
+     для корзины — «стоимость уточнит менеджер» */
+  if (line.id === CUSTOM_PRINT_ID) {
+    return {
+      ...line,
+      custom: true,
+      product: {
+        id: CUSTOM_PRINT_ID,
+        title: 'Свой макет',
+        subtitle: `Файл: ${line.file || 'без имени'}`,
+        price: 0,
+      },
+      sum: 0,
     };
   }
 
@@ -174,12 +201,15 @@ export function getFreeServiceGap(terms = getServiceTerms(), lines = getLines())
  * @param {object} [options]
  * @param {number} [options.qty=1]
  * @param {string} [options.size='']
+ * @param {string} [options.file=''] имя загруженного макета
  * @returns {Array<object>} новый состав корзины
  */
-export function addItem(id, { qty = 1, size = '' } = {}) {
-  /* Услуга «ПРИНТ» товаром каталога не является — у неё своя цена и порог
-     из разметки, поэтому проверка на каталог её не касается. */
-  if (id !== SERVICE_ID && !getProduct(id)) {
+export function addItem(id, { qty = 1, size = '', file = '' } = {}) {
+  /* Услуга «ПРИНТ» и свой макет товарами каталога не являются — у них свои
+     правила, поэтому проверка на каталог их не касается. */
+  const special = id === SERVICE_ID || id === CUSTOM_PRINT_ID;
+
+  if (!special && !getProduct(id)) {
     console.warn(`[cart] товара «${id}» нет в каталоге`);
     return getItems();
   }
@@ -188,8 +218,14 @@ export function addItem(id, { qty = 1, size = '' } = {}) {
   const key = variantKey(id, size);
   const found = items.find((line) => variantKey(line.id, line.size) === key);
 
-  if (found) found.qty += Math.max(1, Math.round(qty));
-  else items.push({ id, qty: Math.max(1, Math.round(qty)), size });
+  if (found) {
+    /* Новый файл заменяет прошлый: два «своих макета» без размера — это
+       одна заявка, и количество у неё всегда одно */
+    if (file) found.file = file;
+    if (id !== CUSTOM_PRINT_ID) found.qty += Math.max(1, Math.round(qty));
+  } else {
+    items.push({ id, qty: Math.max(1, Math.round(qty)), size, file });
+  }
 
   return commit(items);
 }

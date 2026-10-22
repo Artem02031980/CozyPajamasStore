@@ -144,3 +144,21 @@ export function parseJSON(raw, fallback = null) {
     return fallback;
   }
 }
+
+/**
+ * Абсолютный адрес файла проекта по пути от его корня.
+ *
+ * Нужен там, где картинку подставляет скрипт: `assets/images/...` — путь
+ * от корня сайта, а страница товара лежит в product-pages/, и относительно
+ * неё такой адрес указывал бы в product-pages/assets/... — картинка
+ * не находилась бы. Считаем от самого модуля: utils.js всегда лежит
+ * в assets/js/, поэтому два уровня вверх дают корень проекта, с какой бы
+ * страницы функцию ни вызвали.
+ *
+ * @param {string} path путь от корня проекта, например 'assets/images/icons/icon-file.svg'
+ * @returns {string} абсолютный адрес
+ */
+export function assetUrl(path) {
+  const clean = String(path ?? '').replace(/^\/+/, '');
+  return new URL(`../../${clean}`, import.meta.url).href;
+}

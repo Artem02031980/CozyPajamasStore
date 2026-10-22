@@ -205,6 +205,24 @@
   background-color: var(--color-yellow);
 }
 
+/* Свой макет: фотографии нет, вместо неё иконка файла — она и говорит,
+   что человек загрузил макет. Иконка фоном, размер тот же, что у фото */
+.cart__image--file {
+  background-color: var(--color-beige-light);
+  background-image: url('../../images/icons/icon-file.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: var(--icon-size-lg);
+}
+
+/* Пометка у позиции «Свой макет»: цена не нулевая, а неизвестная, и это
+   надо сказать словами, иначе «по согласованию» читается как ошибка */
+.cart__note--item {
+  margin-top: var(--space-4);
+  color: var(--color-pink);
+  opacity: 1;
+}
+
 /* Состав заказа на странице благодарности: без кнопок количества,
    поэтому колонки другие */
 .cart__list--order .cart__item {

@@ -189,6 +189,33 @@ eq(onlyService.products, 0, 'услуга не входит в сумму тов
 eq(onlyService.serviceFree, false, 'одна услуга без товаров не бесплатна');
 eq(onlyService.total, 500, 'итог из одной услуги — её цена');
 
+// ── свой макет: заявка без цены ──────────────────────────────────────
+
+reset();
+cart.addItem(cart.CUSTOM_PRINT_ID, { file: 'макет.pdf' });
+const custom = cart.getLines();
+eq(custom.length, 1, 'макет попал в корзину одной позицией');
+eq(custom[0].product.title, 'Свой макет', 'позиция названа «Свой макет»');
+eq(custom[0].sum, 0, 'цена макета неизвестна — сумма ноль');
+ok(custom[0].product.subtitle.includes('макет.pdf'), 'в подписи видно имя файла',
+  String(custom[0].product.subtitle));
+eq(cart.getTotals(TERMS, custom).products, 0, 'макет не увеличивает сумму товаров');
+eq(cart.getTotals(TERMS, custom).total, 0, 'и не меняет итог');
+
+// Второй файл заменяет первый, а не добавляет позицию
+cart.addItem(cart.CUSTOM_PRINT_ID, { file: 'другой.psd' });
+const replaced = cart.getItems();
+eq(replaced.length, 1, 'второй макет не создаёт вторую позицию');
+eq(replaced[0].qty, 1, 'количество заявки остаётся единицей');
+eq(replaced[0].file, 'другой.psd', 'имя файла обновилось');
+
+// Заявка живёт рядом с товаром и не мешает услуге
+cart.addItem('goods-women-01');
+cart.addItem(cart.SERVICE_ID);
+const mixed = cart.getTotals(TERMS, cart.getLines());
+eq(mixed.products, 7699, 'товар считается без макета');
+eq(mixed.total, 7699 + 500, 'итог: товар и платная услуга, макет даёт ноль');
+
 // ── сброс и мусор в хранилище ────────────────────────────────────────
 
 reset();
