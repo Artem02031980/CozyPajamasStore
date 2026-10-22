@@ -26,6 +26,7 @@ import { getProducts } from './data.js';
 import { renderCards } from './render.js';
 import { emptyFilters, selectProducts, hasAnyFilter } from './filters-query.js';
 import { initSlider } from './slider.js';
+import { readPages, writePages } from './storage.js';
 
 /** Секции, которые показываются постранично и имеют фильтры. */
 const PAGINATED_SECTIONS = ['women', 'men'];
@@ -177,6 +178,18 @@ export function showPage(section, page, { scrollToStart = false } = {}) {
   // Страницу держим в пределах: после фильтрации их число меняется
   const pageNumber = Math.min(Math.max(1, page ?? current.page), total);
   state.set(section, { ...current, page: pageNumber, perPage });
+
+  /* Страницу запоминаем в sessionStorage: браузер иногда перезагружает
+     вкладку сам (выгружает из памяти, восстанавливает после сбоя), и без
+     записи человек оказывался бы на первой странице каталога, хотя стоял
+     на второй. Запись в пределах вкладки: новая вкладка начинается сначала */
+  if (PAGINATED_SECTIONS.includes(section)) {
+    const pages = readPages();
+    if (pages[section] !== pageNumber) {
+      pages[section] = pageNumber;
+      writePages(pages);
+    }
+  }
 
   if (grid) {
     /* В «Других товарах» пагинации нет: рисуем весь отбор. В женской
@@ -361,16 +374,29 @@ function initSection(section) {
  * показ там, где он есть (женская и мужская коллекции).
  */
 export function initFilters() {
+  /* Какую страницу показать при запуске. Обычно первую; но если страница
+     перезагрузилась (в том числе когда это сделал сам браузер), человек
+     остаётся там, где стоял, — см. readPages в storage.js */
+  const pages = readPages();
+
   FILTER_SECTIONS.forEach((section) => {
     // Первую страницу рисуем сразу — разметка каталога пустая
     initSection(section);
-    showPage(section, 1);
+    showPage(section, pages[section] ?? 1);
   });
 
   /* При смене ширины число карточек на странице меняется, поэтому
      пересчитываем и перерисовываем. debounce: resize сыплется
-     десятками событий, а перерисовка пересобирает всю сетку. */
+     десятками событий, а перерисовка пересобирает всю сетку.
+     Перерисовка нужна только на переходе через порог: на телефоне resize
+     приходит и от спрятанной адресной строки, то есть на каждой прокрутке,
+     — и сетка пересобиралась бы по десять раз на экран. */
+  let perPage = getPerPage();
   window.addEventListener('resize', debounce(() => {
+    const next = getPerPage();
+    if (next === perPage) return;
+    perPage = next;
+
     for (const section of FILTER_SECTIONS) {
       const current = state.get(section);
       // Остаёмся на той же странице, но с новым числом карточек

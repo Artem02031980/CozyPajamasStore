@@ -1,16 +1,21 @@
 /**
- * storage.js — единственная точка работы с localStorage.
+ * storage.js — единственная точка работы с хранилищем браузера.
  *
- * Прямых обращений к localStorage в других модулях быть не должно:
- * тогда в одном месте видно, что и под какими ключами хранится, и легко
- * заменить хранилище, не обходя весь проект.
+ * Прямых обращений к localStorage и sessionStorage в других модулях быть
+ * не должно: тогда в одном месте видно, что и под какими ключами хранится,
+ * и легко заменить хранилище, не обходя весь проект.
  *
- * Ключи:
+ * localStorage — то, что переживает закрытие браузера:
  *   cozy-pajamas:cart    — текущая корзина, массив позиций
  *   cozy-pajamas:order   — последний оформленный заказ, его читает страница
  *                          благодарности
  *   cozy-pajamas:message — последний вопрос из формы обратной связи, его
  *                          читает thanks-feedback.html
+ *
+ * sessionStorage — то, что нужно только текущей вкладке и только до её
+ * закрытия:
+ *   cozy-pajamas:pages   — на какой странице каталога стоял человек,
+ *                          по секциям ({women: 2, men: 1})
  */
 
 import { parseJSON } from './utils.js';
@@ -20,6 +25,7 @@ export const KEYS = {
   cart: 'cozy-pajamas:cart',
   order: 'cozy-pajamas:order',
   message: 'cozy-pajamas:message',
+  pages: 'cozy-pajamas:pages',
 };
 
 /**
@@ -166,5 +172,66 @@ export function clearMessage() {
     store.removeItem(KEYS.message);
   } catch (error) {
     console.error('[storage] Не удалось удалить сообщение', error);
+  }
+}
+
+/**
+ * Доступ к sessionStorage.
+ *
+ * Отдельно от localStorage: страницы каталога нужны только текущей вкладке.
+ * Открыв сайт в новой вкладке, человек ожидает увидеть каталог с начала,
+ * а не чужую вторую страницу. В приватном режиме обращение может выбросить
+ * исключение — тогда работаем как с пустым хранилищем.
+ *
+ * @returns {Storage|null}
+ */
+function session() {
+  try {
+    return window.sessionStorage;
+  } catch (error) {
+    console.warn('[storage] sessionStorage недоступен', error);
+    return null;
+  }
+}
+
+/**
+ * Прочитать, на каких страницах каталога стоял человек.
+ *
+ * Нужно, чтобы случайная перезагрузка страницы (её делает и сам браузер,
+ * выгружая вкладку из памяти) не отбрасывала человека с середины каталога
+ * в самое начало: страница каталога живёт в JS, и без записи она теряется.
+ *
+ * @returns {Record<string, number>} например {women: 2, men: 3}
+ */
+export function readPages() {
+  const store = session();
+  if (!store) return {};
+
+  const value = parseJSON(store.getItem(KEYS.pages), {});
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+
+  /* В хранилище могло попасть что угодно: оставляем только пары
+     «секция — положительное число», иначе мусор уедет в номер страницы */
+  const pages = {};
+  for (const [section, page] of Object.entries(value)) {
+    const number = Number(page);
+    if (Number.isInteger(number) && number > 0) pages[section] = number;
+  }
+
+  return pages;
+}
+
+/**
+ * Запомнить, на какой странице каталога стоит человек.
+ * @param {Record<string, number>} pages
+ */
+export function writePages(pages) {
+  const store = session();
+  if (!store) return;
+
+  try {
+    store.setItem(KEYS.pages, JSON.stringify(pages));
+  } catch (error) {
+    console.error('[storage] Не удалось сохранить страницы каталога', error);
   }
 }
