@@ -416,12 +416,13 @@ ok(!/background-attachment:\s*fixed/.test(cssRules),
 ok(/position:\s*fixed;[\s\S]{0,400}?inset:\s*0/.test(cssRules),
   'слой фона закреплён за окном');
 
-/* Шапка вынесена в собственный слой: иначе на Windows с масштабом экрана
-   липкая шапка подмигивает при прокрутке */
+/* Шапка не должна создавать содержащий блок: меню-наложение на мобильном
+   — это position: fixed внутри неё, и will-change превращал меню в полоску
+   по высоте шапки. Подробно — checks/header.mjs */
 const headerCss = read('assets/css/sections/header.css');
-ok(/\.header \{[\s\S]{0,900}?will-change:\s*transform/.test(headerCss),
-  'липкая шапка заранее вынесена в отдельный слой',
-  'в правилах .header нет will-change: transform');
+ok(!/\.header \{[\s\S]{0,900}?will-change:\s*transform/.test(headerCss),
+  'в .header нет will-change: transform — он ломал меню-наложение',
+  'шапка снова отмечена will-change');
 
 /* Точек-индикаторов нет ни в разметке, ни в стилях, ни в модуле:
    при одном кадре они ничего не показывали. Файл page-dot.svg вместе с ними
