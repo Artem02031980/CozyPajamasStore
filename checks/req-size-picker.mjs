@@ -100,11 +100,11 @@ const otherClick = {
 localStorage.removeItem('cozy-pajamas:cart');
 document.dispatchEvent(new CustomEvent('cart:change'));
 
-/* 6. Акцент окна по виду товара: женская коллекция розовая, мужская
-   голубая. Наведение проверяет отдельный прогон с настоящим курсором —
-   здесь смотрим цвета в покое */
-const coloursOf = async (sectionSelector) => {
-  press(document.querySelector(`${sectionSelector} [data-select-size]`));
+/* 6. Акцент окна: женская коллекция розовая, мужская голубая, у части
+   «Новой коллекции» голубая по полю accent у товара. Наведение проверяет
+   отдельный прогон с настоящим курсором — здесь цвета в покое */
+const coloursOf = async (sectionSelector, index = 0) => {
+  press([...document.querySelectorAll(`${sectionSelector} [data-select-size]`)][index]);
   await frame();
   await wait(150);
 
@@ -112,6 +112,7 @@ const coloursOf = async (sectionSelector) => {
   const cs = (el) => getComputedStyle(el);
   const result = {
     раздел: picker.dataset.section ?? null,
+    акцент: picker.dataset.accent || '—',
     товар: picker.querySelector('.size-picker__product')?.textContent.trim() ?? null,
     название: cs(picker.querySelector('.size-picker__product')).color,
     рамкаРазмера: cs(picker.querySelector('[data-picker-size]')).borderTopColor,
@@ -125,6 +126,11 @@ const coloursOf = async (sectionSelector) => {
 
 const womenColours = await coloursOf('.goods-women');
 const menColours = await coloursOf('.goods-men');
+
+/* «Новая коллекция»: первая карточка (Нежное счастье) остаётся розовой,
+   вторая (Ночная свобода) — голубая */
+const newPink = await coloursOf('.goods-new__item', 0);
+const newBlue = await coloursOf('.goods-new__item', 1);
 
 /* Кто открывает окно: пижамы («Новая коллекция», женская и мужская),
    а «Другие товары» кладутся сразу */
@@ -142,7 +148,12 @@ return {
   товарКарточки: cardTitle,
   размерПослеДобавления: sizeAfter,
   другиеТовары: otherClick,
-  цвета: { женская: womenColours, мужская: menColours },
+  цвета: {
+    женская: womenColours,
+    мужская: menColours,
+    новаяРозовая: newPink,
+    новаяГолубая: newBlue,
+  },
   посекциям: counts,
   кнопкаПринтаБезВыбора: document.querySelectorAll('[data-cart-add="print"]:not([data-select-size])').length,
   окноКорзиныТронуто: cartModal ? !cartModal.classList.contains('is-hidden') : null,

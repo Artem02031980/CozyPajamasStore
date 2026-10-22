@@ -154,52 +154,86 @@ ok(/justify-content:\s*center/.test(cssRule('.size-picker__sizes')),
 ok(/align-self:\s*center/.test(cssRule('.size-picker__confirm')),
   'кнопка подтверждения по центру окна');
 
-// ─────────────── акцент по виду товара ───────────────
+// ─────────────── акцент окна ───────────────
 
-/* Женская коллекция остаётся розовой — это базовые правила. Мужская идёт
-   в голубом, как её карточки в каталоге. Вид товара модуль пишет
-   в data-section у контейнера окна, а стили выбирают акцент по нему */
+/* Женская коллекция остаётся розовой — это базовые правила. Голубой акцент
+   включается двумя путями: у всей мужской коллекции (data-section="men")
+   и у отдельного товара с полем accent: 'blue' (так выделены три товара
+   «Новой коллекции»). Оба атрибута пишет size-picker.js */
 
 ok(SIZE_PICKER_JS.includes('body.dataset.section = product.section'),
   'модуль передаёт вид товара в разметку окна');
+ok(SIZE_PICKER_JS.includes('body.dataset.accent = product.accent'),
+  'модуль передаёт акцент товара в разметку окна');
 
-const menRule = (selector) => {
-  const full = `.size-picker[data-section='men'] ${selector}`;
-  return cssRule(full);
+/** Правило по точному селектору «селектор + {». */
+const ruleOf = (selector) => {
+  const at = CSS.indexOf(selector + ' {');
+  return at < 0 ? '' : CSS.slice(at, CSS.indexOf('}', at));
 };
 
-ok(/color:\s*var\(--color-blue\)/.test(menRule('.size-picker__product')),
-  'у мужской коллекции название пижамы голубое',
-  menRule('.size-picker__product').replace(/\s+/g, ' '));
-ok(/border-color:\s*var\(--color-blue\)/.test(menRule('.size-picker__size')),
-  'у мужской коллекции рамка размера голубая',
-  menRule('.size-picker__size').replace(/\s+/g, ' '));
-
-/* Правило ищем по списку селекторов, а не по точному совпадению: у состояния
-   «под курсором / выбран» селекторы перечислены через запятую в одной
-   группе, и поиск «селектор + {» такую группу не находит */
+/* Правило ищем по списку селекторов: у состояния «под курсором / выбран»
+   селекторы перечислены через запятую в одной группе, и поиск
+   «селектор + {» такую группу не находит */
 const blockWith = (needle) => {
   const blocks = CSS.match(/[^{}]+\{[^{}]*\}/g) ?? [];
   return blocks.find((block) => block.slice(0, block.indexOf('{')).includes(needle)) ?? '';
 };
 
-const menChipHover = blockWith(".size-picker[data-section='men'] .size-picker__size:hover");
-ok(/background-color:\s*var\(--color-blue\)/.test(menChipHover),
-  'у мужской коллекции размер при наведении заливается голубым',
-  menChipHover.replace(/\s+/g, ' ').slice(0, 160));
-ok(/\.size-picker__size\.is-active/.test(menChipHover),
-  'выбранный размер в мужской коллекции залит так же, как под курсором');
+for (const variant of ["data-section='men'", "data-accent='blue'"]) {
+  ok(CSS.includes(`.size-picker[${variant}] .size-picker__product`),
+    `акцент «${variant}»: название товара перекрашивается`);
+  ok(/color:\s*var\(--color-blue\)/.test(blockWith(`.size-picker[${variant}] .size-picker__product`)),
+    `акцент «${variant}»: название голубое`);
 
-ok(/background-color:\s*var\(--color-blue\)/.test(menRule('.size-picker__confirm')),
-  'у мужской коллекции кнопка подтверждения голубая',
-  menRule('.size-picker__confirm').replace(/\s+/g, ' '));
-ok(/background-color:\s*var\(--color-pink\)/.test(menRule('.size-picker__confirm:hover')),
-  'у мужской коллекции кнопка при наведении розовая',
-  menRule('.size-picker__confirm:hover').replace(/\s+/g, ' '));
+  ok(/border-color:\s*var\(--color-blue\)/.test(blockWith(`.size-picker[${variant}] .size-picker__size`)),
+    `акцент «${variant}»: рамка размера голубая`);
 
-/* Женская коллекция не должна получить мужских правил: базовые розовые
+  const chipHover = blockWith(`.size-picker[${variant}] .size-picker__size:hover`);
+  ok(/background-color:\s*var\(--color-blue\)/.test(chipHover),
+    `акцент «${variant}»: размер при наведении заливается голубым`,
+    chipHover.replace(/\s+/g, ' ').slice(0, 160));
+  ok(/\.size-picker__size\.is-active/.test(chipHover),
+    `акцент «${variant}»: выбранный размер залит так же, как под курсором`);
+
+  ok(/background-color:\s*var\(--color-blue\)/.test(blockWith(`.size-picker[${variant}] .size-picker__confirm`)),
+    `акцент «${variant}»: кнопка подтверждения голубая`);
+  ok(/background-color:\s*var\(--color-pink\)/.test(blockWith(`.size-picker[${variant}] .size-picker__confirm:hover`)),
+    `акцент «${variant}»: кнопка при наведении розовая`);
+}
+
+/* Женская коллекция не должна получить голубых правил: базовые розовые
    цвета остаются как были */
 ok(!/data-section='women'/.test(CSS), 'для женской коллекции отдельных правил нет — она розовая');
+
+// ─────────────── «Новая коллекция» ───────────────
+
+/* Три товара «Новой коллекции» просят голубое окно, три — розовое.
+   Состав этих товаров тоже задан заказчиком, поэтому сверяем оба поля */
+const NEW_ACCENTS = {
+  'goods-new-01': ['Пеньюар', null],
+  'goods-new-02': ['Брюки + Футболка + Халат', 'blue'],
+  'goods-new-03': ['Брюки + Сорочка', null],
+  'goods-new-04': ['Брюки + Сорочка + Пиджак', 'blue'],
+  'goods-new-05': ['Брюки + Халатик', null],
+  'goods-new-06': ['Брюки + Сорочка', 'blue'],
+};
+
+for (const [id, [subtitle, accent]] of Object.entries(NEW_ACCENTS)) {
+  const product = getProduct(id);
+  ok(Boolean(product), `товар ${id} есть в каталоге`);
+  if (!product) continue;
+
+  eq(product.subtitle, subtitle, `состав ${id} — «${subtitle}»`);
+  eq(product.accent ?? null, accent, `акцент окна ${id} — ${accent ?? 'розовый (по умолчанию)'}`);
+}
+
+/* Акцент — только у тех товаров, у которых он действительно нужен:
+   у остальных каталога поля нет, окно остаётся розовым */
+const withAccent = PRODUCTS.filter((product) => product.accent);
+eq(withAccent.map((product) => product.id).sort(),
+  ['goods-new-02', 'goods-new-04', 'goods-new-06'],
+  'голубой акцент стоит ровно у трёх товаров «Новой коллекции»');
 
 // ─────────────── итог ───────────────
 

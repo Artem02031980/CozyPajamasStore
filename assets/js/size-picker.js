@@ -54,9 +54,12 @@ function render(product) {
 
   const sizes = getSizes(product);
 
-  /* Вид товара в атрибуте: по нему стили выбирают акцент окна.
-     У мужской коллекции он голубой, у остальных — розовый, как в макете */
+  /* Вид товара и акцент окна — в атрибутах, по ним стили выбирают цвета.
+     Акцент задаётся полем accent у товара (в «Новой коллекции» так
+     выделены отдельные товары); у мужской коллекции голубой приходит
+     от вида товара — это правило живёт в CSS */
   body.dataset.section = product.section ?? '';
+  body.dataset.accent = product.accent ?? '';
 
   body.innerHTML = `
     <p class="size-picker__product">${product.title}</p>

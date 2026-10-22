@@ -87,35 +87,44 @@
 }
 
 /* ==========================================================================
-   Акцент по виду товара
-   Женская коллекция остаётся розовой — это базовые правила выше. Мужская
-   идёт в голубом, как её карточки в каталоге: иначе окно выбивалось бы
-   из секции, откуда его открыли. Вид товара пишет size-picker.js
-   в data-section у контейнера.
+   Акцент окна
+   Женская коллекция остаётся розовой — это базовые правила выше. Голубой
+   акцент включается двумя путями:
+     data-section="men" — у всей мужской коллекции, в тон её карточкам;
+     data-accent="blue" — у отдельного товара, у которого в данных стоит
+                          поле accent: 'blue' (так выделены три товара
+                          «Новой коллекции»).
+   Оба атрибута пишет size-picker.js.
    ========================================================================== */
 
-.size-picker[data-section='men'] .size-picker__product {
+.size-picker[data-section='men'] .size-picker__product,
+.size-picker[data-accent='blue'] .size-picker__product {
   color: var(--color-blue);
 }
 
-.size-picker[data-section='men'] .size-picker__size {
+.size-picker[data-section='men'] .size-picker__size,
+.size-picker[data-accent='blue'] .size-picker__size {
   border-color: var(--color-blue);
 }
 
 .size-picker[data-section='men'] .size-picker__size:hover,
-.size-picker[data-section='men'] .size-picker__size.is-active {
+.size-picker[data-section='men'] .size-picker__size.is-active,
+.size-picker[data-accent='blue'] .size-picker__size:hover,
+.size-picker[data-accent='blue'] .size-picker__size.is-active {
   color: var(--color-white);
   background-color: var(--color-blue);
 }
 
-/* У мужской коллекции наведение и покой меняются местами: кнопка голубая,
+/* В голубом акценте наведение и покой меняются местами: кнопка голубая,
    при наведении розовая */
-.size-picker[data-section='men'] .size-picker__confirm {
+.size-picker[data-section='men'] .size-picker__confirm,
+.size-picker[data-accent='blue'] .size-picker__confirm {
   color: var(--color-white);
   background-color: var(--color-blue);
 }
 
-.size-picker[data-section='men'] .size-picker__confirm:hover {
+.size-picker[data-section='men'] .size-picker__confirm:hover,
+.size-picker[data-accent='blue'] .size-picker__confirm:hover {
   color: var(--color-white);
   background-color: var(--color-pink);
 }
