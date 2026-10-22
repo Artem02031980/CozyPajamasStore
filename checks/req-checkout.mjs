@@ -183,7 +183,12 @@ try {
     ]));
     document.dispatchEvent(new CustomEvent('cart:change'));
     await frame();
-    press(document.querySelector('[data-cart-add="print"]'));
+
+    /* Услугу добавляем модулем корзины: кнопки на главной больше нет —
+       принт выбирают в каталоге. Правила подсчёта услуги при этом
+       те же, и они проверяются ниже по итогам в окне корзины */
+    const cartModule = await import('/assets/js/cart.js');
+    cartModule.addItem('print', { qty: 1 });
     await frame();
 
     out.totalBefore = document.querySelector('[data-cart-total]')?.textContent.trim();

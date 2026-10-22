@@ -27,19 +27,23 @@ const originalLabels = new WeakMap();
 const addedTimers = new WeakMap();
 
 /**
- * Условия услуги «ПРИНТ» из разметки кнопки.
+ * Условия услуги «ПРИНТ» из разметки.
  *
- * Цена и порог лежат в data-атрибутах: это решение маркетинга, и рядом
- * с текстом кнопки их видно. Логика корзины читает их отсюда, а не хранит
- * у себя копию, которая разъедется с разметкой.
+ * Цена и порог лежат в data-атрибутах у ссылки на каталог принтов: это
+ * решение маркетинга, и рядом с текстом их видно. Логика корзины читает
+ * их отсюда, а не хранит у себя копию, которая разъедется с разметкой.
+ *
+ * Ищем по data-print-price, а не по data-cart-add: услугу больше не
+ * добавляют кнопкой на главной — принт выбирают в каталоге, — и атрибут
+ * действия здесь не нужен, достаточно атрибута с условиями.
  *
  * @returns {{price: number, freeFrom: number}}
  */
 function serviceTerms() {
-  const button = $('[data-cart-add="print"]');
+  const source = $('[data-print-price]');
   return cart.getServiceTerms({
-    price: button?.dataset.printPrice,
-    freeFrom: button?.dataset.printFreeFrom,
+    price: source?.dataset.printPrice,
+    freeFrom: source?.dataset.printFreeFrom,
   });
 }
 

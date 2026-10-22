@@ -109,11 +109,26 @@ press(cartBody.querySelector('[data-cart-step="-1"]'));
 await frame();
 steps.push(snap('количество −1 второй раз'));
 
-// 7. Услуга «ПРИНТ»: добавляем и смотрим итог
-const printButton = document.querySelector('[data-cart-add="print"]');
-press(printButton);
+// 7. Услуга «ПРИНТ»: кнопки на главной больше нет — принт выбирают
+//    в каталоге, а ссылка ведёт на prints.html. Саму услугу добавляем
+//    через модуль корзины: правила её подсчёта остались и должны работать.
+//    Ссылку НЕ нажимаем: это обычный переход на другую страницу, и запрос
+//    вместе с вкладкой умирает. Достаточно того, что у неё нет признака
+//    добавления — это видно по атрибутам
+const printLink = document.querySelector('.goods-print__button');
+const printLinkInfo = {
+  тег: printLink?.tagName.toLowerCase() ?? null,
+  текст: printLink?.textContent.trim() ?? null,
+  адрес: printLink?.getAttribute('href') ?? null,
+  цена: printLink?.dataset.printPrice ?? null,
+  порог: printLink?.dataset.printFreeFrom ?? null,
+  признакДобавления: printLink?.hasAttribute('data-cart-add') ?? null,
+};
+
+const printModule = await import('/assets/js/cart.js');
+printModule.addItem('print', { qty: 1 });
 await frame();
-steps.push({ ...snap('добавлена услуга ПРИНТ'), printLabel: printButton.textContent.trim() });
+steps.push({ ...snap('добавлена услуга ПРИНТ'), printLabel: printLinkInfo.текст });
 
 // 8. Очистка корзины
 const clearButton = cartBody.querySelector('[data-cart-clear]');
@@ -172,4 +187,8 @@ return {
   addButtonsInCatalog: document.querySelectorAll('[data-cart-add]').length,
   steps,
   trap,
+  принт: printLinkInfo,
+  каркасСтраницыПринтов: await fetch('prints.html')
+    .then((response) => response.status)
+    .catch(() => 'нет ответа'),
 };

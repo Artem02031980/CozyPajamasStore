@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Каталог принтов — Магазин уютных пижам</title>
+    <meta
+      name="description"
+      content="Каталог принтов для нанесения на пижамы: готовые дизайны магазина уютных пижам."
+    />
+    <meta name="theme-color" content="#ffffff" />
+
+    <!-- Скрипт подключён модулем: без сервера (file://) он не загрузится,
+         страницу нужно открывать по http:// — как и остальные страницы сайта -->
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="icon" href="assets/images/icons/favicon.svg" type="image/svg+xml" />
+  </head>
+
+  <!-- data-page="prints" — признак страницы для script.js: он запускает
+       только шапку, окна и корзину. Каталог принтов ещё не свёрстан,
+       поэтому содержимого у страницы нет: это заглушка, на которую ведёт
+       ссылка «Посмотреть каталог принтов» из секции принтов на главной -->
+  <body data-page="prints">
+    <div class="page">
+      <header class="header">
+        <div class="header__inner container">
+          <button
+            class="header__burger"
+            type="button"
+            data-burger
+            aria-label="Меню"
+            aria-expanded="false"
+            aria-controls="header-nav"
+          >
+            <span class="header__burger-line"></span>
+            <span class="header__burger-line"></span>
+            <span class="header__burger-line"></span>
+          </button>
+
+          <nav class="header__nav" id="header-nav" data-nav aria-label="Основное меню">
+            <ul class="header__list">
+              <li class="header__item">
+                <a class="header__link" href="index.html#goods-new">Новая коллекция</a>
+              </li>
+              <li class="header__item">
+                <a class="header__link" href="index.html#goods-women">Женские пижамы</a>
+              </li>
+              <li class="header__item">
+                <a class="header__link" href="index.html#goods-men">Мужские пижамы</a>
+              </li>
+              <li class="header__item">
+                <a class="header__link" href="index.html#goods-print">Принты</a>
+              </li>
+              <li class="header__item">
+                <a class="header__link" href="index.html#goods-other">Другие товары</a>
+              </li>
+            </ul>
+          </nav>
+
+          <button class="header__cart" type="button" data-cart-open>
+            <span class="header__cart-text">
+              <span class="header__cart-label">Корзина</span>
+              <span class="header__cart-count" data-cart-counter>0</span>
+            </span>
+          </button>
+
+          <div class="header__socials">
+            <a
+              class="header__social header__social--instagram"
+              href="https://www.instagram.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+            ></a>
+            <a
+              class="header__social header__social--vk"
+              href="https://vk.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="VK"
+            ></a>
+          </div>
+        </div>
+      </header>
+
+      <main class="main">
+        <!-- Заглушка: содержимое каталога принтов появится отдельной задачей.
+             Пока здесь только объяснение и дорога назад, чтобы страница
+             не выглядела сломанной, если человек попал на неё по ссылке -->
+        <section class="goods-print" id="prints">
+          <div class="goods-print__inner container">
+            <div class="goods-print__head">
+              <p class="goods-print__overline">Скоро здесь будет</p>
+              <h1 class="goods-print__title">КАТАЛОГ ПРИНТОВ</h1>
+              <p class="goods-print__lead">
+                готовые дизайны, которые можно нанести на пижаму
+              </p>
+            </div>
+
+            <p class="goods-print__feature-title">
+              Страница ещё не свёрстана. Пока принт можно выбрать на странице
+              товара: «Добавить принт» → «Выбрать из каталога» или свой макет.
+            </p>
+
+            <a class="goods-print__button button" href="index.html#goods-print">
+              Вернуться к пижамам
+            </a>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <div class="footer__inner container">
+          <p class="footer__copyright">ООО «Магазин уютных пижам» © 2023</p>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Окно корзины: на странице-заглушке оно нужно, потому что шапка
+         с кнопкой «Корзина» везде одна и та же -->
+    <div
+      class="modal is-hidden"
+      data-modal="cart"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cart-title"
+      aria-hidden="true"
+    >
+      <div class="modal__overlay" data-modal-close></div>
+
+      <div class="modal__dialog">
+        <div class="modal__head">
+          <h2 class="modal__title" id="cart-title">Корзина</h2>
+          <button class="modal__close" type="button" data-modal-close aria-label="Закрыть корзину">
+            ×
+          </button>
+        </div>
+
+        <div class="cart" data-cart-body></div>
+      </div>
+    </div>
+
+    <script type="module" src="assets/js/script.js"></script>
+  </body>
+</html>

@@ -90,6 +90,17 @@ function initProductPage() {
 }
 
 /**
+ * Каталог принтов — пока заглушка: свёрстано только окружение страницы
+ * (шапка с меню и счётчиком, окно корзины), самого каталога нет.
+ * Когда он появится, сюда добавятся его модули — как initFilters на главной.
+ */
+function initPrintsPage() {
+  initHeader();
+  initModal();
+  initCart();
+}
+
+/**
  * Запуск приложения.
  *
  * Признак страницы — data-page на <body>. Без него запускаем всё, что
@@ -110,6 +121,11 @@ function init() {
 
   if (page === 'thanks-feedback') {
     initThanksFeedbackPage();
+    return;
+  }
+
+  if (page === 'prints') {
+    initPrintsPage();
     return;
   }
 

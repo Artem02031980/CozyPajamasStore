@@ -516,8 +516,9 @@
         </section>
 
         <!-- Секция 5. Сервис «ПРИНТ» — услуга нанесения принта на пижаму.
-             Кнопка пока ничего не делает: логику корзины напишет JS по
-             атрибутам data-cart-add и data-print-price. -->
+             Ссылка ведёт в каталог принтов (prints.html, пока заглушка);
+             условия услуги — в data-print-price и data-print-free-from,
+             их читает корзина. -->
         <section class="goods-print" id="goods-print">
           <div class="goods-print__inner container">
             <div class="goods-print__head">
@@ -526,21 +527,23 @@
               <p class="goods-print__lead">на выбранную пижаму!</p>
             </div>
 
-            <!-- data-cart-add — по этому атрибуту скрипт поймёт, что добавляют
-                 услугу «ПРИНТ»; data-print-price — её цена в рублях,
-                 data-print-free-from — сумма заказа, от которой она бесплатна.
-                 Цвет кнопки задаёт секция (goods-print.css), а не button--soft:
+            <!-- Ссылка на каталог принтов, а не кнопка добавления услуги:
+                 принт выбирают в каталоге, и решение об услуге человек
+                 принимает там, а не в секции на главной.
+                 data-print-price и data-print-free-from остались здесь:
+                 это условия услуги, и корзина читает их из разметки
+                 (cart-ui.js) — цена и порог по-прежнему видны рядом с текстом.
+                 Цвет задаёт секция (goods-print.css), а не button--soft:
                  у того в блоке свой фон и своё наведение, и вместе они
                  спорили бы по специфичности. -->
-            <button
+            <a
               class="goods-print__button button"
-              type="button"
-              data-cart-add="print"
+              href="prints.html"
               data-print-price="500"
               data-print-free-from="15000"
             >
-              Добавить услугу в корзину
-            </button>
+              Посмотреть каталог принтов
+            </a>
 
             <div class="goods-print__features">
               <!-- Фигура девушки — декор, а не контент: это пример нанесённого

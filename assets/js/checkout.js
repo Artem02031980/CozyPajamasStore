@@ -228,13 +228,19 @@ function showErrors(form, errors) {
   $('.is-invalid', form)?.focus();
 }
 
-/** Условия услуги «ПРИНТ» из разметки кнопки. */
+/**
+ * Условия услуги «ПРИНТ» из разметки.
+ *
+ * Цена и порог ищутся по data-print-price — этот атрибут стоит у ссылки
+ * на каталог принтов. Признака действия (data-cart-add) здесь больше нет:
+ * услугу не добавляют кнопкой на главной, принт выбирают в каталоге.
+ */
 function serviceTermsFromPage() {
-  const button = $('[data-cart-add="print"]');
+  const source = $('[data-print-price]');
 
   return cart.getServiceTerms({
-    price: button?.dataset.printPrice,
-    freeFrom: button?.dataset.printFreeFrom,
+    price: source?.dataset.printPrice,
+    freeFrom: source?.dataset.printFreeFrom,
   });
 }
 
