@@ -150,10 +150,9 @@ return {
     /* Фото и сведения — друг под другом, а не рядом */
     другПодДругом: Boolean(geometry.галерея && geometry.инфо)
       && geometry.инфо.top >= geometry.галерея.bottom - 1,
-    /* Фото по центру колонки */
-    фотоПоЦентру: Boolean(geometry.галерея && geometry.фото)
-      ? Math.abs((geometry.фото.left + geometry.фото.width / 2)
-        - (geometry.галерея.left + geometry.галерея.width / 2)) <= 2
+    /* Фото прижато к левому краю колонки (по правке владельца) */
+    фотоСлева: Boolean(geometry.галерея && geometry.фото)
+      ? Math.abs(geometry.фото.left - geometry.галерея.left) <= 2
       : null,
     /* Сведения прижаты к левому краю колонки */
     инфоСлева: Boolean(geometry.галерея && geometry.инфо)

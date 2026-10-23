@@ -415,7 +415,7 @@ ok(/const buttonModifier = titleColor/.test(RENDER_JS),
 // ─────────────── подвал ───────────────
 
 /* Подвал общий для главной и страниц товаров, поэтому проверяется здесь,
-   вместе с остальными общими стилями. Бежевый фон и тёмная подпись — правка
+   вместе с остальными общими стилями. Светло-бежевый фон и тёмная подпись — правка
    владельца проекта; до неё подвал был синим с белой подписью */
 const FOOTER_CSS = readFileSync(new URL('../assets/css/sections/footer.css', import.meta.url), 'utf8');
 
@@ -427,7 +427,7 @@ const footerRule = (selector) => {
 const footerBlock = footerRule('.footer');
 const footerText = footerRule('.footer__copyright');
 
-ok(/background-color: var\(--color-beige\)/.test(footerBlock), 'фон подвала бежевый',
+ok(/background-color: var\(--color-beige-light\)/.test(footerBlock), 'фон подвала светло-бежевый',
   footerBlock.replace(/\s+/g, ' ').slice(0, 100));
 ok(/color: var\(--color-dark\)/.test(footerText), 'подпись подвала тёмная',
   footerText.replace(/\s+/g, ' ').slice(0, 100));
@@ -458,3 +458,4 @@ if (failures.length) {
 }
 
 process.stdout.write('\nВсё чисто.\n');
+

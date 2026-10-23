@@ -168,8 +168,13 @@ const imageRules = (css.match(/[^{}]+\{[^{}]*\}/g) ?? [])
 ok(imageRules.some((block) => /max-height:\s*520px/.test(block)),
   'фото может занимать высоту колонки (до 520px)',
   imageRules.map((block) => block.replace(/\s+/g, ' ')).join(' | ').slice(0, 200));
-ok(/min-height:\s*0/.test(ruleOf(`${body} .product__gallery`)),
-  'подпись стоит сразу под фото, без запаса по высоте');
+/* Подпись сразу под фото: у галереи два правила (прижатие влево и высота),
+   поэтому ищем среди всех блоков с этим селектором */
+const galleryRules = (css.match(/[^{}]+\{[^{}]*\}/g) ?? [])
+  .filter((block) => block.slice(0, block.indexOf('{')).includes(`${body} .product__gallery`));
+ok(galleryRules.some((block) => /min-height:\s*0/.test(block)),
+  'подпись стоит сразу под фото, без запаса по высоте',
+  galleryRules.map((block) => block.replace(/\s+/g, ' ')).join(' | ').slice(0, 200));
 
 /* Акцент: название бежевое, кнопки — общей палитры (розовое с синим).
    У названия два правила: цвет и запрет переноса с 768px, — поэтому
@@ -196,10 +201,17 @@ ok(/border-color:\s*var\(--color-pink\)/.test(outline),
 ok(/color:\s*var\(--color-pink\)/.test(outline), 'и розовый текст');
 
 const outlineHover = blockWith(`${body} .button--outline-pink:hover`);
-ok(/background-color:\s*var\(--color-pink\)/.test(outlineHover),
-  'при наведении контурная кнопка заливается розовым',
+ok(/background-color:\s*var\(--color-blue\)/.test(outlineHover),
+  'при наведении контурная кнопка заливается синим',
   outlineHover.replace(/\s+/g, ' ').slice(0, 160));
+ok(/border-color:\s*var\(--color-blue\)/.test(outlineHover),
+  'и рамка становится синей');
 ok(/color:\s*var\(--color-white\)/.test(outlineHover), 'и текст на ней белый');
+
+/* Фото выровнено по левому краю колонки */
+ok(/justify-content:\s*flex-start/.test(ruleOf(`${body} .product__gallery`)),
+  'фото прижато к левому краю колонки',
+  ruleOf(`${body} .product__gallery`).replace(/\s+/g, ' '));
 
 /* Размеры с 768px: фото до 400px, кнопки до 300px */
 const media768 = (css.match(/@media \(min-width: 768px\) \{[\s\S]*?\n\}/g) ?? [])
