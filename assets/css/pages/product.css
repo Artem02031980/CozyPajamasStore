@@ -703,3 +703,89 @@ body[data-section='other'] .product__divider {
 .product__details-value {
   color: var(--color-dark);
 }
+
+/* ==========================================================================
+   9. Мужская коллекция: розовое и голубое меняются местами
+
+   Страницы товаров свёрстаны по одному образцу, поэтому разметка у них
+   одинаковая: акцент задаётся не классами в HTML, а видом товара
+   (data-section). У женской коллекции всё розовое, голубое только
+   у выбранного размера и у наведения; у мужской — наоборот.
+
+   Правила собраны здесь одним блоком, а не размазаны по файлу: иначе при
+   правке цвета пришлось бы помнить про два места. Специфичность выше
+   базовых правил за счёт body в начале селектора, поэтому порядок в файле
+   роли не играет, но блок всё равно стоит последним — так его проще найти.
+   ========================================================================== */
+
+/* Название товара: было розовым — стало голубым */
+body[data-page='product'][data-section='men'] .product__title {
+  color: var(--color-blue);
+}
+
+/* Пометка выбранного размера: была голубой — стала розовой */
+body[data-page='product'][data-section='men'] .product__chosen-size {
+  color: var(--color-pink);
+}
+
+/* Чипсы размеров: рамка и заливка выбранного */
+body[data-page='product'][data-section='men'] .product__size {
+  border-color: var(--color-blue);
+}
+
+body[data-page='product'][data-section='men'] .product__size:hover,
+body[data-page='product'][data-section='men'] .product__size.is-active {
+  color: var(--color-white);
+  background-color: var(--color-blue);
+}
+
+/* «Добавить в корзину»: голубая, при наведении розовая.
+   Уточняем через button--pink: класс product__button--cart стоит
+   на обеих кнопках покупки (вторая — контурная «Купить в один клик»),
+   и правило по одному этому классу заливало и её */
+body[data-page='product'][data-section='men'] .product__button--cart.button--pink {
+  color: var(--color-white);
+  background-color: var(--color-blue);
+}
+
+body[data-page='product'][data-section='men'] .product__button--cart.button--pink:hover,
+body[data-page='product'][data-section='men'] .product__button--cart.button--pink:focus-visible {
+  color: var(--color-white);
+  background-color: var(--color-pink);
+}
+
+/* Контурные кнопки — «Купить в один клик», «Выбрать из каталога»,
+   «Добавить свой макет»: голубой контур и текст, при наведении розовая
+   заливка. Класс в разметке остался прежним (button--outline-pink):
+   цвет задаёт вид товара, а не имя класса */
+body[data-page='product'][data-section='men'] .button--outline-pink {
+  color: var(--color-blue);
+  border-color: var(--color-blue);
+}
+
+body[data-page='product'][data-section='men'] .button--outline-pink:hover,
+body[data-page='product'][data-section='men'] .button--outline-pink:focus-visible {
+  color: var(--color-white);
+  background-color: var(--color-pink);
+  border-color: var(--color-pink);
+}
+
+/* Обводка кнопки «Добавить свой макет», когда фокус на скрытом поле */
+body[data-page='product'][data-section='men'] .product__print:has([data-print-upload]:focus-visible) .product__button--file {
+  outline-color: var(--color-blue);
+}
+
+/* Иконка каталога: у женщин она розовая, у мужчин голубая — тот же файл,
+   перекрашенный в цвет коллекции. Цвет внутри SVG зашит, currentColor
+   на него не действует, поэтому подменяется файл (тот же приём, что
+   у иконок соцсетей в подвале) */
+body[data-page='product'][data-section='men'] .product__button--print .product__button-icon--catalog {
+  background-image: url('../../images/icons/icon-catalog_blue.svg');
+}
+
+/* Иконка каталога на наведении становится белой — иначе голубая иконка
+   пропадала бы на розовой заливке так же, как розовая на голубой */
+body[data-page='product'][data-section='men'] .product__button--print:hover .product__button-icon--catalog,
+body[data-page='product'][data-section='men'] .product__button--print:focus-visible .product__button-icon--catalog {
+  background-image: url('../../images/icons/icon-catalog_white.svg');
+}

@@ -47,11 +47,20 @@ const PRODUCT_HTML = read('product-pages/klubnichnye-polya.html');
 
 /* Адрес страницы живёт в данных: у товара есть поле page */
 const withPage = PRODUCTS.filter((product) => product.page);
-eq(withPage.map((product) => product.id), ['goods-women-03'],
-  'страница пока размечена у одного товара — «Клубничные поля»');
+eq(withPage.map((product) => product.id), ['goods-women-03', 'goods-men-01'],
+  'страницы размечены у двух товаров — «Клубничные поля» и «Мятный вечер»');
 eq(getProduct('goods-women-03').page, 'product-pages/klubnichnye-polya.html',
   'адрес страницы «Клубничных полей»');
-ok(exists('product-pages/klubnichnye-polya.html'), 'файл страницы на месте');
+eq(getProduct('goods-men-01').page, 'product-pages/myatnyy-vecher.html',
+  'адрес страницы «Мятного вечера»');
+ok(exists('product-pages/klubnichnye-polya.html'), 'файл женской страницы на месте');
+ok(exists('product-pages/myatnyy-vecher.html'), 'файл мужской страницы на месте');
+
+/* У каждого адреса из данных есть файл: ссылка не должна вести в пустоту */
+const missingPages = withPage
+  .filter((product) => !exists(product.page))
+  .map((product) => product.page);
+eq(missingPages, [], 'у всех товаров с адресом файл страницы существует');
 
 ok(/product\.page \?\? 'product-pages\/'/.test(RENDER),
   'render.js берёт адрес из данных, а без него оставляет заглушку');
