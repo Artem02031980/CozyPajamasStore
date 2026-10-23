@@ -29,10 +29,9 @@ await frame();
 
 const addButton = document.querySelector('[data-cart-add]');
 const labels = document.querySelector('.product__subtitle');
-const type = document.querySelector('.product__type');
 const image = document.querySelector('.product__image');
 
-/* ── цвета и надзаголовок ── */
+/* ── цвета и подпись ── */
 const colours = {
   название: cs('.product__title').color,
   кнопкаКорзины: cs('.product__button--cart.button--pink').backgroundColor,
@@ -41,12 +40,44 @@ const colours = {
   контурнаяРамка: cs('.button--outline-pink').borderTopColor,
 };
 
-const headings = {
-  секция: labels?.textContent.trim() ?? null,
-  тип: type?.textContent.trim() ?? null,
-  кегльСекции: labels ? cs('.product__subtitle').fontSize : null,
-  кегльТипа: type ? cs('.product__type').fontSize : null,
-  весТипа: type ? cs('.product__type').fontWeight : null,
+/** Сколько строк занимает элемент. */
+const lines = (selector) => {
+  const el = document.querySelector(selector);
+  if (!el) return null;
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  return new Set([...range.getClientRects()].filter((r) => r.height > 1)
+    .map((r) => Math.round(r.top))).size;
+};
+
+const rect = (selector) => {
+  const el = document.querySelector(selector);
+  if (!el) return null;
+  const b = el.getBoundingClientRect();
+  return {
+    left: Math.round(b.left),
+    top: Math.round(b.top),
+    width: Math.round(b.width),
+    bottom: Math.round(b.bottom),
+  };
+};
+
+const heading = {
+  текст: labels?.textContent.trim() ?? null,
+  кегль: labels ? cs('.product__subtitle').fontSize : null,
+  строк: lines('.product__subtitle'),
+  второйСтроки: Boolean(document.querySelector('.product__type')),
+};
+
+/* ── раскладка: две колонки, фото над сведениями ── */
+const geometry = {
+  галерея: rect('.product__gallery'),
+  инфо: rect('.product__info'),
+  фото: rect('.product__image'),
+  спеки: rect('.product__specs'),
+  заголовок: { ...rect('.product__title'), строк: lines('.product__title') },
+  выравниваниеТекста: cs('.product__info').textAlign,
+  выравниваниеКнопок: cs('.product__buttons').alignItems,
 };
 
 /* ── чего нет ── */
@@ -92,7 +123,26 @@ return {
     контурТёмный: colours.контурнаяКнопка === DARK,
     рамкаБежевая: colours.контурнаяРамка === BEIGE,
   },
-  надзаголовки: headings,
+  подпись: heading,
+  раскладка: {
+    ...geometry,
+    /* Фото и сведения — друг под другом, а не рядом */
+    другПодДругом: Boolean(geometry.галерея && geometry.инфо)
+      && geometry.инфо.top >= geometry.галерея.bottom - 1,
+    /* Фото по центру колонки */
+    фотоПоЦентру: Boolean(geometry.галерея && geometry.фото)
+      ? Math.abs((geometry.фото.left + geometry.фото.width / 2)
+        - (geometry.галерея.left + geometry.галерея.width / 2)) <= 2
+      : null,
+    /* Сведения прижаты к левому краю колонки */
+    инфоСлева: Boolean(geometry.галерея && geometry.инфо)
+      ? Math.abs(geometry.инфо.left - geometry.галерея.left) <= 2
+      : null,
+    /* Колонки карточки примерно равны */
+    колонкиРовны: Boolean(geometry.галерея && geometry.спеки)
+      ? Math.abs(geometry.галерея.width - geometry.спеки.width) <= 8
+      : null,
+  },
   убрано: removed,
   послеДобавления: afterAdd,
   одинКлик: buyNowInfo,

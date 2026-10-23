@@ -63,20 +63,21 @@ ok(html.includes(`alt="${product.alt}"`), 'alt картинки взят из д
 ok(html.includes('<body data-page="product" data-section="other">'),
   'страница помечена видом товара «other»');
 
-// ─────────────── надзаголовок из двух строк ───────────────
+// ─────────────── подпись под фото ───────────────
 
-ok(html.includes('<p class="product__subtitle">Другие товары</p>'),
-  'первая строка надзаголовка — «Другие товары»');
-ok(html.includes('<p class="product__type">Подушка</p>'),
-  'вторая строка надзаголовка — тип товара «Подушка»');
+ok(html.includes('<p class="product__subtitle">Другие товары — подушка</p>'),
+  'под фото одна подпись: «Другие товары — подушка»');
+ok(!html.includes('product__type'), 'второй строки надзаголовка больше нет');
 
-/* Подзаголовок стоит до названия, тип — между ними: так читается
-   «Другие товары → Подушка → название» */
+/* Порядок: фото, подпись, название, цена, кнопки — всё в одной колонке */
+const galleryAt = html.indexOf('class="product__gallery"');
 const subtitleAt = html.indexOf('product__subtitle');
-const typeAt = html.indexOf('product__type');
 const titleAt = html.indexOf('class="product__title"');
-ok(subtitleAt < typeAt && typeAt < titleAt, 'порядок: секция, тип, название',
-  `${subtitleAt} / ${typeAt} / ${titleAt}`);
+const priceAt = html.indexOf('class="product__price"');
+const buttonsAt = html.indexOf('class="product__buttons"');
+ok(galleryAt < subtitleAt && subtitleAt < titleAt && titleAt < priceAt && priceAt < buttonsAt,
+  'порядок: фото, подпись, название, цена, кнопки',
+  `${galleryAt} / ${subtitleAt} / ${titleAt} / ${priceAt} / ${buttonsAt}`);
 
 // ─────────────── чего на странице быть не должно ───────────────
 
@@ -133,19 +134,47 @@ const blockWith = (needle) => {
 
 const body = "body[data-page='product'][data-section='other']";
 
-ok(/font-size:\s*var\(--fs-18\)/.test(ruleOf(`${body} .product__subtitle`)),
-  'первая строка надзаголовка крупнее обычной (18px)',
+ok(/font-size:\s*var\(--fs-16\)/.test(ruleOf(`${body} .product__subtitle`)),
+  'подпись под фото мельче названия (16px)',
   ruleOf(`${body} .product__subtitle`).replace(/\s+/g, ' '));
-ok(/font-size:\s*var\(--fs-24\)/.test(ruleOf(`${body} .product__type`)),
-  'тип товара — 24px',
-  ruleOf(`${body} .product__type`).replace(/\s+/g, ' '));
-ok(/font-weight:\s*var\(--fw-bold\)/.test(ruleOf(`${body} .product__type`)),
-  'тип товара выделен жирным');
 
-/* Акцент: было розовое — стало бежевое, было голубое — стало тёмное */
-ok(/color:\s*var\(--color-beige\)/.test(ruleOf(`${body} .product__title`)),
+/* Раскладка: фото и сведения — в одной колонке, карточка из двух колонок */
+const mainRule = (() => {
+  const blocks = css.match(/@media[^{]*\{[\s\S]*?\n\}/g) ?? [];
+  return blocks.find((block) => block.includes(`${body} .product__main`)) ?? '';
+})();
+ok(mainRule.includes(`${body} .product__main`),
+  'для страницы подушки есть своё правило раскладки');
+ok(/grid-template-columns:\s*minmax\(0,\s*1fr\)/.test(mainRule),
+  'фото и сведения стоят в одной колонке', mainRule.replace(/\s+/g, ' ').slice(0, 200));
+
+ok(/align-items:\s*flex-start/.test(ruleOf(`${body} .product__info`)),
+  'сведения выровнены по левому краю');
+ok(/text-align:\s*left/.test(ruleOf(`${body} .product__info`)),
+  'текст выровнен по левому краю');
+ok(/align-items:\s*stretch/.test(ruleOf(`${body} .product__buttons`)),
+  'кнопки идут на всю ширину колонки');
+
+/* Название в одну строку — с 768px, где колонка уже широкая */
+const nowrapBlock = (css.match(/@media[^{]*\{[\s\S]*?\n\}/g) ?? [])
+  .find((block) => block.includes(`${body} .product__title`)) ?? '';
+ok(/white-space:\s*nowrap/.test(nowrapBlock),
+  'с 768px название стоит в одну строку', nowrapBlock.replace(/\s+/g, ' ').slice(0, 160));
+
+/* Фото крупнее, а галерея — по высоте кадра */
+ok(/max-height:\s*520px/.test(ruleOf(`${body} .product__image`)),
+  'фото может занимать высоту колонки (до 520px)');
+ok(/min-height:\s*0/.test(ruleOf(`${body} .product__gallery`)),
+  'подпись стоит сразу под фото, без запаса по высоте');
+
+/* Акцент: было розовое — стало бежевое, было голубое — стало тёмное.
+   У названия два правила: цвет и запрет переноса с 768px, — поэтому
+   ищем среди всех блоков с этим селектором, а не в первом попавшемся */
+const titleRules = (css.match(/[^{}]+\{[^{}]*\}/g) ?? [])
+  .filter((block) => block.slice(0, block.indexOf('{')).includes(`${body} .product__title`));
+ok(titleRules.some((block) => /color:\s*var\(--color-beige\)/.test(block)),
   'название бежевое, а не розовое',
-  ruleOf(`${body} .product__title`).replace(/\s+/g, ' '));
+  titleRules.map((block) => block.replace(/\s+/g, ' ')).join(' | ').slice(0, 200));
 
 const cartRule = ruleOf(`${body} .product__button--cart.button--pink`);
 ok(/background-color:\s*var\(--color-beige\)/.test(cartRule),
@@ -162,14 +191,6 @@ const outline = ruleOf(`${body} .button--outline-pink`);
 ok(/border-color:\s*var\(--color-beige\)/.test(outline),
   'у контурной кнопки бежевая рамка', outline.replace(/\s+/g, ' '));
 ok(/color:\s*var\(--color-dark\)/.test(outline), 'текст контурной кнопки тёмный');
-
-/* Колонки первой части карточки делятся поровну: квадратный кадр подушки
-   в прежней раскладке занимал почти всю ширину, и сведениям не оставалось
-   места — цена ломалась на три строки */
-const gridRule = css.slice(css.indexOf(`@media (min-width: 1280px)`, css.indexOf(`${body} .product__type`)));
-ok(new RegExp(`${body.replace(/[[\]]/g, '\\$&')} \\.product__main`).test(gridRule)
-  || gridRule.includes(`${body} .product__main`),
-  'на 1280px у страницы подушки своя раскладка колонок');
 
 /* Иконки и фон — от вида товара */
 ok(/\[data-section='other'\] \.product__divider[\s\S]{0,120}?icon-circle_other\.svg/.test(css),
