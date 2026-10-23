@@ -821,7 +821,9 @@ body[data-page='product'][data-section='other'] .product__info {
   text-align: left;
 }
 
-/* Кнопки — на всю ширину колонки, одна под другой */
+/* Кнопки — одна под другой, шириной до 300px: на всю колонку они выглядели
+   полосами в половину карточки. align-items: stretch растягивает кнопку,
+   а max-width её ограничивает, поэтому кнопка стоит у левого края */
 body[data-page='product'][data-section='other'] .product__buttons {
   align-items: stretch;
 }
@@ -831,6 +833,18 @@ body[data-page='product'][data-section='other'] .product__buttons {
 @media (min-width: 768px) {
   body[data-page='product'][data-section='other'] .product__title {
     white-space: nowrap;
+  }
+
+  /* Фото до 400px: на всю колонку подушка выглядела крупнее, чем товар
+     на пижамных страницах. До 768px кадр остаётся как был — там он
+     и так упирается в ширину экрана */
+  body[data-page='product'][data-section='other'] .product__image {
+    max-width: 400px;
+  }
+
+  /* Кнопки покупки — до 300px */
+  body[data-page='product'][data-section='other'] .product__buttons .product__button {
+    max-width: 300px;
   }
 }
 
@@ -870,31 +884,31 @@ body[data-page='product'][data-section='other'] .product__chosen-size {
   color: var(--color-dark);
 }
 
-/* «Добавить в корзину»: бежевая заливка с тёмным текстом, при наведении
-   тёмная с белым. Класс button--pink в разметке остался прежним: цвет
-   задаёт вид товара */
+/* «Добавить в корзину»: розовая заливка, при наведении синяя — те же цвета,
+   что у пижам. Бежевой заливку просили только на первом заходе; по правке
+   владельца кнопки вернулись к общей палитре, а бежевым осталось название.
+   Класс button--pink в разметке остался прежним: цвет задаёт вид товара */
 body[data-page='product'][data-section='other'] .product__button--cart.button--pink {
-  color: var(--color-dark);
-  background-color: var(--color-beige);
+  color: var(--color-white);
+  background-color: var(--color-pink);
 }
 
 body[data-page='product'][data-section='other'] .product__button--cart.button--pink:hover,
 body[data-page='product'][data-section='other'] .product__button--cart.button--pink:focus-visible {
   color: var(--color-white);
-  background-color: var(--color-dark);
+  background-color: var(--color-blue);
 }
 
-/* Контурная кнопка «Купить в один клик»: бежевая рамка, тёмный текст,
-   при наведении бежевая заливка. Текст тёмный по той же причине —
-   бежевый на белом не читается */
+/* Контурная кнопка «Купить в один клик»: розовая рамка и розовый текст,
+   при наведении розовая заливка с белым текстом */
 body[data-page='product'][data-section='other'] .button--outline-pink {
-  color: var(--color-dark);
-  border-color: var(--color-beige);
+  color: var(--color-pink);
+  border-color: var(--color-pink);
 }
 
 body[data-page='product'][data-section='other'] .button--outline-pink:hover,
 body[data-page='product'][data-section='other'] .button--outline-pink:focus-visible {
-  color: var(--color-dark);
-  background-color: var(--color-beige);
-  border-color: var(--color-beige);
+  color: var(--color-white);
+  background-color: var(--color-pink);
+  border-color: var(--color-pink);
 }

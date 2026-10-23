@@ -20,7 +20,8 @@ const cs = (selector) => {
 };
 
 const BEIGE = 'rgb(219, 203, 178)';
-const DARK = 'rgb(76, 76, 76)';
+const PINK = 'rgb(205, 116, 162)';
+const WHITE = 'rgb(255, 255, 255)';
 
 localStorage.removeItem('cozy-pajamas:cart');
 localStorage.removeItem('cozy-pajamas:order');
@@ -118,12 +119,32 @@ return {
   цвета: colours,
   цветаВерные: {
     названиеБежевое: colours.название === BEIGE,
-    кнопкаБежевая: colours.кнопкаКорзины === BEIGE,
-    текстТёмный: colours.текстКнопки === DARK,
-    контурТёмный: colours.контурнаяКнопка === DARK,
-    рамкаБежевая: colours.контурнаяРамка === BEIGE,
+    кнопкаРозовая: colours.кнопкаКорзины === PINK,
+    текстБелый: colours.текстКнопки === WHITE,
+    контурРозовый: colours.контурнаяКнопка === PINK,
+    рамкаРозовая: colours.контурнаяРамка === PINK,
   },
   подпись: heading,
+  /* Размеры: с 768px фото до 400px, кнопки до 300px */
+  размеры: {
+    фото: geometry.фото ? geometry.фото.width : null,
+    фотоМаксимум: cs('.product__image').maxWidth,
+    кнопки: [...document.querySelectorAll('.product__buttons .product__button')]
+      .map((button) => Math.round(button.getBoundingClientRect().width)),
+    кнопкиМаксимум: cs('.product__buttons .product__button').maxWidth,
+    фото400: geometry.фото ? geometry.фото.width <= 400 : null,
+    кнопки300: [...document.querySelectorAll('.product__buttons .product__button')]
+      .every((button) => button.getBoundingClientRect().width <= 300),
+  },
+  подвал: (() => {
+    const footer = document.querySelector('.footer');
+    const copyright = document.querySelector('.footer__copyright');
+    if (!footer || !copyright) return null;
+    return {
+      фон: getComputedStyle(footer).backgroundColor,
+      цвет: getComputedStyle(copyright).color,
+    };
+  })(),
   раскладка: {
     ...geometry,
     /* Фото и сведения — друг под другом, а не рядом */

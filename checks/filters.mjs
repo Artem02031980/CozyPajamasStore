@@ -415,8 +415,8 @@ ok(/const buttonModifier = titleColor/.test(RENDER_JS),
 // ─────────────── подвал ───────────────
 
 /* Подвал общий для главной и страниц товаров, поэтому проверяется здесь,
-   вместе с остальными общими стилями. Синий фон и белая подпись — правка
-   владельца проекта; до неё фон был --color-blue-light, как у feedback */
+   вместе с остальными общими стилями. Бежевый фон и тёмная подпись — правка
+   владельца проекта; до неё подвал был синим с белой подписью */
 const FOOTER_CSS = readFileSync(new URL('../assets/css/sections/footer.css', import.meta.url), 'utf8');
 
 const footerRule = (selector) => {
@@ -427,12 +427,12 @@ const footerRule = (selector) => {
 const footerBlock = footerRule('.footer');
 const footerText = footerRule('.footer__copyright');
 
-ok(/background-color: var\(--color-blue\)/.test(footerBlock), 'фон подвала синий',
+ok(/background-color: var\(--color-beige\)/.test(footerBlock), 'фон подвала бежевый',
   footerBlock.replace(/\s+/g, ' ').slice(0, 100));
-ok(/color: var\(--color-white\)/.test(footerText), 'подпись подвала белая',
+ok(/color: var\(--color-dark\)/.test(footerText), 'подпись подвала тёмная',
   footerText.replace(/\s+/g, ' ').slice(0, 100));
 ok(/opacity: 1/.test(footerText),
-  'белый не приглушён: с opacity 0.8 контраст падал бы ещё ниже');
+  'подпись не приглушена: с opacity 0.8 контраст падал бы');
 
 /* Подвал есть на главной и на странице товара — проверяем, что разметка
    не разъехалась: класс подписи один и тот же */

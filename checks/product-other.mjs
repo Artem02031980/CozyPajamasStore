@@ -161,13 +161,17 @@ const nowrapBlock = (css.match(/@media[^{]*\{[\s\S]*?\n\}/g) ?? [])
 ok(/white-space:\s*nowrap/.test(nowrapBlock),
   'с 768px название стоит в одну строку', nowrapBlock.replace(/\s+/g, ' ').slice(0, 160));
 
-/* Фото крупнее, а галерея — по высоте кадра */
-ok(/max-height:\s*520px/.test(ruleOf(`${body} .product__image`)),
-  'фото может занимать высоту колонки (до 520px)');
+/* Фото крупнее, а галерея — по высоте кадра. У фото два правила (высота
+   и ограничение ширины в медиазапросе), поэтому ищем среди всех блоков */
+const imageRules = (css.match(/[^{}]+\{[^{}]*\}/g) ?? [])
+  .filter((block) => block.slice(0, block.indexOf('{')).includes(`${body} .product__image`));
+ok(imageRules.some((block) => /max-height:\s*520px/.test(block)),
+  'фото может занимать высоту колонки (до 520px)',
+  imageRules.map((block) => block.replace(/\s+/g, ' ')).join(' | ').slice(0, 200));
 ok(/min-height:\s*0/.test(ruleOf(`${body} .product__gallery`)),
   'подпись стоит сразу под фото, без запаса по высоте');
 
-/* Акцент: было розовое — стало бежевое, было голубое — стало тёмное.
+/* Акцент: название бежевое, кнопки — общей палитры (розовое с синим).
    У названия два правила: цвет и запрет переноса с 768px, — поэтому
    ищем среди всех блоков с этим селектором, а не в первом попавшемся */
 const titleRules = (css.match(/[^{}]+\{[^{}]*\}/g) ?? [])
@@ -177,20 +181,32 @@ ok(titleRules.some((block) => /color:\s*var\(--color-beige\)/.test(block)),
   titleRules.map((block) => block.replace(/\s+/g, ' ')).join(' | ').slice(0, 200));
 
 const cartRule = ruleOf(`${body} .product__button--cart.button--pink`);
-ok(/background-color:\s*var\(--color-beige\)/.test(cartRule),
-  'кнопка корзины с бежевой заливкой', cartRule.replace(/\s+/g, ' '));
-ok(/color:\s*var\(--color-dark\)/.test(cartRule),
-  'текст кнопки тёмный: бежевый на белом не читается');
+ok(/background-color:\s*var\(--color-pink\)/.test(cartRule),
+  'кнопка корзины с розовой заливкой', cartRule.replace(/\s+/g, ' '));
+ok(/color:\s*var\(--color-white\)/.test(cartRule), 'текст кнопки белый');
 
 const cartHover = blockWith(`${body} .product__button--cart.button--pink:hover`);
-ok(/background-color:\s*var\(--color-dark\)/.test(cartHover),
-  'при наведении кнопка становится тёмной', cartHover.replace(/\s+/g, ' ').slice(0, 160));
+ok(/background-color:\s*var\(--color-blue\)/.test(cartHover),
+  'при наведении кнопка становится синей', cartHover.replace(/\s+/g, ' ').slice(0, 160));
 ok(/color:\s*var\(--color-white\)/.test(cartHover), 'и текст на ней белый');
 
 const outline = ruleOf(`${body} .button--outline-pink`);
-ok(/border-color:\s*var\(--color-beige\)/.test(outline),
-  'у контурной кнопки бежевая рамка', outline.replace(/\s+/g, ' '));
-ok(/color:\s*var\(--color-dark\)/.test(outline), 'текст контурной кнопки тёмный');
+ok(/border-color:\s*var\(--color-pink\)/.test(outline),
+  'у контурной кнопки розовая рамка', outline.replace(/\s+/g, ' '));
+ok(/color:\s*var\(--color-pink\)/.test(outline), 'и розовый текст');
+
+const outlineHover = blockWith(`${body} .button--outline-pink:hover`);
+ok(/background-color:\s*var\(--color-pink\)/.test(outlineHover),
+  'при наведении контурная кнопка заливается розовым',
+  outlineHover.replace(/\s+/g, ' ').slice(0, 160));
+ok(/color:\s*var\(--color-white\)/.test(outlineHover), 'и текст на ней белый');
+
+/* Размеры с 768px: фото до 400px, кнопки до 300px */
+const media768 = (css.match(/@media \(min-width: 768px\) \{[\s\S]*?\n\}/g) ?? [])
+  .find((block) => block.includes(`${body} .product__image`)) ?? '';
+ok(/max-width:\s*400px/.test(media768), 'с 768px фото ограничено 400px',
+  media768.replace(/\s+/g, ' ').slice(0, 200));
+ok(/max-width:\s*300px/.test(media768), 'с 768px кнопки покупки ограничены 300px');
 
 /* Иконки и фон — от вида товара */
 ok(/\[data-section='other'\] \.product__divider[\s\S]{0,120}?icon-circle_other\.svg/.test(css),
