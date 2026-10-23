@@ -269,7 +269,7 @@ ok(!buyNow.includes('data-modal-open'),
 /* Без размера покупка не проходит: рядом с размерами лежит сообщение,
    которое показывается вместо перехода. Разметка его наличия и включает
    проверку в checkout.js — нет элемента, нет и требования */
-const sizeError = html.match(/<p[^>]*data-buy-now-error[^>]*>([\s\S]*?)<\/p>/);
+const sizeError = html.match(/<p[^>]*data-size-error[^>]*>([\s\S]*?)<\/p>/);
 ok(Boolean(sizeError), 'в разметке есть сообщение «Выберите размер»');
 ok(/\bhidden\b/.test(sizeError?.[0] ?? ''), 'сообщение скрыто, пока размер не нужен',
   String(sizeError?.[0]));
@@ -283,7 +283,7 @@ const sizesBlock = html.slice(
   html.indexOf('class="product__sizes"'),
   html.indexOf('class="product__buttons"'),
 );
-ok(sizesBlock.includes('data-buy-now-error'),
+ok(sizesBlock.includes('data-size-error'),
   'сообщение стоит рядом с рядами размеров');
 
 // ─────────────── нанесение принта ───────────────
@@ -710,4 +710,5 @@ if (failures.length) {
 }
 
 process.stdout.write('\nВсё чисто.\n');
+
 

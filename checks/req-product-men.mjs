@@ -46,6 +46,24 @@ const colours = {
   })(),
 };
 
+/* ── «Добавить в корзину» без размера не проходит ── */
+const sizeError = document.querySelector('[data-size-error]');
+const addButton = document.querySelector('[data-cart-add]');
+
+press(addButton);
+await frame();
+await wait(150);
+
+const addWithoutSize = {
+  корзинаПуста: JSON.parse(localStorage.getItem('cozy-pajamas:cart') ?? '[]').length === 0,
+  ошибкаВидна: sizeError ? !sizeError.hidden : null,
+  текст: sizeError?.textContent.trim() ?? null,
+  фокусНаРазмере: [...document.querySelectorAll('[data-product-size]')]
+    .some((chip) => chip === document.activeElement),
+  счётчик: document.querySelector('[data-cart-counter]')?.textContent.trim() ?? null,
+  подписьКнопки: document.querySelector('[data-cart-label]')?.textContent.trim() ?? null,
+};
+
 /* ── размеры: выбор и отражение в кнопке ── */
 const sizes = [...document.querySelectorAll('[data-product-size]')].map((b) => b.textContent.trim());
 const xl = document.querySelectorAll('[data-product-size]')[1];
@@ -61,6 +79,7 @@ const afterSize = {
   подписьРазмера: document.querySelector('[data-product-size-chosen]')?.textContent.trim() ?? null,
   цветПодписи: cs('[data-product-size-chosen]').color,
   размерУКнопки: document.querySelector('[data-cart-add]')?.dataset.cartSize ?? null,
+  ошибкаСкрыта: sizeError ? sizeError.hidden : null,
 };
 
 /* ── «Добавить в корзину» кладёт товар с размером ── */
@@ -94,7 +113,7 @@ await frame();
 await wait(120);
 
 const buyNowGuard = {
-  ошибкаПоказана: !document.querySelector('[data-buy-now-error]')?.hidden,
+  ошибкаПоказана: !document.querySelector('[data-size-error]')?.hidden,
   путь: location.pathname,
 };
 
@@ -114,6 +133,7 @@ return {
     подписьРазмераРозовая: afterSize.цветПодписи === PINK,
   },
   размеры: sizes,
+  безРазмераВКорзину: addWithoutSize,
   послеВыбора: afterSize,
   послеДобавления: afterAdd,
   размерыВДанных: sizesInData,
@@ -123,3 +143,4 @@ return {
     : null,
   прокруткаВбок: document.documentElement.scrollWidth > innerWidth,
 };
+

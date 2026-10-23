@@ -24,6 +24,7 @@
 
 import { $, $$ } from './utils.js';
 import { addItem, CUSTOM_PRINT_ID } from './cart.js';
+import { clearSizeError } from './size-guard.js';
 
 /** Класс выбранного размера — тот же, что у выбранного чипса фильтра. */
 const ACTIVE = 'is-active';
@@ -87,11 +88,9 @@ function selectSize(chip) {
 
   /* Выбрали размер — сообщение «Выберите размер» больше не нужно.
      Правило то же, что у ошибок форм: ошибка уходит, как только её
-     причину исправили, не дожидаясь повторного нажатия */
-  if (chosen) {
-    const error = $('[data-buy-now-error]');
-    if (error) error.hidden = true;
-  }
+     причину исправили, не дожидаясь повторного нажатия. Снимаем выбор —
+     сообщение тоже убираем: размеров нет, и держать ошибку незачем */
+  if (chosen) clearSizeError();
 }
 
 /**

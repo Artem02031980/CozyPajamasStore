@@ -84,6 +84,40 @@ sizeSteps.push({
   заголовок: title.textContent.trim(),
 });
 
+/* ─── «Добавить в корзину» без размера ───
+   Кнопка не должна класть товар в корзину, пока размер не выбран: вместо
+   этого появляется «Выберите размер» и фокус уходит на ряд размеров.
+   Правило общее с «Купить в один клик» (size-guard.js) */
+localStorage.removeItem('cozy-pajamas:cart');
+document.dispatchEvent(new CustomEvent('cart:change'));
+await frame();
+
+const sizeError = document.querySelector('[data-size-error]');
+
+press(addButton);
+await frame();
+await new Promise((r) => setTimeout(r, 150));
+
+const addWithoutSize = {
+  корзинаПуста: JSON.parse(localStorage.getItem('cozy-pajamas:cart') ?? '[]').length === 0,
+  ошибкаВидна: sizeError ? !sizeError.hidden : null,
+  текст: sizeError?.textContent.trim() ?? null,
+  фокусНаРазмере: sizes.some((size) => size === document.activeElement),
+  счётчик: document.querySelector('[data-cart-counter]')?.textContent.trim() ?? null,
+  подписьКнопки: document.querySelector('[data-cart-label]')?.textContent.trim() ?? null,
+};
+
+/* Сообщение уходит само, как только размер выбран */
+press(sizes.find((s) => s.dataset.productSize === 'M'));
+await frame();
+await new Promise((r) => setTimeout(r, 100));
+
+const afterSizeForAdd = { ошибкаСкрыта: sizeError ? sizeError.hidden : null };
+
+/* И снимаем выбор, чтобы дальше проверить обычный путь добавления */
+press(sizes.find((s) => s.dataset.productSize === 'M'));
+await frame();
+
 press(sizes.find((s) => s.dataset.productSize === 'M'));
 await frame();
 sizeSteps.push({
@@ -272,7 +306,6 @@ document.dispatchEvent(new CustomEvent('cart:change'));
    с размерами появляется «Выберите размер» — вот это и проверяем:
    переход сюда не входит, его проверяет сквозной checks/req-checkout.mjs */
 const oneClick = document.querySelector('[data-buy-now]');
-const sizeError = document.querySelector('[data-buy-now-error]');
 const firstSize = document.querySelector('[data-product-size]');
 
 const oneClickInfo = {
@@ -355,6 +388,7 @@ return {
     безРазмера: afterClickWithoutSize,
     послеВыбора: afterSizeChosen,
   },
+  безРазмераВКорзину: { ...addWithoutSize, послеВыбора: afterSizeForAdd },
   окноКорзиныОткрыто: !modal.classList.contains('is-hidden'),
   счётчикВШапке: document.querySelector('[data-cart-counter]')?.textContent.trim() ?? null,
   карточекКаталога: document.querySelectorAll('.product-card').length,
@@ -379,5 +413,6 @@ return {
     };
   })(),
 };
+
 
 

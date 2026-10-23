@@ -16,6 +16,7 @@ import { openModalByName, close } from './modal.js';
 import { CART_CHANGED, SERVICE_ID } from './cart.js';
 import * as cart from './cart.js';
 import { renderCart } from './render-cart.js';
+import { blockWithoutSize } from './size-guard.js';
 
 /** Сколько держать отзыв на кнопке «В корзину», мс. */
 const FEEDBACK_MS = 1400;
@@ -131,6 +132,12 @@ export function initCart() {
          size-picker.js — он откроет окно выбора размера, а в корзину
          товар попадёт уже с размером */
       if (addButton.hasAttribute('data-select-size')) return;
+
+      /* На странице товара размер выбирают рядом с кнопкой, поэтому без
+         него товар не добавляется: показываем «Выберите размер» и ставим
+         фокус на ряд размеров (правило — в size-guard.js, включается
+         сообщением data-size-error в карточке товара) */
+      if (blockWithoutSize(addButton)) return;
 
       event.preventDefault();
       const id = addButton.dataset.cartAdd;
