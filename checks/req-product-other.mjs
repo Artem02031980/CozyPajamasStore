@@ -125,14 +125,14 @@ return {
     рамкаРозовая: colours.контурнаяРамка === PINK,
   },
   подпись: heading,
-  /* Размеры: с 768px фото до 400px, кнопки до 300px */
+  /* Размеры: с 768px фото до 300px, кнопки до 300px */
   размеры: {
     фото: geometry.фото ? geometry.фото.width : null,
     фотоМаксимум: cs('.product__image').maxWidth,
     кнопки: [...document.querySelectorAll('.product__buttons .product__button')]
       .map((button) => Math.round(button.getBoundingClientRect().width)),
     кнопкиМаксимум: cs('.product__buttons .product__button').maxWidth,
-    фото400: geometry.фото ? geometry.фото.width <= 400 : null,
+    фото300: geometry.фото ? geometry.фото.width <= 300 : null,
     кнопки300: [...document.querySelectorAll('.product__buttons .product__button')]
       .every((button) => button.getBoundingClientRect().width <= 300),
   },

@@ -213,12 +213,21 @@ ok(/justify-content:\s*flex-start/.test(ruleOf(`${body} .product__gallery`)),
   'фото прижато к левому краю колонки',
   ruleOf(`${body} .product__gallery`).replace(/\s+/g, ' '));
 
-/* Размеры с 768px: фото до 400px, кнопки до 300px */
+/* Размеры с 768px: фото и кнопки покупки — до 300px */
 const media768 = (css.match(/@media \(min-width: 768px\) \{[\s\S]*?\n\}/g) ?? [])
   .find((block) => block.includes(`${body} .product__image`)) ?? '';
-ok(/max-width:\s*400px/.test(media768), 'с 768px фото ограничено 400px',
-  media768.replace(/\s+/g, ' ').slice(0, 200));
-ok(/max-width:\s*300px/.test(media768), 'с 768px кнопки покупки ограничены 300px');
+
+/** Тело правила внутри медиазапроса по точному селектору. */
+const mediaRule = (selector) => {
+  const at = media768.indexOf(selector + ' {');
+  return at < 0 ? '' : media768.slice(at, media768.indexOf('}', at));
+};
+
+ok(/max-width:\s*300px/.test(mediaRule(`${body} .product__image`)),
+  'с 768px фото ограничено 300px',
+  mediaRule(`${body} .product__image`).replace(/\s+/g, ' '));
+ok(/max-width:\s*300px/.test(mediaRule(`${body} .product__buttons .product__button`)),
+  'с 768px кнопки покупки ограничены 300px');
 
 /* Иконки и фон — от вида товара */
 ok(/\[data-section='other'\] \.product__divider[\s\S]{0,120}?icon-circle_other\.svg/.test(css),
@@ -238,3 +247,4 @@ if (failures.length) {
 }
 
 process.stdout.write('\nВсё чисто.\n');
+

@@ -841,11 +841,11 @@ body[data-page='product'][data-section='other'] .product__buttons {
     white-space: nowrap;
   }
 
-  /* Фото до 400px: на всю колонку подушка выглядела крупнее, чем товар
+  /* Фото до 300px: на всю колонку подушка выглядела крупнее, чем товар
      на пижамных страницах. До 768px кадр остаётся как был — там он
      и так упирается в ширину экрана */
   body[data-page='product'][data-section='other'] .product__image {
-    max-width: 400px;
+    max-width: 300px;
   }
 
   /* Кнопки покупки — до 300px */
