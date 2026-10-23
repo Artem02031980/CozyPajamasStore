@@ -47,14 +47,18 @@ const PRODUCT_HTML = read('product-pages/klubnichnye-polya.html');
 
 /* Адрес страницы живёт в данных: у товара есть поле page */
 const withPage = PRODUCTS.filter((product) => product.page);
-eq(withPage.map((product) => product.id), ['goods-women-03', 'goods-men-01'],
-  'страницы размечены у двух товаров — «Клубничные поля» и «Мятный вечер»');
+eq(withPage.map((product) => product.id), ['goods-women-03', 'goods-men-01', 'goods-other-16'],
+  'страницы размечены у трёх товаров: женская, мужская и подушка');
 eq(getProduct('goods-women-03').page, 'product-pages/klubnichnye-polya.html',
   'адрес страницы «Клубничных полей»');
 eq(getProduct('goods-men-01').page, 'product-pages/myatnyy-vecher.html',
   'адрес страницы «Мятного вечера»');
-ok(exists('product-pages/klubnichnye-polya.html'), 'файл женской страницы на месте');
-ok(exists('product-pages/myatnyy-vecher.html'), 'файл мужской страницы на месте');
+eq(getProduct('goods-other-16').page, 'product-pages/lyanyanoy-damask.html',
+  'адрес страницы «Льняного дамаска»');
+
+for (const page of withPage) {
+  ok(exists(page.page), `файл страницы «${page.title}» на месте`, page.page);
+}
 
 /* У каждого адреса из данных есть файл: ссылка не должна вести в пустоту */
 const missingPages = withPage

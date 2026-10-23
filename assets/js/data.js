@@ -1461,6 +1461,7 @@ export const PRODUCTS = [
     types: ['Подушки'],
     ages: [],
     colors: ['Белый', 'Бежевый'],
+      page: 'product-pages/lyanyanoy-damask.html',
     price: 2150,
     image: 'assets/images/products/other/Pillows/03.png',
     alt: 'Кремовая подушка из ткани под лён с бледным растительным узором дамаск',

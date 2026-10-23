@@ -789,3 +789,82 @@ body[data-page='product'][data-section='men'] .product__button--print:hover .pro
 body[data-page='product'][data-section='men'] .product__button--print:focus-visible .product__button-icon--catalog {
   background-image: url('../../images/icons/icon-catalog_white.svg');
 }
+
+/* ==========================================================================
+   10. Другие товары: вместо розового бежевое, вместо голубого тёмное
+
+   Подушка — не пижама: у неё нет ни размеров, ни принта, зато места
+   в карточке больше. Надзаголовок поэтому из двух строк и крупнее обычного,
+   а акцент взят из палитры «других товаров» — бежевый и тёмный.
+
+   Одна поправка к буквальной замене: бежевый текст на белой карточке
+   не читается (контраст около 1.4:1), поэтому тёмным остаётся текст
+   на бежевой заливке и подписи на белом. Бежевый работает как заливка
+   и рамка — там, где он виден и не мешает читать.
+   ========================================================================== */
+
+/* Надзаголовок: две строки, крупнее, чем у пижам (там 14px) */
+body[data-page='product'][data-section='other'] .product__subtitle {
+  font-size: var(--fs-18);
+  line-height: var(--lh-snug);
+}
+
+body[data-page='product'][data-section='other'] .product__type {
+  margin-top: var(--space-4);
+  font-size: var(--fs-24);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+  color: var(--color-dark);
+}
+
+/* С 1280px первая колонка карточки делится на фото и сведения. Общее
+   правило — auto для фото: оно подстраивается под кадр, а кадры у пижам
+   узкие и высокие (385×1159), поэтому сведениям остаётся 235px.
+   У подушки кадр квадратный: в auto он занимал 408px из 440, и сведения
+   сжимались в ноль — название и цена ломались на три строки, кнопки
+   обрезались. Поэтому здесь колонки делятся поровну */
+@media (min-width: 1280px) {
+  body[data-page='product'][data-section='other'] .product__main {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+/* Название: было розовым, стало бежевым */
+body[data-page='product'][data-section='other'] .product__title {
+  color: var(--color-beige);
+}
+
+/* Пометка выбранного размера: у подушки размеров нет, но правило держим —
+   появится размер, и цвет будет правильным */
+body[data-page='product'][data-section='other'] .product__chosen-size {
+  color: var(--color-dark);
+}
+
+/* «Добавить в корзину»: бежевая заливка с тёмным текстом, при наведении
+   тёмная с белым. Класс button--pink в разметке остался прежним: цвет
+   задаёт вид товара */
+body[data-page='product'][data-section='other'] .product__button--cart.button--pink {
+  color: var(--color-dark);
+  background-color: var(--color-beige);
+}
+
+body[data-page='product'][data-section='other'] .product__button--cart.button--pink:hover,
+body[data-page='product'][data-section='other'] .product__button--cart.button--pink:focus-visible {
+  color: var(--color-white);
+  background-color: var(--color-dark);
+}
+
+/* Контурная кнопка «Купить в один клик»: бежевая рамка, тёмный текст,
+   при наведении бежевая заливка. Текст тёмный по той же причине —
+   бежевый на белом не читается */
+body[data-page='product'][data-section='other'] .button--outline-pink {
+  color: var(--color-dark);
+  border-color: var(--color-beige);
+}
+
+body[data-page='product'][data-section='other'] .button--outline-pink:hover,
+body[data-page='product'][data-section='other'] .button--outline-pink:focus-visible {
+  color: var(--color-dark);
+  background-color: var(--color-beige);
+  border-color: var(--color-beige);
+}
