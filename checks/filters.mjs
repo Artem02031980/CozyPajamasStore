@@ -414,9 +414,14 @@ ok(/const buttonModifier = titleColor/.test(RENDER_JS),
 
 // ─────────────── подвал ───────────────
 
-/* Подвал общий для главной и страниц товаров, поэтому проверяется здесь,
-   вместе с остальными общими стилями. Светло-бежевый фон и тёмная подпись — правка
-   владельца проекта; до неё подвал был синим с белой подписью */
+/* Подвал общий для главной, каталога принтов и страниц товаров, поэтому
+   проверяется здесь, вместе с остальными общими стилями. Светло-бежевый
+   фон и тёмная подпись — правка владельца проекта; до неё подвал был
+   синим с белой подписью.
+
+   На страницах товаров подвал тёмный с серо-голубой подписью — ещё одна
+   правка владельца. Правило привязано к body[data-page='product'],
+   поэтому остальные страницы оно не задевает */
 const FOOTER_CSS = readFileSync(new URL('../assets/css/sections/footer.css', import.meta.url), 'utf8');
 
 const footerRule = (selector) => {
@@ -433,6 +438,17 @@ ok(/color: var\(--color-dark\)/.test(footerText), 'подпись подвала
   footerText.replace(/\s+/g, ' ').slice(0, 100));
 ok(/opacity: 1/.test(footerText),
   'подпись не приглушена: с opacity 0.8 контраст падал бы');
+
+/* Страницы товаров: тёмная плита и серо-голубая подпись */
+const productFooter = footerRule("body[data-page='product'] .footer");
+const productFooterText = footerRule("body[data-page='product'] .footer__copyright");
+
+ok(/background-color: var\(--color-dark\)/.test(productFooter),
+  'на страницах товаров фон подвала тёмный',
+  productFooter.replace(/\s+/g, ' ').slice(0, 100));
+ok(/color: var\(--color-grey-blue\)/.test(productFooterText),
+  'и подпись серо-голубая',
+  productFooterText.replace(/\s+/g, ' ').slice(0, 100));
 
 /* Подвал есть на главной и на странице товара — проверяем, что разметка
    не разъехалась: класс подписи один и тот же */
