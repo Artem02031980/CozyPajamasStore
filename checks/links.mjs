@@ -47,8 +47,26 @@ const PRODUCT_HTML = read('product-pages/klubnichnye-polya.html');
 
 /* Адрес страницы живёт в данных: у товара есть поле page */
 const withPage = PRODUCTS.filter((product) => product.page);
-eq(withPage.map((product) => product.id), ['goods-women-03', 'goods-men-01', 'goods-other-16'],
-  'страницы размечены у трёх товаров: женская, мужская и подушка');
+eq(withPage.map((product) => product.id), [
+  'goods-new-01', 'goods-new-02', 'goods-new-03', 'goods-new-04', 'goods-new-05', 'goods-new-06',
+  'goods-women-03', 'goods-men-01', 'goods-other-16',
+], 'страницы размечены у девяти товаров: шесть новинок, женская, мужская и подушка');
+
+/* Адреса новинок — отдельным списком: их проверяет ещё checks/product-new.mjs,
+   а здесь важно, что ссылка с карточки каталога не ведёт в пустоту */
+const NEW_PAGES = {
+  'goods-new-01': 'product-pages/nezhnoe-schaste.html',
+  'goods-new-02': 'product-pages/nochnaya-svoboda.html',
+  'goods-new-03': 'product-pages/spokoynaya-noch-iv.html',
+  'goods-new-04': 'product-pages/ogon-prometeya.html',
+  'goods-new-05': 'product-pages/rozovye-perekrestki.html',
+  'goods-new-06': 'product-pages/vygodnaya-filosofiya.html',
+};
+
+for (const [id, page] of Object.entries(NEW_PAGES)) {
+  eq(getProduct(id).page, page, `адрес страницы «${getProduct(id).title}»`);
+}
+
 eq(getProduct('goods-women-03').page, 'product-pages/klubnichnye-polya.html',
   'адрес страницы «Клубничных полей»');
 eq(getProduct('goods-men-01').page, 'product-pages/myatnyy-vecher.html',
