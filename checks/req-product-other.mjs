@@ -57,6 +57,7 @@ const rect = (selector) => {
   const b = el.getBoundingClientRect();
   return {
     left: Math.round(b.left),
+    right: Math.round(b.right),
     top: Math.round(b.top),
     width: Math.round(b.width),
     bottom: Math.round(b.bottom),
@@ -72,6 +73,7 @@ const heading = {
 
 /* ── раскладка: две колонки, фото над сведениями ── */
 const geometry = {
+  колонкаФото: rect('.product__main'),
   галерея: rect('.product__gallery'),
   инфо: rect('.product__info'),
   фото: rect('.product__image'),
@@ -159,9 +161,18 @@ return {
       ? Math.abs(geometry.инфо.left - geometry.галерея.left) <= 2
       : null,
     /* Колонки карточки примерно равны */
-    колонкиРовны: Boolean(geometry.галерея && geometry.спеки)
-      ? Math.abs(geometry.галерея.width - geometry.спеки.width) <= 8
+    колонкиРовны: Boolean(geometry.колонкаФото && geometry.спеки)
+      ? Math.abs(geometry.колонкаФото.width - geometry.спеки.width) <= 8
       : null,
+    /* Пустота между фото и описанием: с 1280px это только зазор карточки */
+    зазорДоОписания: geometry.фото && geometry.спеки
+      ? geometry.спеки.left - geometry.фото.right
+      : null,
+    /* Пустота слева внутри колонки — сюда ушёл сдвиг */
+    слеваОтФото: geometry.фото && geometry.колонкаФото
+      ? geometry.фото.left - geometry.колонкаФото.left
+      : null,
+    сдвигКолонки: cs('.product__main').justifyContent,
   },
   убрано: removed,
   послеДобавления: afterAdd,
