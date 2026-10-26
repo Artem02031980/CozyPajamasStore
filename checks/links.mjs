@@ -4,7 +4,7 @@
  *
  * Что стережётся:
  *   1. карточка «Клубничные поля» на главной ведёт на свою страницу товара,
- *      а товары без страницы — на прежнюю заглушку;
+ *      «Солнце» — на свою, а товары без страницы — на прежнюю заглушку;
  *   2. ссылка «Выбрать из каталога» на странице товара ведёт в каталог
  *      принтов (prints.html);
  *   3. загруженный макет становится позицией корзины «Свой макет»:
@@ -49,8 +49,8 @@ const PRODUCT_HTML = read('product-pages/klubnichnye-polya.html');
 const withPage = PRODUCTS.filter((product) => product.page);
 eq(withPage.map((product) => product.id), [
   'goods-new-01', 'goods-new-02', 'goods-new-03', 'goods-new-04', 'goods-new-05', 'goods-new-06',
-  'goods-women-03', 'goods-men-01', 'goods-other-16',
-], 'страницы размечены у девяти товаров: шесть новинок, женская, мужская и подушка');
+  'goods-women-01', 'goods-women-03', 'goods-men-01', 'goods-other-16',
+], 'страницы размечены у десяти товаров: шесть новинок, две женские, мужская и подушка');
 
 /* Адреса новинок — отдельным списком: их проверяет ещё checks/product-new.mjs,
    а здесь важно, что ссылка с карточки каталога не ведёт в пустоту */
@@ -67,6 +67,8 @@ for (const [id, page] of Object.entries(NEW_PAGES)) {
   eq(getProduct(id).page, page, `адрес страницы «${getProduct(id).title}»`);
 }
 
+eq(getProduct('goods-women-01').page, 'product-pages/solntse.html',
+  'адрес страницы «Солнца»');
 eq(getProduct('goods-women-03').page, 'product-pages/klubnichnye-polya.html',
   'адрес страницы «Клубничных полей»');
 eq(getProduct('goods-men-01').page, 'product-pages/myatnyy-vecher.html',
@@ -95,6 +97,12 @@ ok(!/href="product-pages\/"[\s\S]{0,40}data-product-id/.test(RENDER),
 ok(/href="\.\.\/prints\.html"/.test(PRODUCT_HTML),
   '«Выбрать из каталога» ведёт на prints.html');
 ok(exists('prints.html'), 'страница каталога принтов существует');
+
+/* Новая страница собирается из того же шаблона, и ссылка на каталог принтов
+   должна остаться в ней такой же — иначе блок принта поведёт в пустоту */
+ok(exists('product-pages/solntse.html'), 'страница «Солнца» существует');
+ok(/href="\.\.\/prints\.html"/.test(read('product-pages/solntse.html')),
+  'на странице «Солнца» «Выбрать из каталога» ведёт на prints.html');
 
 // ─────────────── позиция «Свой макет» ───────────────
 
@@ -156,6 +164,7 @@ ok(!/src="\$\{product\.image\}"/.test(RENDER_CART),
 
 process.stdout.write(`Проверок пройдено: ${passed}\n`);
 process.stdout.write(`Карточка «Клубничные поля» → product-pages/klubnichnye-polya.html\n`);
+process.stdout.write(`Карточка «Солнце» → product-pages/solntse.html\n`);
 process.stdout.write(`Ссылка «Выбрать из каталога» → prints.html\n`);
 
 if (failures.length) {
