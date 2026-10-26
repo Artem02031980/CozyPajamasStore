@@ -229,15 +229,16 @@ ok(/max-width:\s*300px/.test(mediaRule(`${body} .product__image`)),
 ok(/max-width:\s*300px/.test(mediaRule(`${body} .product__buttons .product__button`)),
   'с 768px кнопки покупки ограничены 300px');
 
-/* С 1280px колонка с фото прижата вправо: её содержимое шириной 300px,
-   а колонка 440px, и без сдвига справа оставалась полоса пустоты в 140px,
-   которая вместе с зазором давала 204px между фото и описанием */
+/* С 1280px содержимое левой колонки — одна группа шириной 300px, стоящая
+   по центру своей половины карточки (440px): по 70px с каждой стороны.
+   Группа именно одна, а не каждый блок по центру: иначе у фото, подписи,
+   названия и кнопок были бы разные левые края */
 const media1280 = (css.match(/@media \(min-width: 1280px\) \{[\s\S]*?\n\}/g) ?? [])
   .find((block) => block.includes(`${body} .product__main`)) ?? '';
 ok(/grid-template-columns:\s*minmax\(0,\s*300px\)/.test(media1280),
   'с 1280px колонка фото по ширине содержимого', media1280.replace(/\s+/g, ' ').slice(0, 200));
-ok(/justify-content:\s*end/.test(media1280),
-  'и прижата к правому краю — пустота уходит влево, к описанию остаётся зазор карточки');
+ok(/justify-content:\s*center/.test(media1280),
+  'и стоит по центру своей половины карточки');
 
 /* Иконки и фон — от вида товара */
 ok(/\[data-section='other'\] \.product__divider[\s\S]{0,120}?icon-circle_other\.svg/.test(css),

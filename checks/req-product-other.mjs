@@ -168,9 +168,17 @@ return {
     зазорДоОписания: geometry.фото && geometry.спеки
       ? geometry.спеки.left - geometry.фото.right
       : null,
-    /* Пустота слева внутри колонки — сюда ушёл сдвиг */
+    /* Пустота слева и справа от группы: с 1280px они равны — группа
+       стоит по центру своей половины карточки */
     слеваОтФото: geometry.фото && geometry.колонкаФото
       ? geometry.фото.left - geometry.колонкаФото.left
+      : null,
+    справаОтФото: geometry.фото && geometry.колонкаФото
+      ? geometry.колонкаФото.right - geometry.фото.right
+      : null,
+    поцентру: geometry.фото && geometry.колонкаФото
+      ? Math.abs((geometry.фото.left - geometry.колонкаФото.left)
+        - (geometry.колонкаФото.right - geometry.фото.right)) <= 2
       : null,
     сдвигКолонки: cs('.product__main').justifyContent,
   },
