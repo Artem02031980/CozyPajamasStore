@@ -422,7 +422,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 
 ### Страница товара
 
-Свёрстаны четырнадцать страниц по одному образцу:
+Свёрстаны пятнадцать страниц по одному образцу:
 
 | Файл | Товар | Размеры |
 |---|---|---|
@@ -432,6 +432,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 | `product-pages/pshenichnoe-pole.html` | «Пшеничное поле», женская коллекция | S, M, XL, XXL |
 | `product-pages/rozovye-polya.html` | «Розовые поля», женская коллекция | S, M, XL, XXL |
 | `product-pages/temnaya-noch-v.html` | «Тёмная ночь V», женская коллекция | S, M, XL, XXL |
+| `product-pages/mamino-schaste-vi.html` | «Мамино счастье VI», женская коллекция | S, M, XL, XXL |
 | `product-pages/myatnyy-vecher.html` | «Мятный вечер», мужская коллекция | M, XL, XXL, XXXL |
 | `product-pages/lyanyanoy-damask.html` | «Льняной дамаск», другие товары | нет |
 | `product-pages/nezhnoe-schaste.html` | «Нежное счастье», новая коллекция | S, M, XL, XXL |
@@ -713,9 +714,10 @@ node checks/product-russkaya-dusha.mjs # страница товара «Рус�
 node checks/product-pshenichnoe-pole.mjs # страница товара «Пшеничное поле»: 44 проверки
 node checks/product-rozovye-polya.mjs # страница товара «Розовые поля»: 44 проверки
 node checks/product-temnaya-noch-v.mjs # страница товара «Тёмная ночь V»: 44 проверки
+node checks/product-mamino-schaste-vi.mjs # страница товара «Мамино счастье VI»: 44 проверки
 node checks/header.mjs      # шапка и меню-наложение: 25 проверок
 node checks/prints.mjs      # секция принтов и prints.html: 33 проверки
-node checks/links.mjs       # связи страниц и позиция «Свой макет»: 66 проверок
+node checks/links.mjs       # связи страниц и позиция «Свой макет»: 70 проверок
 node checks/size-picker.mjs # выбор размера перед корзиной: 80 проверок
 node checks/size-guard.mjs  # «без размера не покупаем»: 32 проверки
 ```

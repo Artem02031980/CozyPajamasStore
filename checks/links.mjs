@@ -4,8 +4,9 @@
  *
  * Что стережётся:
  *   1. карточка «Клубничные поля» на главной ведёт на свою страницу товара,
- *      «Солнце», «Русская душа», «Пшеничное поле», «Розовые поля» и «Тёмная
- *      ночь V» — на свои, а товары без страницы — на прежнюю заглушку;
+ *      «Солнце», «Русская душа», «Пшеничное поле», «Розовые поля», «Тёмная
+ *      ночь V» и «Мамино счастье VI» — на свои, а товары без страницы —
+ *      на прежнюю заглушку;
  *   2. ссылка «Выбрать из каталога» на странице товара ведёт в каталог
  *      принтов (prints.html);
  *   3. загруженный макет становится позицией корзины «Свой макет»:
@@ -51,8 +52,8 @@ const withPage = PRODUCTS.filter((product) => product.page);
 eq(withPage.map((product) => product.id), [
   'goods-new-01', 'goods-new-02', 'goods-new-03', 'goods-new-04', 'goods-new-05', 'goods-new-06',
   'goods-women-01', 'goods-women-02', 'goods-women-03', 'goods-women-04', 'goods-women-05',
-  'goods-women-06', 'goods-men-01', 'goods-other-16',
-], 'страницы размечены у четырнадцати товаров: шесть новинок, шесть женских, мужская и подушка');
+  'goods-women-06', 'goods-women-07', 'goods-men-01', 'goods-other-16',
+], 'страницы размечены у пятнадцати товаров: шесть новинок, семь женских, мужская и подушка');
 
 /* Адреса новинок — отдельным списком: их проверяет ещё checks/product-new.mjs,
    а здесь важно, что ссылка с карточки каталога не ведёт в пустоту */
@@ -79,6 +80,8 @@ eq(getProduct('goods-women-05').page, 'product-pages/rozovye-polya.html',
   'адрес страницы «Розовых полей»');
 eq(getProduct('goods-women-06').page, 'product-pages/temnaya-noch-v.html',
   'адрес страницы «Тёмной ночи V»');
+eq(getProduct('goods-women-07').page, 'product-pages/mamino-schaste-vi.html',
+  'адрес страницы «Маминого счастья VI»');
 eq(getProduct('goods-women-03').page, 'product-pages/klubnichnye-polya.html',
   'адрес страницы «Клубничных полей»');
 eq(getProduct('goods-men-01').page, 'product-pages/myatnyy-vecher.html',
@@ -112,7 +115,7 @@ ok(exists('prints.html'), 'страница каталога принтов су
    должна остаться в них такой же — иначе блок принта поведёт в пустоту */
 for (const page of ['product-pages/solntse.html', 'product-pages/russkaya-dusha.html',
   'product-pages/pshenichnoe-pole.html', 'product-pages/rozovye-polya.html',
-  'product-pages/temnaya-noch-v.html']) {
+  'product-pages/temnaya-noch-v.html', 'product-pages/mamino-schaste-vi.html']) {
   ok(exists(page), `страница ${page} существует`);
   ok(/href="\.\.\/prints\.html"/.test(read(page)),
     `на странице ${page} «Выбрать из каталога» ведёт на prints.html`);
@@ -183,6 +186,7 @@ process.stdout.write(`Карточка «Русская душа» → product-p
 process.stdout.write(`Карточка «Пшеничное поле» → product-pages/pshenichnoe-pole.html\n`);
 process.stdout.write(`Карточка «Розовые поля» → product-pages/rozovye-polya.html\n`);
 process.stdout.write(`Карточка «Тёмная ночь V» → product-pages/temnaya-noch-v.html\n`);
+process.stdout.write(`Карточка «Мамино счастье VI» → product-pages/mamino-schaste-vi.html\n`);
 process.stdout.write(`Ссылка «Выбрать из каталога» → prints.html\n`);
 
 if (failures.length) {
