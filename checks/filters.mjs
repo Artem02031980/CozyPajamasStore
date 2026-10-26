@@ -9,7 +9,7 @@
  * Запуск: node checks/filters.mjs
  */
 
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import {
   emptyFilters, hasAnyFilter, parsePriceLabel, matchesFilters, selectProducts, sortKeys,
 } from '../assets/js/filters-query.js';
@@ -455,6 +455,37 @@ ok(/color: var\(--color-grey-blue\)/.test(productFooterText),
 ok(html.includes('class="footer__copyright"'), 'на главной есть подпись подвала',
   'в index.html не найдена .footer__copyright');
 
+/* У страниц товаров в подписи стоит год: «© 2023 - 2026». Число в разметке
+   статичное, чтобы страница читалась без скрипта, а footer-year.js меняет
+   его на текущий при загрузке — иначе в январе в подвале остался бы
+   прошлогодний */
+const PRODUCT_PAGES = readdirSync(new URL('../product-pages/', import.meta.url))
+  .filter((name) => name.endsWith('.html'));
+
+const YEAR_TAG = /© 2023 - <span data-copyright-year>\d{4}<\/span>/;
+const pagesWithoutYear = PRODUCT_PAGES.filter((name) => {
+  const page = readFileSync(new URL(`../product-pages/${name}`, import.meta.url), 'utf8');
+  return !YEAR_TAG.test(page);
+});
+eq(pagesWithoutYear, [], 'у всех страниц товаров в подписи подвала есть год');
+ok(PRODUCT_PAGES.length >= 10, 'страниц товаров не меньше десяти', String(PRODUCT_PAGES.length));
+
+/* На главной и в принтах подпись короче — только год основания */
+ok(!YEAR_TAG.test(html), 'на главной в подписи по-прежнему только «© 2023»');
+
+const FOOTER_YEAR_JS = readFileSync(new URL('../assets/js/footer-year.js', import.meta.url), 'utf8');
+ok(/export function initFooterYear/.test(FOOTER_YEAR_JS),
+  'есть модуль, который обновляет год в подписи');
+ok(/new Date\(\)\.getFullYear\(\)/.test(FOOTER_YEAR_JS),
+  'год берётся из текущей даты, а не вписан числом');
+ok(/querySelectorAll\('\[data-copyright-year\]'\)/.test(FOOTER_YEAR_JS),
+  'модуль ищет подписи по маркеру, а не по классу');
+
+const ENTRY_JS = readFileSync(new URL('../assets/js/script.js', import.meta.url), 'utf8');
+ok(/import \{ initFooterYear \} from '\.\/footer-year\.js'/.test(ENTRY_JS),
+  'точка входа подключает модуль года');
+ok(/initFooterYear\(\);/.test(ENTRY_JS), 'и вызывает его при запуске');
+
 // ─────────────── сводка по чипсам ───────────────
 
 const coverageTypes = [...new Set(both.flatMap((p) => p.types))]
@@ -474,4 +505,5 @@ if (failures.length) {
 }
 
 process.stdout.write('\nВсё чисто.\n');
+
 

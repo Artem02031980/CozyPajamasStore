@@ -54,7 +54,9 @@ product-pages/<файл>.html
 │   │   │           ├── .product__block                 «Описание:» + состав + текст
 │   │   │           ├── .product__divider               кольцо-разделитель (по data-section)
 │   │   │           └── .product__block                 «Характеристики» + dl.product__details
-│   │   ├── <footer class="footer">
+│   │   ├── <footer class="footer">                     тёмный; подпись
+│   │   │                                               «© 2023 - <span data-copyright-year>»
+│   │   │                                               год обновляет footer-year.js
 │   │   └── модальное окно корзины (data-modal="cart")
 │   └── <script type="module" src="../assets/js/script.js">
 ```
@@ -151,7 +153,10 @@ node "$env:TEMP\find.mjs"
 ### Шаг 4. Заменить данные в разметке
 
 Менять только перечисленное. Всё остальное — разметка, комментарии
-про корзину, принт, шапку — остаётся как в шаблоне.
+про корзину, принт, шапку — остаётся как в шаблоне. Подпись подвала
+с годом (`© 2023 - <span data-copyright-year>2026</span>`) тоже
+не трогать: рядом с ней нет данных товара, а год подставляет
+`footer-year.js`.
 
 | Что | Как искать | Чем заменить |
 |---|---|---|

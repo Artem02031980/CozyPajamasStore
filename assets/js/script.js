@@ -22,6 +22,7 @@
  *   feedback.js    — форма обратной связи
  *   product.js     — размеры и выбор файла макета на странице товара
  *   size-picker.js — выбор размера в окне перед добавлением в корзину
+ *   footer-year.js — год в подписи подвала страниц товаров
  *
  * Какая страница что запускает, решает атрибут data-page на <body>:
  *   home             — каталог, фильтры, корзина, оформление, форма вопроса
@@ -40,6 +41,7 @@ import { initCheckout, initBuyNow } from './checkout.js';
 import { initThanks, initThanksFeedback } from './thanks.js';
 import { initFeedback } from './feedback.js';
 import { initProduct } from './product.js';
+import { initFooterYear } from './footer-year.js';
 
 /**
  * Каталог: секции, фильтры, корзина, оформление и форма вопроса.
@@ -107,6 +109,11 @@ function initPrintsPage() {
  * относится к каталогу: так страница не сломается, если атрибут забыли.
  */
 function init() {
+  /* Год в подвале: нужен и страницам товаров, и любым другим, где
+     появится маркер data-copyright-year, поэтому запускается до выбора
+     набора скриптов */
+  initFooterYear();
+
   const page = document.body.dataset.page ?? 'home';
 
   if (page === 'product') {
@@ -133,3 +140,4 @@ function init() {
 }
 
 init();
+
