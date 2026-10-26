@@ -422,13 +422,14 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 
 ### Страница товара
 
-Свёрстаны одиннадцать страниц по одному образцу:
+Свёрстаны двенадцать страниц по одному образцу:
 
 | Файл | Товар | Размеры |
 |---|---|---|
 | `product-pages/solntse.html` | «Солнце», женская коллекция | S, M, XL, XXL |
 | `product-pages/russkaya-dusha.html` | «Русская душа», женская коллекция | S, M, XL, XXL |
 | `product-pages/klubnichnye-polya.html` | «Клубничные поля», женская коллекция | S, M, XL, XXL |
+| `product-pages/pshenichnoe-pole.html` | «Пшеничное поле», женская коллекция | S, M, XL, XXL |
 | `product-pages/myatnyy-vecher.html` | «Мятный вечер», мужская коллекция | M, XL, XXL, XXXL |
 | `product-pages/lyanyanoy-damask.html` | «Льняной дамаск», другие товары | нет |
 | `product-pages/nezhnoe-schaste.html` | «Нежное счастье», новая коллекция | S, M, XL, XXL |
@@ -707,9 +708,10 @@ node checks/product-other.mjs # страница товара (подушка): 
 node checks/product-new.mjs # шесть страниц новой коллекции: 229 проверок
 node checks/product-solntse.mjs # страница товара «Солнце»: 44 проверки
 node checks/product-russkaya-dusha.mjs # страница товара «Русская душа»: 44 проверки
+node checks/product-pshenichnoe-pole.mjs # страница товара «Пшеничное поле»: 44 проверки
 node checks/header.mjs      # шапка и меню-наложение: 25 проверок
 node checks/prints.mjs      # секция принтов и prints.html: 33 проверки
-node checks/links.mjs       # связи страниц и позиция «Свой макет»: 54 проверки
+node checks/links.mjs       # связи страниц и позиция «Свой макет»: 58 проверок
 node checks/size-picker.mjs # выбор размера перед корзиной: 80 проверок
 node checks/size-guard.mjs  # «без размера не покупаем»: 32 проверки
 ```
