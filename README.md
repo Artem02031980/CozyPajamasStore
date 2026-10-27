@@ -422,7 +422,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 
 ### Страница товара
 
-Свёрстаны тридцать страниц по одному образцу:
+Свёрстана тридцать одна страница по одному образцу:
 
 | Файл | Товар | Размеры |
 |---|---|---|
@@ -448,6 +448,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 | `product-pages/zaykiny-sny.html` | «Зайкины сны», женская коллекция (комбинезон) | S, M, XL, XXL |
 | `product-pages/rozovaya-zebra.html` | «Розовая зебра», женская коллекция (комбинезон) | S, M, XL, XXL |
 | `product-pages/lazurnyy-plyush.html` | «Лазурный плюш», женская коллекция (комбинезон) | S, M, XL, XXL |
+| `product-pages/snezhnaya-vyaz.html` | «Снежная вязь», женская коллекция (комбинезон) | S, M, XL, XXL |
 | `product-pages/myatnyy-vecher.html` | «Мятный вечер», мужская коллекция | M, XL, XXL, XXXL |
 | `product-pages/lyanyanoy-damask.html` | «Льняной дамаск», другие товары | нет |
 | `product-pages/nezhnoe-schaste.html` | «Нежное счастье», новая коллекция | S, M, XL, XXL |
