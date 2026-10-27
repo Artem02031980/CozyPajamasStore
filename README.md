@@ -422,7 +422,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 
 ### Страница товара
 
-Свёрстаны двадцать страниц по одному образцу:
+Свёрстаны двадцать одна страница по одному образцу:
 
 | Файл | Товар | Размеры |
 |---|---|---|
@@ -438,6 +438,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 | `product-pages/siniy-briz.html` | «Синий бриз», женская коллекция | S, M, XL, XXL |
 | `product-pages/palmovyy-polden.html` | «Пальмовый полдень», женская коллекция | S, M, XL, XXL |
 | `product-pages/pudrovoe-utro.html` | «Пудровое утро», женская коллекция | S, M, XL, XXL |
+| `product-pages/lnyanoe-utro.html` | «Льняное утро», женская коллекция | S, M, XL, XXL |
 | `product-pages/myatnyy-vecher.html` | «Мятный вечер», мужская коллекция | M, XL, XXL, XXXL |
 | `product-pages/lyanyanoy-damask.html` | «Льняной дамаск», другие товары | нет |
 | `product-pages/nezhnoe-schaste.html` | «Нежное счастье», новая коллекция | S, M, XL, XXL |
@@ -725,9 +726,10 @@ node checks/product-netlennaya-klassika-ii.mjs # страница товара �
 node checks/product-siniy-briz.mjs # страница товара «Синий бриз»: 44 проверки
 node checks/product-palmovyy-polden.mjs # страница товара «Пальмовый полдень»: 44 проверки
 node checks/product-pudrovoe-utro.mjs # страница товара «Пудровое утро»: 44 проверки
+node checks/product-lnyanoe-utro.mjs # страница товара «Льняное утро»: 44 проверки
 node checks/header.mjs      # шапка и меню-наложение: 25 проверок
 node checks/prints.mjs      # секция принтов и prints.html: 33 проверки
-node checks/links.mjs       # связи страниц и позиция «Свой макет»: 90 проверок
+node checks/links.mjs       # связи страниц и позиция «Свой макет»: 94 проверки
 node checks/size-picker.mjs # выбор размера перед корзиной: 80 проверок
 node checks/size-guard.mjs  # «без размера не покупаем»: 32 проверки
 ```
