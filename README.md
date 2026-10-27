@@ -422,7 +422,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 
 ### Страница товара
 
-Свёрстаны сорок страниц по одному образцу:
+Свёрстаны сорок две страницы по одному образцу:
 
 | Файл | Товар | Размеры |
 |---|---|---|
@@ -458,6 +458,8 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 | `product-pages/beliy-parus.html` | «Белый парус», женская коллекция | S, M, XL, XXL |
 | `product-pages/botanicheskiy-son.html` | «Ботанический сон», женская коллекция | S, M, XL, XXL |
 | `product-pages/nochnaya-kletka.html` | «Ночная клетка», женская коллекция | S, M, XL, XXL |
+| `product-pages/yagodnaya-kletka.html` | «Ягодная клетка», женская коллекция | S, M, XL, XXL |
+| `product-pages/khvoynaya-kletka.html` | «Хвойная клетка», женская коллекция | S, M, XL, XXL |
 | `product-pages/myatnyy-vecher.html` | «Мятный вечер», мужская коллекция | M, XL, XXL, XXXL |
 | `product-pages/lyanyanoy-damask.html` | «Льняной дамаск», другие товары | нет |
 | `product-pages/nezhnoe-schaste.html` | «Нежное счастье», новая коллекция | S, M, XL, XXL |
