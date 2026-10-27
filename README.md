@@ -422,7 +422,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 
 ### Страница товара
 
-Свёрстаны тридцать шесть страниц по одному образцу:
+Свёрстаны тридцать семь страниц по одному образцу:
 
 | Файл | Товар | Размеры |
 |---|---|---|
@@ -454,6 +454,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 | `product-pages/monokhromnyy-sad.html` | «Монохромный сад», женская коллекция | S, M, XL, XXL |
 | `product-pages/nezhnyy-rubchik.html` | «Нежный рубчик», женская коллекция | S, M, XL, XXL |
 | `product-pages/nebesnyy-shelk.html` | «Небесный шёлк», женская коллекция | S, M, XL, XXL |
+| `product-pages/kruzhevnaya-nega.html` | «Кружевная нега», женская коллекция | S, M, XL, XXL |
 | `product-pages/myatnyy-vecher.html` | «Мятный вечер», мужская коллекция | M, XL, XXL, XXXL |
 | `product-pages/lyanyanoy-damask.html` | «Льняной дамаск», другие товары | нет |
 | `product-pages/nezhnoe-schaste.html` | «Нежное счастье», новая коллекция | S, M, XL, XXL |
