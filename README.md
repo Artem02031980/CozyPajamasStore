@@ -422,7 +422,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 
 ### Страница товара
 
-Свёрстаны двадцать три страницы по одному образцу:
+Свёрстаны двадцать четыре страницы по одному образцу:
 
 | Файл | Товар | Размеры |
 |---|---|---|
@@ -441,6 +441,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 | `product-pages/lnyanoe-utro.html` | «Льняное утро», женская коллекция | S, M, XL, XXL |
 | `product-pages/rozovyy-sad.html` | «Розовый сад», женская коллекция (платье) | S, M, XL, XXL |
 | `product-pages/belaya-klassika.html` | «Белая классика», женская коллекция (платье) | S, M, XL, XXL |
+| `product-pages/pionovyy-rassvet.html` | «Пионовый рассвет», женская коллекция (халатик) | S, M, XL, XXL |
 | `product-pages/myatnyy-vecher.html` | «Мятный вечер», мужская коллекция | M, XL, XXL, XXXL |
 | `product-pages/lyanyanoy-damask.html` | «Льняной дамаск», другие товары | нет |
 | `product-pages/nezhnoe-schaste.html` | «Нежное счастье», новая коллекция | S, M, XL, XXL |
@@ -736,9 +737,10 @@ node checks/product-pudrovoe-utro.mjs # страница товара «Пудр
 node checks/product-lnyanoe-utro.mjs # страница товара «Льняное утро»: 44 проверки
 node checks/product-rozovyy-sad.mjs # страница товара «Розовый сад»: 44 проверки
 node checks/product-belaya-klassika.mjs # страница товара «Белая классика» (платье): 44 проверки
+node checks/product-pionovyy-rassvet.mjs # страница товара «Пионовый рассвет» (халатик): 44 проверки
 node checks/header.mjs      # шапка и меню-наложение: 25 проверок
 node checks/prints.mjs      # секция принтов и prints.html: 33 проверки
-node checks/links.mjs       # связи страниц и позиция «Свой макет»: 102 проверки
+node checks/links.mjs       # связи страниц и позиция «Свой макет»: 106 проверок
 node checks/size-picker.mjs # выбор размера перед корзиной: 80 проверок
 node checks/size-guard.mjs  # «без размера не покупаем»: 32 проверки
 ```
