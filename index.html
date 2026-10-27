@@ -49,7 +49,9 @@
     <!-- Единственный подключаемый CSS: внутри только @import -->
     <link rel="stylesheet" href="assets/css/style.css" />
   </head>
-  <body>
+  <!-- data-page — какой набор скриптов запускать. У главной он же нужен
+       для оформления: голубой подвал включается по body[data-page='home'] -->
+  <body data-page="home">
     <div class="root">
       <!-- Секция 0. Шапка: меню, корзина, соцсети, бургер.
            Раскрытие меню на мобильном делает JS позже (data-burger / data-nav),

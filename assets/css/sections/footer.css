@@ -54,3 +54,12 @@ body[data-page='product'] .footer__copyright {
   color: var(--color-grey-blue);
 }
 
+/* Главная: голубая плита подвала — единственная страница с таким фоном.
+   Тёмная подпись на голубом читается с запасом, контраст 6.5:1.
+   Правило висит на body[data-page='home'], поэтому каталог принтов
+   и страницы благодарности остаются как были */
+body[data-page='home'] .footer {
+  background-color: var(--color-blue-light);
+}
+
+

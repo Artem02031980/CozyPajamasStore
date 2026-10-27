@@ -450,6 +450,15 @@ ok(/color: var\(--color-grey-blue\)/.test(productFooterText),
   'и подпись серо-голубая',
   productFooterText.replace(/\s+/g, ' ').slice(0, 100));
 
+/* Главная: голубая плита подвала. Правило висит на data-page="home",
+   поэтому каталог принтов и страницы благодарности не затронуты */
+const homeFooter = footerRule("body[data-page='home'] .footer");
+ok(/background-color: var\(--color-blue-light\)/.test(homeFooter),
+  'на главной фон подвала голубой',
+  homeFooter.replace(/\s+/g, ' ').slice(0, 100));
+ok(html.includes('<body data-page="home">'),
+  'у главной есть data-page="home" — по нему и включается голубой подвал');
+
 /* Подвал есть на главной и на странице товара — проверяем, что разметка
    не разъехалась: класс подписи один и тот же */
 ok(html.includes('class="footer__copyright"'), 'на главной есть подпись подвала',
