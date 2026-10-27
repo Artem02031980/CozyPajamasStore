@@ -422,7 +422,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 
 ### Страница товара
 
-Свёрстаны двадцать шесть страниц по одному образцу:
+Свёрстаны двадцать семь страниц по одному образцу:
 
 | Файл | Товар | Размеры |
 |---|---|---|
@@ -444,6 +444,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 | `product-pages/pionovyy-rassvet.html` | «Пионовый рассвет», женская коллекция (халатик) | S, M, XL, XXL |
 | `product-pages/alyy-kokon.html` | «Алый кокон», женская коллекция (комбинезон) | S, M, XL, XXL |
 | `product-pages/rozovyy-zefir.html` | «Розовый зефир», женская коллекция (комбинезон) | S, M, XL, XXL |
+| `product-pages/shalfeynyy-kokon.html` | «Шалфейный кокон», женская коллекция (комбинезон) | S, M, XL, XXL |
 | `product-pages/myatnyy-vecher.html` | «Мятный вечер», мужская коллекция | M, XL, XXL, XXXL |
 | `product-pages/lyanyanoy-damask.html` | «Льняной дамаск», другие товары | нет |
 | `product-pages/nezhnoe-schaste.html` | «Нежное счастье», новая коллекция | S, M, XL, XXL |
