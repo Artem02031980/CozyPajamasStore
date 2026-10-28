@@ -422,7 +422,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 
 ### Страница товара
 
-Свёрстаны пятьдесят страниц по одному образцу:
+Свёрстаны пятьдесят две страницы по одному образцу:
 
 | Файл | Товар | Размеры |
 |---|---|---|
@@ -468,6 +468,8 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 | `product-pages/pudrovyy-sad.html` | «Пудровый сад», женская коллекция | S, M, XL, XXL |
 | `product-pages/rozovyy-fler.html` | «Розовый флёр», женская коллекция | S, M, XL, XXL |
 | `product-pages/azhurnaya-vual.html` | «Ажурная вуаль», женская коллекция | S, M, XL, XXL |
+| `product-pages/tropicheskiy-shelk.html` | «Тропический шёлк», женская коллекция | S, M, XL, XXL |
+| `product-pages/beloe-kruzhevo.html` | «Белое кружево», женская коллекция | S, M, XL, XXL |
 | `product-pages/myatnyy-vecher.html` | «Мятный вечер», мужская коллекция | M, XL, XXL, XXXL |
 | `product-pages/lyanyanoy-damask.html` | «Льняной дамаск», другие товары | нет |
 | `product-pages/nezhnoe-schaste.html` | «Нежное счастье», новая коллекция | S, M, XL, XXL |
