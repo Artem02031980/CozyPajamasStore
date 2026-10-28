@@ -151,9 +151,28 @@
   display: flex;
 }
 
-/* Кнопка на телефоне — во всю ширину панели, с 480px — по содержимому */
+/* Кнопка та же, что «Добавить свой макет» на странице товара: скругление
+   --radius-sm (8px), а не пилюля базовой кнопки, кегль 14px, высота
+   control-height, розовая рамка и розовый текст, при наведении — синяя
+   заливка. Так два входа к своему макету выглядят одинаково.
+   На телефоне — во всю ширину панели, с 480px — по содержимому */
 .prints__upload-button {
   width: 100%;
+  min-height: var(--control-height);
+  padding: var(--space-12) var(--space-24);
+  font-size: var(--fs-14);
+  line-height: var(--lh-snug);
+  color: var(--color-pink);
+  background-color: var(--color-transparent);
+  border: var(--border-width-thin) solid var(--color-pink);
+  border-radius: var(--radius-sm);
+}
+
+.prints__upload-button:hover,
+.prints__upload-button:focus-visible {
+  color: var(--color-white);
+  background-color: var(--color-blue);
+  border-color: var(--color-blue);
 }
 
 /* Пометка о файле. Три состояния: пусто (скрыта), «макет добавлен»

@@ -173,6 +173,20 @@ try {
         лид: document.querySelector('.prints__lead')?.textContent.replace(/\\s+/g, ' ').trim() ?? null,
       },
       правила: [...document.querySelectorAll('.prints__note-title')].map((n) => n.textContent.trim()),
+      кнопкаМакета: (() => {
+        const button = document.querySelector('.prints__upload-button');
+        if (!button) return null;
+        const style = getComputedStyle(button);
+        const box = button.getBoundingClientRect();
+        return {
+          ширина: Math.round(box.width),
+          высота: Math.round(box.height),
+          радиус: style.borderRadius,
+          кегль: style.fontSize,
+          рамка: style.borderTopColor,
+          текст: button.textContent.trim(),
+        };
+      })(),
       кнопка: (() => {
         const button = document.querySelector('.prints__button');
         if (!button) return null;
@@ -220,6 +234,13 @@ try {
   eq(page.кнопка?.порядок, 'prints__button-icon → prints__button-label',
     'иконка стоит до подписи');
   eq(page.кнопка?.текст, 'В корзину', 'подпись кнопки');
+
+  /* Кнопка «Добавить свой макет» — как её близнец на странице товара */
+  eq(page.кнопкаМакета?.текст, 'Добавить свой макет', 'кнопка своего макета на месте');
+  eq(page.кнопкаМакета?.радиус, '8px', 'скругление кнопки своего макета — 8px');
+  eq(page.кнопкаМакета?.кегль, '14px', 'кегль кнопки своего макета — 14px');
+  eq(page.кнопкаМакета?.высота, 48, 'высота кнопки своего макета — 48px');
+  eq(page.кнопкаМакета?.рамка, 'rgb(205, 116, 162)', 'рамка розовая, как на странице товара');
 
   /* Корзина: добавление, повтор, состав и сумма.
      Сначала один клик и корзина — проверяем цену одной позиции, потом
@@ -305,6 +326,7 @@ try {
   await sleep(400);
   rmSync(profile, { recursive: true, force: true });
 }
+
 
 
 

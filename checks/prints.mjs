@@ -253,6 +253,28 @@ ok(PRINTS_HTML.indexOf('prints__upload') < PRINTS_HTML.indexOf('prints__notes'),
 ok(PRINTS_HTML.indexOf('prints__upload') < PRINTS_HTML.indexOf('data-prints-list'),
   'блок «Свой макет» стоит до списка карточек');
 
+/* Кнопка «Добавить свой макет» выглядит как её близнец на странице товара:
+   скругление --radius-sm (8px), кегль 14px, высота control-height,
+   розовая рамка и розовый текст, при наведении — синяя заливка */
+const UPLOAD_BUTTON_CSS = (() => {
+  const css = read('assets/css/pages/prints.css');
+  const at = css.indexOf('.prints__upload-button {');
+  return at < 0 ? '' : css.slice(at, css.indexOf('}', at));
+})();
+
+ok(/border-radius: var\(--radius-sm\)/.test(UPLOAD_BUTTON_CSS),
+  'скругление кнопки — --radius-sm (8px), как у «Добавить свой макет» на странице товара',
+  UPLOAD_BUTTON_CSS.replace(/\s+/g, ' ').slice(0, 120));
+ok(/font-size: var\(--fs-14\)/.test(UPLOAD_BUTTON_CSS),
+  'кегль кнопки — 14px, как у кнопок страницы товара');
+ok(/min-height: var\(--control-height\)/.test(UPLOAD_BUTTON_CSS),
+  'высота кнопки — общая control-height');
+ok(/color: var\(--color-pink\)/.test(UPLOAD_BUTTON_CSS)
+  && /border: var\(--border-width-thin\) solid var\(--color-pink\)/.test(UPLOAD_BUTTON_CSS),
+  'рамка и текст розовые, как у «Добавить свой макет» на странице товара');
+ok(!/border-radius: var\(--radius-pill\)/.test(UPLOAD_BUTTON_CSS),
+  'пилюли от базовой кнопки на этой кнопке нет');
+
 /* Подключение: тот же модуль, что на странице товара, но со своими классами */
 ok(/initPrintFileUpload\(\{ block: 'prints__upload-note' \}\)/.test(SCRIPT),
   'страница принтов подключает загрузку макета со своими классами пометки');
