@@ -13,8 +13,9 @@
       *      «Волны Балтики», «Монохромный сад», «Нежный рубчик», «Небесный шёлк»,
       *      «Кружевная нега», «Белый парус», «Ботанический сон», «Ночная клетка»,
       *      «Ягодная клетка», «Хвойная клетка», «Ажурное утро», «Снежный лён»,
-      *      «Тонкий кант», «Уютный трикотаж», «Лесная нега» и «Пудровый сад»
-      *      — на свои, а товары без страницы — на прежнюю заглушку;
+      *      «Тонкий кант», «Уютный трикотаж», «Лесная нега», «Пудровый сад»,
+      *      «Розовый флёр» и «Ажурная вуаль» — на свои, а товары без страницы
+      *      — на прежнюю заглушку;
  *   2. ссылка «Выбрать из каталога» на странице товара ведёт в каталог
  *      принтов (prints.html);
  *   3. загруженный макет становится позицией корзины «Свой макет»:
@@ -68,8 +69,8 @@ eq(withPage.map((product) => product.id), [
   'goods-women-28', 'goods-women-29', 'goods-women-30', 'goods-women-31',
   'goods-women-32', 'goods-women-33', 'goods-women-34', 'goods-women-35',
   'goods-women-36', 'goods-women-37', 'goods-women-38', 'goods-women-39',
-  'goods-women-40', 'goods-men-01', 'goods-other-16',
-], 'страницы размечены у сорока восьми товаров: шесть новинок, сорок женских, '
+  'goods-women-40', 'goods-women-41', 'goods-women-42', 'goods-men-01', 'goods-other-16',
+], 'страницы размечены у пятидесяти товаров: шесть новинок, сорок две женских, '
   + 'мужская и подушка');
 
 /* Адреса новинок — отдельным списком: их проверяет ещё checks/product-new.mjs,
@@ -165,6 +166,10 @@ eq(getProduct('goods-women-39').page, 'product-pages/lesnaya-nega.html',
   'адрес страницы «Лесной неги»');
 eq(getProduct('goods-women-40').page, 'product-pages/pudrovyy-sad.html',
   'адрес страницы «Пудрового сада»');
+eq(getProduct('goods-women-41').page, 'product-pages/rozovyy-fler.html',
+  'адрес страницы «Розового флёра»');
+eq(getProduct('goods-women-42').page, 'product-pages/azhurnaya-vual.html',
+  'адрес страницы «Ажурной вуали»');
 eq(getProduct('goods-women-03').page, 'product-pages/klubnichnye-polya.html',
   'адрес страницы «Клубничных полей»');
 eq(getProduct('goods-men-01').page, 'product-pages/myatnyy-vecher.html',
@@ -215,7 +220,8 @@ for (const page of ['product-pages/solntse.html', 'product-pages/russkaya-dusha.
   'product-pages/khvoynaya-kletka.html', 'product-pages/azhurnoe-utro.html',
   'product-pages/snezhnyy-lyon.html', 'product-pages/tonkiy-kant.html',
   'product-pages/uyutnyy-trikotazh.html', 'product-pages/lesnaya-nega.html',
-  'product-pages/pudrovyy-sad.html']) {
+  'product-pages/pudrovyy-sad.html', 'product-pages/rozovyy-fler.html',
+  'product-pages/azhurnaya-vual.html']) {
   ok(exists(page), `страница ${page} существует`);
   ok(/href="\.\.\/prints\.html"/.test(read(page)),
     `на странице ${page} «Выбрать из каталога» ведёт на prints.html`);
@@ -320,6 +326,8 @@ process.stdout.write(`Карточка «Тонкий кант» → product-pag
 process.stdout.write(`Карточка «Уютный трикотаж» → product-pages/uyutnyy-trikotazh.html\n`);
 process.stdout.write(`Карточка «Лесная нега» → product-pages/lesnaya-nega.html\n`);
 process.stdout.write(`Карточка «Пудровый сад» → product-pages/pudrovyy-sad.html\n`);
+process.stdout.write(`Карточка «Розовый флёр» → product-pages/rozovyy-fler.html\n`);
+process.stdout.write(`Карточка «Ажурная вуаль» → product-pages/azhurnaya-vual.html\n`);
 process.stdout.write(`Ссылка «Выбрать из каталога» → prints.html\n`);
 
 if (failures.length) {
