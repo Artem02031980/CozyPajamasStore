@@ -225,8 +225,6 @@ const REQUIRED = [
   ['data-buy-now="goods-women-03"', '«Купить в один клик» оформляет заказ сразу'],
   ['data-print-upload', 'поле выбора файла макета'],
   ['product__sizes', 'блок размеров'],
-  ['data-product-prev', 'стрелка «предыдущее фото»'],
-  ['data-product-next', 'стрелка «следующее фото»'],
   ['product__details', 'список характеристик'],
   ['product__print-title', 'подпись «Добавить принт:»'],
   ['product__composition', 'состав товара в описании'],
@@ -244,11 +242,20 @@ ok(!html.includes('data-product-dot'), 'разметки точек не ост�
 ok(!read('assets/js/product.js').includes('data-product-dot'),
   'в модуле нет логики точек');
 
-/* Стрелки остались, но кадр один — обе выключены в разметке */
-ok(/class="product__arrow product__arrow--prev"[\s\S]{0,200}?disabled/.test(html),
-  'стрелка «назад» выключена: кадр один');
-ok(/class="product__arrow product__arrow--next"[\s\S]{0,200}?disabled/.test(html),
-  'стрелка «вперёд» выключена: кадр один');
+/* Стрелки по краям карточки — ссылки на соседний товар раздела.
+   Кадр один, листать нечего, поэтому стрелки ведут по каталогу:
+   у «Клубничных полей» (третья страница женской секции) это
+   «Русская душа» слева и «Пшеничное поле» справа.
+   Всю цепочку целиком проверяет checks/product-arrows.mjs */
+const prevArrow = html.match(/<a\s+class="product__arrow product__arrow--prev"[\s\S]{0,300}?<\/a>/)?.[0] ?? '';
+const nextArrow = html.match(/<a\s+class="product__arrow product__arrow--next"[\s\S]{0,300}?<\/a>/)?.[0] ?? '';
+
+ok(prevArrow.includes('href="russkaya-dusha.html"'),
+  'левая стрелка ведёт к предыдущему товару раздела', prevArrow.slice(0, 120));
+ok(nextArrow.includes('href="pshenichnoe-pole.html"'),
+  'правая стрелка ведёт к следующему товару раздела', nextArrow.slice(0, 120));
+ok(!html.includes('data-product-prev') && !html.includes('data-product-next'),
+  'кнопок листания кадра не осталось — только ссылки');
 
 // ─────────────── покупка в один клик ───────────────
 
@@ -540,23 +547,33 @@ ok(/@media \(min-width: 768px\)[\s\S]{0,1200}?max-width: 1200px/.test(
   css.replace(/\r\n/g, '\n'),
 ), 'с 768px карточка растягивается за экраном до 1200px');
 
-/* Фото прижато к верхнему краю карточки. Колонка информации выше снимка
-   (938px против 520px), и при выравнивании по центру над фото оставалось
-   209px пустоты. Галерея при этом не растягивается на всю высоту ряда:
-   иначе стрелка, привязанная к top: 50%, уезжала к низу снимка.
-   Правило вырезаем по закрывающей скобке — в этих правилах нет комментариев
-   с фигурными скобками, в отличие от .product__card выше */
+/* Фото стоит по центру карточки по вертикали: колонка информации выше
+   снимка (с подписью принта и кнопками), и по верхнему краю снимок
+   прилипал к заголовку, а снизу оставалась пустота. Галерея для этого
+   растянута на всю высоту ряда — иначе центрировать нечего.
+   Правило вырезаем по закрывающей скобке — в этих правилах нет
+   комментариев с фигурными скобками, в отличие от .product__card выше */
 const startRule = (selector) => {
   const at = css.indexOf(selector + ' {');
   return at < 0 ? '' : css.slice(at, css.indexOf('}', at));
 };
 
 const galleryRule = startRule('.product__gallery');
-ok(/align-items: flex-start/.test(galleryRule),
-  'фото прижато к верхнему краю, а не по центру колонки',
+ok(/align-items: center/.test(galleryRule),
+  'фото по центру колонки по вертикали',
   galleryRule.replace(/\s+/g, ' ').slice(0, 120));
-ok(/align-self: start/.test(galleryRule),
-  'галерея не растягивается — стрелки стоят по центру снимка');
+ok(/align-self: stretch/.test(galleryRule),
+  'галерея растянута на высоту ряда — иначе центрировать нечего');
+
+/* У «других товаров» раскладка своя: фото прижато к верху и стоит
+   под подписью в той же колонке. Правил с этим селектором два (прижатие
+   влево и высота), поэтому берём все и склеиваем */
+const otherGallery = (css.match(
+  /body\[data-page='product'\]\[data-section='other'\] \.product__gallery \{[^}]*\}/g,
+) ?? []).join(' ');
+ok(/align-items: flex-start/.test(otherGallery) && /align-self: start/.test(otherGallery),
+  'у подушки фото по-прежнему прижато к верхнему краю',
+  otherGallery.replace(/\s+/g, ' ').slice(0, 120));
 
 const stageRule = startRule('.product__stage');
 ok(/align-items: flex-start/.test(stageRule),

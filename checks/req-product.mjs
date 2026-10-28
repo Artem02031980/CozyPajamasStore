@@ -27,8 +27,9 @@ const title = document.querySelector('.product__title');
 const price = document.querySelector('.product__price');
 const sizes = [...document.querySelectorAll('[data-product-size]')];
 const addButton = document.querySelector('[data-cart-add]');
-const prev = document.querySelector('[data-product-prev]');
-const next = document.querySelector('[data-product-next]');
+/* Стрелки по краям карточки — ссылки на соседние товары раздела */
+const prev = document.querySelector('.product__arrow--prev');
+const next = document.querySelector('.product__arrow--next');
 const modal = document.querySelector('[data-modal="cart"]');
 
 localStorage.removeItem('cozy-pajamas:cart');
@@ -57,6 +58,8 @@ const layout = {
   стрелкаСлева: box(prev).left - box(card).left,
   стрелкаСправаОтГалереи: box(document.querySelector('.product__gallery')).right
     - box(next).right,
+  стрелкаСлеваВедёт: prev.getAttribute('href'),
+  стрелкаСправаВедёт: next.getAttribute('href'),
   карточкаУжеКонтейнера: box(card).width < document.querySelector('.product__inner').clientWidth,
   поГоризонталиПрокрутка: document.documentElement.scrollWidth > innerWidth,
 };
@@ -206,19 +209,19 @@ const dividerInfo = (() => {
   };
 })();
 
-// ─── галерея при одном кадре ───
+// ─── галерея и стрелки по краям карточки ───
 
-/* Точек нет, стрелки выключены в разметке. Клик по выключенной стрелке
-   не должен ничего менять и не должен ронять страницу */
+/* Кадр один, точек нет. Стрелки — не листание, а переход к соседнему
+   товару раздела: это ссылки, и у них есть адрес. Клик по ссылке здесь
+   не проверяем: он уводит со страницы, и замер обрывается */
 const gallery = {
   точекуНаСтранице: document.querySelectorAll('[data-product-dot]').length,
   контейнерТочек: Boolean(document.querySelector('.product__dots')),
-  стрелкаНазадВыключена: prev.disabled,
-  стрелкаВперёдВыключена: next.disabled,
-  кликВперёдНеПадает: (() => {
-    press(next);
-    return document.querySelector('.product__image') !== null;
-  })(),
+  стрелкаНазадСсылка: prev.tagName === 'A',
+  стрелкаВперёдСсылка: next.tagName === 'A',
+  стрелкаНазадВедёт: prev.getAttribute('href'),
+  стрелкаВперёдВедёт: next.getAttribute('href'),
+  выключенныхКнопок: document.querySelectorAll('.product__arrow[disabled]').length,
 };
 
 // ─── нанесение принта ───
@@ -413,6 +416,7 @@ return {
     };
   })(),
 };
+
 
 
 
