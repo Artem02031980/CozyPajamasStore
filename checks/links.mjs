@@ -274,8 +274,8 @@ ok(/import \{ addItem, CUSTOM_PRINT_ID \} from '\.\/cart\.js'/.test(PRODUCT_JS),
   'product.js кладёт макет в корзину через модуль корзины');
 ok(/addItem\(CUSTOM_PRINT_ID, \{ qty: 1, file: name \}\)/.test(PRODUCT_JS),
   'имя файла уезжает в позицию корзины');
-ok(/product__print-file-icon/.test(PRODUCT_JS),
-  'подпись после загрузки собирается с иконкой файла');
+ok(/\$\{block\}-icon/.test(PRODUCT_JS),
+  'подпись после загрузки собирается с иконкой файла: класс берётся из префикса');
 ok(/Макет добавлен в корзину/.test(PRODUCT_JS),
   'подпись говорит, что макет добавлен');
 ok(/уточнит менеджер/.test(PRODUCT_JS),
@@ -284,12 +284,15 @@ ok(/product__print-file--added/.test(read('assets/css/pages/product.css')),
   'у подписи «файл добавлен» есть оформление');
 
 /* Неподходящий формат не должен попадать в корзину: проверка стоит
-   до вызова addItem */
-const uploadBody = PRODUCT_JS.slice(PRODUCT_JS.indexOf('function initPrintUpload'));
+   до вызова addItem. Загрузка подключена функцией initPrintFileUpload —
+   ею пользуются и страница товара, и каталог принтов */
+const uploadBody = PRODUCT_JS.slice(PRODUCT_JS.indexOf('export function initPrintFileUpload'));
 const addAt = uploadBody.indexOf('addItem(');
 const guardAt = uploadBody.indexOf('if (!ok)');
 ok(guardAt > 0 && guardAt < addAt, 'неподходящий файл отсекается до добавления',
   `проверка ${guardAt}, добавление ${addAt}`);
+ok(/export function initPrintFileUpload/.test(PRODUCT_JS),
+  'загрузка макета вынесена в отдельную функцию: её же зовёт каталог принтов');
 
 // ─────────────── картинка в корзине ───────────────
 

@@ -40,7 +40,7 @@ import { initSizePicker } from './size-picker.js';
 import { initCheckout, initBuyNow } from './checkout.js';
 import { initThanks, initThanksFeedback } from './thanks.js';
 import { initFeedback } from './feedback.js';
-import { initProduct } from './product.js';
+import { initProduct, initPrintFileUpload } from './product.js';
 import { initFooterYear } from './footer-year.js';
 import { renderPrints } from './render-prints.js';
 
@@ -103,6 +103,10 @@ function initPrintsPage() {
   initCart();
   /* Карточки принтов рисуются из prints.js: у всех 17 разметка одинаковая */
   renderPrints();
+  /* «Добавить свой макет» в шапке страницы: проверка формата и позиция
+     «Свой макет» в корзине. Тот же модуль, что на странице товара,
+     только со своими классами пометки */
+  initPrintFileUpload({ block: 'prints__upload-note' });
 }
 
 /**
@@ -143,5 +147,6 @@ function init() {
 }
 
 init();
+
 
 

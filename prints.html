@@ -10,6 +10,15 @@
     />
     <meta name="theme-color" content="#ffffff" />
 
+    <!-- Шрифты: Roboto Slab Regular (400) и Bold (700), кириллица —
+         те же, что на остальных страницах -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap"
+    />
+
     <!-- Скрипт подключён модулем: без сервера (file://) он не загрузится,
          страницу нужно открывать по http:// — как и остальные страницы сайта -->
     <link rel="stylesheet" href="assets/css/style.css" />
@@ -49,7 +58,7 @@
                 <a class="header__link" href="index.html#goods-men">Мужские пижамы</a>
               </li>
               <li class="header__item">
-                <a class="header__link" href="index.html#goods-print">Принты</a>
+                <a class="header__link" href="prints.html" aria-current="page">Принты</a>
               </li>
               <li class="header__item">
                 <a class="header__link" href="index.html#goods-other">Другие товары</a>
@@ -100,6 +109,45 @@
                 Каждый принт — <strong class="prints__cost-value">500 ₽</strong>
               </p>
             </header>
+
+            <!-- Свой макет. Стоит в начале страницы: если человек пришёл
+                 со своим рисунком, ему не нужно листать 17 карточек.
+                 Кнопка — это label для скрытого поля с файлом, поэтому
+                 выбор файла открывает сам браузер и работает без скрипта;
+                 скрипт добавляет проверку формата и позицию «Свой макет»
+                 в корзину -->
+            <div class="prints__upload">
+              <div class="prints__upload-head">
+                <p class="prints__upload-title">Есть свой рисунок?</p>
+                <p class="prints__upload-text">
+                  Пришлите макет — напечатаем его так же, как наши принты:
+                  чёрным на светлую ткань или белым на тёмную. Стоимость
+                  уточнит менеджер.
+                </p>
+              </div>
+
+              <div class="prints__upload-actions">
+                <label
+                  class="prints__upload-button button button--outline"
+                  for="prints-upload"
+                >
+                  Добавить свой макет
+                </label>
+
+                <input
+                  class="visually-hidden"
+                  type="file"
+                  id="prints-upload"
+                  name="print-file"
+                  accept=".pdf,.jpg,.jpeg,.png,.psd,.tiff,.tif,application/pdf,image/jpeg,image/png,image/vnd.adobe.photoshop,image/tiff"
+                  data-print-upload
+                />
+              </div>
+
+              <!-- Что выбрали: имя файла или сообщение о неподходящем формате.
+                   Наполняет product.js (initPrintFileUpload) -->
+              <p class="prints__upload-note" data-print-file hidden></p>
+            </div>
 
             <!-- Три правила каталога: как принт ложится на ткань. Одинаковы
                  для всех рисунков, поэтому стоят один раз в шапке, а не

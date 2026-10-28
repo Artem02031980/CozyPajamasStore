@@ -85,7 +85,7 @@
   gap: var(--space-16);
   padding: var(--space-20);
   background-color: var(--color-white);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
 }
 
 .prints__note {
@@ -114,6 +114,100 @@
 }
 
 /* ==========================================================================
+   3.5. Свой макет
+   Панель в начале страницы: человек, который пришёл со своим рисунком,
+   не должен листать 17 карточек. Кнопка — это label для скрытого поля,
+   поэтому системное окно выбора файла открывает сам браузер.
+   ========================================================================== */
+
+.prints__upload {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  padding: var(--space-20);
+  background-color: var(--color-white);
+  border: var(--border-width) dashed var(--color-beige);
+  border-radius: var(--radius-md);
+}
+
+.prints__upload-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.prints__upload-title {
+  font-size: var(--fs-18);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-snug);
+}
+
+.prints__upload-text {
+  font-size: var(--fs-14);
+  line-height: var(--lh-base);
+}
+
+.prints__upload-actions {
+  display: flex;
+}
+
+/* Кнопка на телефоне — во всю ширину панели, с 480px — по содержимому */
+.prints__upload-button {
+  width: 100%;
+}
+
+/* Пометка о файле. Три состояния: пусто (скрыта), «макет добавлен»
+   и ошибка формата. Классы — те же, что у страницы товара, но со своим
+   префиксом: их ставит initPrintFileUpload из product.js */
+.prints__upload-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-8);
+  font-size: var(--fs-14);
+  line-height: var(--lh-base);
+}
+
+.prints__upload-note--error {
+  color: var(--color-pink);
+}
+
+.prints__upload-note-icon {
+  flex: none;
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+  margin-top: 0.2em;
+  background-image: url('../../images/icons/icon-file.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+@media (min-width: 768px) {
+  .prints__upload {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-16) var(--space-24);
+    padding: var(--space-24);
+  }
+
+  .prints__upload-head {
+    flex: 1 1 22ch;
+  }
+
+  .prints__upload-note {
+    flex-basis: 100%;
+  }
+}
+
+@media (min-width: 480px) {
+  .prints__upload-button {
+    width: auto;
+  }
+}
+
+/* ==========================================================================
    4. Список карточек
    ========================================================================== */
 
@@ -132,7 +226,7 @@
   gap: var(--space-16);
   padding: var(--space-16);
   background-color: var(--color-white);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
 }
 
 /* Пара превью: обычное состояние и инверсия */
@@ -276,3 +370,4 @@
   line-height: var(--lh-base);
   text-align: center;
 }
+

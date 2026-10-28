@@ -46,6 +46,15 @@ const SELECTOR = {
 };
 
 /**
+ * Классы пометки о файле у страницы товара.
+ *
+ * Пометка нужна и странице каталога принтов, а классы у неё свои —
+ * поэтому загрузку макета можно подключить с другим набором классов
+ * (см. initPrintFileUpload). По умолчанию — товарные.
+ */
+const PRINT_NOTE_BLOCK = 'product__print-file';
+
+/**
  * Показывает выбранный размер.
  *
  * Размер ровно один: выбранный чипс снимает выделение с остальных. Повторное
@@ -120,35 +129,36 @@ export function checkPrintFile(file) {
  * @param {HTMLElement|null} note
  * @param {{name: string, ok: boolean}|null} file
  * @param {string} [error] текст ошибки; при нём иконки нет
+ * @param {string} [block='product__print-file'] префикс классов пометки
  */
-function showPrintFileNote(note, file, error = '') {
+function showPrintFileNote(note, file, error = '', block = PRINT_NOTE_BLOCK) {
   if (!note) return;
 
   if (error) {
     note.textContent = error;
-    note.classList.add('product__print-file--error');
-    note.classList.remove('product__print-file--added');
+    note.classList.add(`${block}--error`);
+    note.classList.remove(`${block}--added`);
     note.hidden = false;
     return;
   }
 
   if (!file) {
     note.textContent = '';
-    note.classList.remove('product__print-file--error', 'product__print-file--added');
+    note.classList.remove(`${block}--error`, `${block}--added`);
     note.hidden = true;
     return;
   }
 
-  note.classList.remove('product__print-file--error');
-  note.classList.add('product__print-file--added');
+  note.classList.remove(`${block}--error`);
+  note.classList.add(`${block}--added`);
   note.textContent = '';
 
   const icon = document.createElement('span');
-  icon.className = 'product__print-file-icon';
+  icon.className = `${block}-icon`;
   icon.setAttribute('aria-hidden', 'true');
 
   const text = document.createElement('span');
-  text.className = 'product__print-file-text';
+  text.className = `${block}-text`;
   text.textContent = `Макет добавлен в корзину: ${file.name}. `
     + 'Стоимость уточнит менеджер — он свяжется с вами отдельно.';
 
@@ -163,29 +173,38 @@ function showPrintFileNote(note, file, error = '') {
  * её называет менеджер после просмотра. Неподходящий не берём вовсе —
  * иначе человек думает, что макет принят.
  *
- * @param {HTMLInputElement|null} input
+ * Подключение одно на две страницы: страница товара (там свой набор классов
+ * пометки) и каталог принтов (там свой). Поэтому поля и префикс классов
+ * передаются параметрами, а по умолчанию берутся товарные.
+ *
+ * @param {object} [options]
+ * @param {HTMLInputElement|null} [options.input] поле выбора файла
+ * @param {HTMLElement|null} [options.note] куда писать итог
+ * @param {string} [options.block] префикс классов пометки
  */
-function initPrintUpload(input) {
+export function initPrintFileUpload({
+  input = $(SELECTOR.printFile),
+  note = $(SELECTOR.printFileNote),
+  block = PRINT_NOTE_BLOCK,
+} = {}) {
   if (!input) return;
-
-  const note = $(SELECTOR.printFileNote);
 
   input.addEventListener('change', () => {
     const file = input.files?.[0] ?? null;
     if (!file) {
-      showPrintFileNote(note, null);
+      showPrintFileNote(note, null, '', block);
       return;
     }
 
     const { name, ok } = checkPrintFile(file);
 
     if (!ok) {
-      showPrintFileNote(note, null, 'Файл не подходит. Нужен PDF, JPG, PNG, PSD или TIFF.');
+      showPrintFileNote(note, null, 'Файл не подходит. Нужен PDF, JPG, PNG, PSD или TIFF.', block);
       input.value = '';
       return;
     }
 
-    showPrintFileNote(note, { name, ok });
+    showPrintFileNote(note, { name, ok }, '', block);
 
     /* Позиция одна на все макеты: повторная загрузка заменяет файл,
        а не плодит вторую заявку (см. addItem в cart.js) */
@@ -208,5 +227,6 @@ export function initProduct() {
   });
 
   // 2. Выбор файла макета для принта
-  initPrintUpload($(SELECTOR.printFile));
+  initPrintFileUpload();
 }
+

@@ -192,6 +192,74 @@ ok(/page === 'prints'/.test(SCRIPT), 'ветка prints подключена в 
 ok(STYLE.includes("url('pages/prints.css')"), 'стили страницы принтов подключены');
 ok(exists('assets/css/pages/prints.css'), 'файл стилей страницы принтов на месте');
 
+// ─────────────── страница в структуре сайта ───────────────
+
+/* Шрифты: без подключения Roboto Slab страница открывалась системным
+   шрифтом, хотя все остальные свёрстаны им */
+ok(/fonts\.googleapis\.com\/css2\?family=Roboto\+Slab:wght@400;700/.test(PRINTS_HTML),
+  'шрифты Roboto Slab подключены, как на остальных страницах');
+
+/* Меню ведёт в каталог: пункт «Принты» — это и есть эта страница.
+   На страницах товаров путь на уровень выше */
+ok(/class="header__link" href="prints\.html" aria-current="page">Принты/.test(PRINTS_HTML),
+  'на странице принтов пункт меню «Принты» помечен как текущий');
+ok(!/header__link" href="[^"]*#goods-print"/.test(INDEX),
+  'на главной пункт меню «Принты» ведёт в каталог, а не на якорь');
+const PRODUCT_PAGE = read('product-pages/solntse.html');
+ok(/class="header__link" href="\.\.\/prints\.html">Принты/.test(PRODUCT_PAGE),
+  'со страницы товара пункт меню «Принты» ведёт в каталог');
+ok(!/header__link" href="\.\.\/index\.html#goods-print"/.test(PRODUCT_PAGE),
+  'старой ссылки на якорь в меню страницы товара не осталось');
+
+// ─────────────── свой макет в начале страницы ───────────────
+
+const uploadBlock = (() => {
+  const at = PRINTS_HTML.indexOf('class="prints__upload"');
+  return at < 0 ? '' : PRINTS_HTML.slice(at, PRINTS_HTML.indexOf('class="prints__notes"', at));
+})();
+
+ok(uploadBlock.length > 0, 'в начале страницы есть блок «Свой макет»');
+ok(/Добавить свой макет/.test(uploadBlock), 'кнопка подписана «Добавить свой макет»');
+ok(/<label[^>]*for="prints-upload"/.test(uploadBlock),
+  'кнопка — это label для скрытого поля: окно выбора откроет браузер');
+ok(/<input[^>]*type="file"[^>]*id="prints-upload"[\s\S]{0,400}?data-print-upload/.test(uploadBlock)
+  || /<input[^>]*id="prints-upload"[^>]*type="file"/.test(uploadBlock),
+  'на странице есть поле выбора файла');
+ok(/accept="\.pdf,\.jpg,\.jpeg,\.png,\.psd,\.tiff,\.tif/.test(uploadBlock),
+  'в accept перечислены те же форматы, что на странице товара');
+ok(/data-print-file/.test(uploadBlock), 'есть место под пометку о выбранном файле');
+ok(/Стоимость\s+уточнит менеджер/.test(uploadBlock),
+  'человеку сказано, что стоимость своего макета уточнит менеджер');
+
+/* Блок стоит до правил нанесения и до карточек — в начале страницы */
+ok(PRINTS_HTML.indexOf('prints__upload') < PRINTS_HTML.indexOf('prints__notes'),
+  'блок «Свой макет» стоит до правил нанесения');
+ok(PRINTS_HTML.indexOf('prints__upload') < PRINTS_HTML.indexOf('data-prints-list'),
+  'блок «Свой макет» стоит до списка карточек');
+
+/* Подключение: тот же модуль, что на странице товара, но со своими классами */
+ok(/initPrintFileUpload\(\{ block: 'prints__upload-note' \}\)/.test(SCRIPT),
+  'страница принтов подключает загрузку макета со своими классами пометки');
+ok(/export function initPrintFileUpload/.test(read('assets/js/product.js')),
+  'функция загрузки макета экспортирована из product.js');
+for (const selector of ['prints__upload-note--error', 'prints__upload-note-icon']) {
+  ok(read('assets/css/pages/prints.css').includes(selector),
+    `в стилях есть состояние «${selector}»`);
+}
+/* Состояние «макет добавлен» отдельного оформления не требует — оно
+   показывает иконку и текст, — но класс должен ставиться модулем */
+ok(/\$\{block\}--added/.test(read('assets/js/product.js')),
+  'модуль ставит пометку «макет добавлен» через тот же префикс классов');
+
+/* Скругления — из шкалы сайта: панели 12px, превью 8px, кнопка-пилюля */
+const PRINTS_CSS = read('assets/css/pages/prints.css');
+ok(/\.prints__card \{[\s\S]{0,400}?border-radius: var\(--radius-md\)/.test(PRINTS_CSS),
+  'карточка скруглена на --radius-md, как другие панели сайта');
+ok(/\.prints__image \{[\s\S]{0,300}?border-radius: var\(--radius-sm\)/.test(PRINTS_CSS),
+  'превью скруглены на --radius-sm, как картинки карточек');
+ok(!/--radius-lg|--radius-xl/.test(PRINTS_CSS),
+  'выпадающих из шкалы скруглений на странице нет');
+
 // ─────────────── итог ───────────────
 
 process.stdout.write(`Проверок пройдено: ${passed}\n`);
