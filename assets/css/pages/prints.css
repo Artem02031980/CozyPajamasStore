@@ -310,10 +310,30 @@
   line-height: var(--lh-tight);
 }
 
-/* Кнопка тянется хотя бы на 200px, но не на всю карточку */
+/* Кнопка «В корзину» — того же вида, что в карточках каталога на главной:
+   компактная, по содержимому, со скруглением --radius-xs (4px), а не
+   пилюлей большой кнопки. Белая иконка корзины — та же, что на странице
+   товара (cart-white.svg); она стоит перед подписью и не сжимается
+   вместе с текстом */
 .prints__button {
-  flex: 1 1 200px;
-  max-width: 260px;
+  flex: none;
+  align-self: flex-start;
+  min-height: 0;
+  padding: var(--space-8) var(--space-20);
+  font-size: var(--fs-14);
+  line-height: var(--lh-snug);
+  border-radius: var(--radius-xs);
+}
+
+.prints__button-icon {
+  /* flex: none — иначе в тесной строке иконка ужимается меньше 16px */
+  flex: none;
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+  background-image: url('../../images/icons/cart-white.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 }
 
 @media (min-width: 768px) {

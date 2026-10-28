@@ -160,7 +160,7 @@ try {
       карточек: cards.length,
       картинок: images.length,
       загружено: images.filter((img) => img.complete && img.naturalWidth > 0).length,
-      безАвтора: cards.filter((card) => !/Хмелёв Артём/.test(
+      безАвтора: cards.filter((card) => !/Артём Мижорниев/.test(
         card.querySelector('.prints__text')?.textContent ?? '',
       )).length,
       цены: [...new Set(cards.map((card) => card.querySelector('.prints__price')?.textContent.replace(/\u00A0/g, ' ').trim()))],
@@ -173,6 +173,24 @@ try {
         лид: document.querySelector('.prints__lead')?.textContent.replace(/\\s+/g, ' ').trim() ?? null,
       },
       правила: [...document.querySelectorAll('.prints__note-title')].map((n) => n.textContent.trim()),
+      кнопка: (() => {
+        const button = document.querySelector('.prints__button');
+        if (!button) return null;
+        const style = getComputedStyle(button);
+        const box = button.getBoundingClientRect();
+        const icon = button.querySelector('.prints__button-icon');
+        return {
+          ширина: Math.round(box.width),
+          высота: Math.round(box.height),
+          радиус: style.borderRadius,
+          кегль: style.fontSize,
+          иконка: icon
+            ? getComputedStyle(icon).backgroundImage.split('/').pop().replace(/["')]/g, '')
+            : null,
+          порядок: [...button.children].map((child) => child.className).join(' → '),
+          текст: button.textContent.trim(),
+        };
+      })(),
       прокруткаВбок: document.documentElement.scrollWidth > innerWidth,
     };
   `);
@@ -185,10 +203,23 @@ try {
   eq(page.снизуПодписи, ['На светлом', 'На тёмном'], 'под превью подписано, какое состояние показано');
   eq(page.вШапке.заголовок, 'КАТАЛОГ ПРИНТОВ', 'заголовок страницы');
   ok(/500 ₽/.test(page.вШапке.цена ?? ''), 'в шапке видна цена 500 ₽', String(page.вШапке.цена));
-  ok(/Хмелёв Артём/.test(page.вШапке.лид ?? ''), 'во вступлении назван автор', String(page.вШапке.лид));
+  ok(/Артём Мижорниев/.test(page.вШапке.лид ?? ''), 'во вступлении назван автор', String(page.вШапке.лид));
   eq(page.правила, ['Чёрное на светлом', 'Белое на тёмном', 'Без цветности'],
     'на странице три правила нанесения');
   ok(!page.прокруткаВбок, 'страница не прокручивается вбок');
+
+  /* Кнопка «В корзину»: компактная, со скруглением карточных кнопок
+     и белой иконкой корзины перед подписью */
+  ok(Boolean(page.кнопка), 'в карточке есть кнопка «В корзину»');
+  eq(page.кнопка?.радиус, '4px', 'скругление кнопки — 4px, как у кнопок в карточках каталога');
+  eq(page.кнопка?.кегль, '14px', 'кегль кнопки — как у кнопок в карточках каталога');
+  ok((page.кнопка?.ширина ?? 999) < 200, 'ширина кнопки по содержимому, а не на всю карточку',
+    String(page.кнопка?.ширина));
+  ok((page.кнопка?.высота ?? 99) <= 40, 'кнопка компактная по высоте', String(page.кнопка?.высота));
+  eq(page.кнопка?.иконка, 'cart-white.svg', 'перед подписью белая иконка корзины');
+  eq(page.кнопка?.порядок, 'prints__button-icon → prints__button-label',
+    'иконка стоит до подписи');
+  eq(page.кнопка?.текст, 'В корзину', 'подпись кнопки');
 
   /* Корзина: добавление, повтор, состав и сумма.
      Сначала один клик и корзина — проверяем цену одной позиции, потом
@@ -274,5 +305,6 @@ try {
   await sleep(400);
   rmSync(profile, { recursive: true, force: true });
 }
+
 
 

@@ -60,6 +60,7 @@ function renderCard(print) {
                 data-cart-add="${print.id}"
                 aria-label="Добавить в корзину: ${label}"
               >
+                <span class="prints__button-icon" aria-hidden="true"></span>
                 <span class="prints__button-label" data-cart-label>В корзину</span>
               </button>
             </div>

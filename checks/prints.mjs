@@ -83,7 +83,7 @@ ok(!CHECKOUT.includes('data-cart-add="print"'), 'checkout.js не ищет кн�
 
 eq(PRINTS.length, 17, 'в каталоге 17 принтов');
 eq(PRINT_PRICE, 500, 'цена принта — 500 ₽');
-eq(PRINT_AUTHOR, 'Хмелёв Артём', 'автор рисунков указан в данных');
+eq(PRINT_AUTHOR, 'Артём Мижорниев', 'автор рисунков указан в данных');
 
 const ids = PRINTS.map((print) => print.id);
 eq(ids.length, new Set(ids).size, 'идентификаторы принтов уникальны');
@@ -168,6 +168,22 @@ for (const [needle, name] of [
 ok((card.match(/prints__image/g) ?? []).length >= 2, 'в карточке два изображения');
 ok(/formatPrice\(PRINT_PRICE\)/.test(card), 'цена берётся из PRINT_PRICE, а не вписана числом');
 ok(/loading="lazy"/.test(card), 'картинки грузятся лениво: 34 файла на страницу');
+
+/* Кнопка «В корзину» — как в карточках каталога на главной: компактная,
+   со скруглением --radius-xs и белой иконкой корзины перед подписью */
+ok(/prints__button-icon/.test(card), 'у кнопки есть иконка корзины');
+ok(/<span class="prints__button-label" data-cart-label>В корзину<\/span>/.test(card),
+  'подпись кнопки обёрнута в span с data-cart-label: отзыв не сотрёт иконку');
+
+const BUTTON_CSS = read('assets/css/pages/prints.css');
+ok(/\.prints__button \{[\s\S]{0,400}?border-radius: var\(--radius-xs\)/.test(BUTTON_CSS),
+  'скругление кнопки — --radius-xs, как у кнопок в карточках каталога');
+ok(/\.prints__button \{[\s\S]{0,400}?flex: none/.test(BUTTON_CSS),
+  'кнопка не растягивается: ширина по содержимому');
+ok(!/\.prints__button \{[\s\S]{0,400}?flex: 1 1/.test(BUTTON_CSS),
+  'прежнего растягивания кнопки не осталось');
+ok(/\.prints__button-icon \{[\s\S]{0,400}?cart-white\.svg/.test(BUTTON_CSS),
+  'иконка — белая корзина, тот же файл, что на странице товара');
 
 // ─────────────── корзина ───────────────
 
@@ -273,3 +289,4 @@ if (failures.length) {
 }
 
 process.stdout.write('\nВсё чисто.\n');
+
