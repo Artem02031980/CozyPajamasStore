@@ -1,19 +1,24 @@
 #!/usr/bin/env node
 /**
- * Проверка секции принтов и страницы каталога принтов — без браузера.
+ * Проверка секции принтов на главной и страницы каталога принтов — без браузера.
  *
- * Кнопка «Добавить услугу в корзину» стала ссылкой «Посмотреть каталог
- * принтов» на prints.html: решение об услуге человек принимает в каталоге,
- * а не в секции на главной. Услуга при этом не исчезла — правила её подсчёта
- * остались в cart.js, а цена и порог по-прежнему лежат в разметке
- * (data-print-price, data-print-free-from) и читаются корзиной.
+ * Секция на главной: кнопка «Добавить услугу в корзину» стала ссылкой
+ * «Посмотреть каталог принтов» на prints.html. Цена и порог услуги
+ * по-прежнему лежат в разметке (data-print-price, data-print-free-from)
+ * и читаются корзиной.
  *
- * Геометрию и клики на живой странице проверяет checks/req-cart.mjs.
+ * Страница prints.html: каталог из 17 принтов, у каждого два состояния
+ * рисунка, цена 500 ₽ и автор в описании. Карточки рисует render-prints.js
+ * из prints.js — проверяются и данные, и разметка карточки, и то, что все
+ * файлы картинок на месте.
+ *
+ * Живую страницу и корзину проверяет checks/req-prints.mjs.
  *
  * Запуск: node checks/prints.mjs
  */
 
 import { readFileSync, existsSync } from 'node:fs';
+import { PRINTS, PRINT_PRICE, PRINT_AUTHOR, getPrint, printLabel } from '../assets/js/prints.js';
 
 let passed = 0;
 const failures = [];
@@ -30,15 +35,19 @@ const eq = (actual, expected, name) => {
 };
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
+const exists = (path) => existsSync(new URL(`../${path}`, import.meta.url));
 
 const INDEX = read('index.html');
-const PRINTS = existsSync(new URL('../prints.html', import.meta.url)) ? read('prints.html') : '';
+const PRINTS_HTML = exists('prints.html') ? read('prints.html') : '';
 const SCRIPT = read('assets/js/script.js');
 const CART_UI = read('assets/js/cart-ui.js');
 const CHECKOUT = read('assets/js/checkout.js');
 const STYLE = read('assets/css/style.css');
+const RENDER = read('assets/js/render-prints.js');
+const CART = read('assets/js/cart.js');
+const RENDER_CART = read('assets/js/render-cart.js');
 
-// ─────────────── ссылка в секции принтов ───────────────
+// ─────────────── ссылка в секции принтов на главной ───────────────
 
 const section = (() => {
   const at = INDEX.indexOf('<section class="goods-print"');
@@ -48,72 +57,145 @@ const section = (() => {
 ok(section.length > 0, 'секция принтов найдена в разметке');
 
 const linkMatch = section.match(/<a[^>]*class="goods-print__button[^"]*"[\s\S]{0,400}?<\/a>/);
-ok(Boolean(linkMatch), 'в секции принтов стоит ссылка, а не кнопка', String(linkMatch?.[0]?.slice(0, 120)));
 
+ok(Boolean(linkMatch), 'в секции принтов стоит ссылка, а не кнопка', String(linkMatch?.[0]?.slice(0, 120)));
 const link = linkMatch?.[0] ?? '';
 ok(/href="prints\.html"/.test(link), 'ссылка ведёт на страницу каталога принтов', link);
 ok(/Посмотреть каталог принтов/.test(link), 'подпись — «Посмотреть каталог принтов»');
 ok(!/Добавить услугу в корзину/.test(section),
-  'старого текста кнопки в секции не осталось');
+  'прежней кнопки «Добавить услугу в корзину» в секции нет');
 ok(!/data-cart-add/.test(section),
-  'у ссылки нет признака добавления в корзину — она не добавляет услугу');
+  'в секции принтов нет кнопки корзины: решение принимается в каталоге');
 ok(/class="[^"]*\bbutton\b/.test(link), 'ссылке оставлен класс button: вид не меняется');
 
-/* Условия услуги остаются в разметке: их читает корзина */
-eq(link.match(/data-print-price="([^"]+)"/)?.[1], '500', 'цена принта в разметке');
-eq(link.match(/data-print-free-from="([^"]+)"/)?.[1], '15000', 'порог бесплатного принта в разметке');
+eq(link.match(/data-print-price="([^"]+)"/)?.[1], '500', 'цена нанесения в разметке');
+eq(link.match(/data-print-free-from="([^"]+)"/)?.[1], '15000', 'порог бесплатного нанесения в разметке');
 
-/* Ни одной кнопки добавления услуги на главной не осталось */
 ok(!/data-cart-add="print"/.test(INDEX), 'на главной нет кнопки, добавляющей услугу');
-
-// ─────────────── модули читают условия ───────────────
-
 ok(CART_UI.includes("$('[data-print-price]')"),
-  'cart-ui.js берёт условия по data-print-price', 'селектор не найден');
+  'cart-ui.js читает цену услуги из разметки, а не из константы');
 ok(CHECKOUT.includes("$('[data-print-price]')"),
-  'checkout.js берёт условия по data-print-price', 'селектор не найден');
+  'checkout.js читает цену услуги из разметки');
 ok(!CART_UI.includes('data-cart-add="print"'), 'cart-ui.js не ищет кнопку услуги');
 ok(!CHECKOUT.includes('data-cart-add="print"'), 'checkout.js не ищет кнопку услуги');
 
+// ─────────────── данные принтов ───────────────
+
+eq(PRINTS.length, 17, 'в каталоге 17 принтов');
+eq(PRINT_PRICE, 500, 'цена принта — 500 ₽');
+eq(PRINT_AUTHOR, 'Хмелёв Артём', 'автор рисунков указан в данных');
+
+const ids = PRINTS.map((print) => print.id);
+eq(ids.length, new Set(ids).size, 'идентификаторы принтов уникальны');
+eq(ids[0], 'print-01', 'первый принт — print-01');
+eq(ids.at(-1), 'print-17', 'последний принт — print-17');
+
+const numbers = PRINTS.map((print) => print.number);
+eq(numbers, Array.from({ length: 17 }, (_, index) => index + 1), 'нумерация идёт подряд с 1');
+
+/* У каждого принта два состояния рисунка: обычное и инвертированное,
+   и оба файла лежат на диске */
+const missingFiles = PRINTS.flatMap((print) => [print.image, print.inverted])
+  .filter((path) => !exists(path));
+eq(missingFiles, [], 'файлы обоих состояний на месте');
+
+const doubled = PRINTS.filter((print) => print.image === print.inverted);
+eq(doubled, [], 'инверсия — отдельный файл, а не тот же самый');
+
+/* Подпись и описание: автор в каждом описании, название не пустое */
+const withoutAuthor = PRINTS.filter((print) => !print.text.includes(PRINT_AUTHOR));
+eq(withoutAuthor, [], 'в описании каждого принта есть автор');
+const withoutTitle = PRINTS.filter((print) => !print.title || !print.alt);
+eq(withoutTitle, [], 'у каждого принта есть название и alt картинки');
+
+eq(printLabel(PRINTS[0]), 'Принт 01. Good Morning!', 'подпись принта для корзины');
+eq(getPrint('print-17')?.title, 'Доброе утро!', 'getPrint находит принт по id');
+eq(getPrint('goods-women-01'), null, 'getPrint не путает принт с товаром каталога');
+
 // ─────────────── страница prints.html ───────────────
 
-ok(Boolean(PRINTS), 'файл prints.html лежит в корне проекта');
-ok(/<html lang="ru">/.test(PRINTS), 'у страницы язык ru');
-ok(/<title>[^<]*каталог принтов[^<]*<\/title>/i.test(PRINTS), 'в заголовке страницы каталог принтов');
-ok(/href="assets\/css\/style\.css"/.test(PRINTS), 'страница подключает общие стили');
-ok(/<body data-page="prints">/.test(PRINTS), 'страница помечена data-page="prints"');
-ok(/<script type="module" src="assets\/js\/script\.js"><\/script>/.test(PRINTS),
+ok(Boolean(PRINTS_HTML), 'файл prints.html лежит в корне проекта');
+ok(/<html lang="ru">/.test(PRINTS_HTML), 'у страницы язык ru');
+ok(/<title>[^<]*каталог принтов[^<]*<\/title>/i.test(PRINTS_HTML), 'в заголовке страницы каталог принтов');
+ok(/href="assets\/css\/style\.css"/.test(PRINTS_HTML), 'страница подключает общие стили');
+ok(/<body data-page="prints">/.test(PRINTS_HTML), 'страница помечена data-page="prints"');
+ok(/<script type="module" src="assets\/js\/script\.js"><\/script>/.test(PRINTS_HTML),
   'подключён тот же модуль-вход, что и у остальных страниц');
 
-/* Каркас: шапка с меню и корзиной, подвал, окно корзины. Содержимого
-   каталога пока нет — это заглушка */
-ok(/class="header"/.test(PRINTS), 'на странице есть шапка');
-ok(/data-cart-open/.test(PRINTS), 'в шапке работает кнопка корзины');
-ok(/data-modal="cart"/.test(PRINTS), 'окно корзины на странице есть');
-ok(/class="footer"/.test(PRINTS), 'есть подвал');
-ok(/href="index\.html#goods-print"/.test(PRINTS), 'со страницы есть дорога назад — к пижамам');
-ok(/Страница ещё не свёрстана/.test(PRINTS), 'человеку сказано, что каталог в разработке');
+/* Шапка, подвал, окно корзины — те же, что на остальных страницах */
+ok(/class="header"/.test(PRINTS_HTML), 'на странице есть шапка');
+ok(/data-cart-open/.test(PRINTS_HTML), 'в шапке работает кнопка корзины');
+ok(/data-modal="cart"/.test(PRINTS_HTML), 'окно корзины на странице есть');
+ok(/class="footer"/.test(PRINTS_HTML), 'есть подвал');
 
-/* Никаких скриптов каталога: заглушка не должна ничего рисовать */
-ok(!/data-goods-sort|data-goods-count|goods-women__grid/.test(PRINTS),
-  'на заглушке нет разметки каталога товаров');
+/* Содержимое: заголовок, автор, цена, правила нанесения, контейнер карточек */
+ok(/class="prints__title"[^>]*>КАТАЛОГ ПРИНТОВ</.test(PRINTS_HTML), 'на странице есть заголовок каталога');
+ok(new RegExp(`class="prints__lead"[\\s\\S]{0,200}?${PRINT_AUTHOR}`).test(PRINTS_HTML),
+  'во вступлении назван автор рисунков');
+ok(/class="prints__cost"[^>]*>[\s\S]{0,80}?500 ₽/.test(PRINTS_HTML),
+  'цена принта стоит в шапке страницы');
+ok(/class="prints__list"[^>]*data-prints-list/.test(PRINTS_HTML),
+  'на странице есть контейнер для карточек');
+ok(/Чёрное на светлом/.test(PRINTS_HTML) && /Белое на тёмном/.test(PRINTS_HTML),
+  'на странице объяснено, как принт ложится на светлую и тёмную ткань');
+ok(/не предполагают цветность|Без цветности/i.test(PRINTS_HTML),
+  'сказано, что принты без цветности — только нанесение');
+ok(!/Страница ещё не свёрстана/.test(PRINTS_HTML), 'заглушки на странице больше нет');
 
-// ─────────────── запуск страницы ───────────────
+/* Разметки карточек в HTML нет: их рисует скрипт — как карточки на главной */
+ok(!/prints__card/.test(PRINTS_HTML), 'карточки принтов не дублируются в разметке');
+
+// ─────────────── отрисовка карточек ───────────────
+
+ok(/export function renderPrints/.test(RENDER), 'render-prints.js отдаёт renderPrints');
+ok(/data-prints-list/.test(RENDER), 'скрипт ищет контейнер по data-prints-list');
+
+const card = RENDER.slice(0, RENDER.indexOf('export function renderPrints'));
+
+for (const [needle, name] of [
+  ['prints__image', 'картинка принта'],
+  ['prints__preview--dark', 'тёмная плашка превью'],
+  ['prints__name', 'название принта'],
+  ['prints__text', 'описание принта'],
+  ['prints__price', 'цена принта'],
+  ['data-cart-add', 'кнопка «В корзину»'],
+  ['print.image', 'обычное состояние рисунка'],
+  ['print.inverted', 'инвертированное состояние'],
+]) {
+  ok(card.includes(needle), `в карточке есть ${name}`, needle);
+}
+
+ok((card.match(/prints__image/g) ?? []).length >= 2, 'в карточке два изображения');
+ok(/formatPrice\(PRINT_PRICE\)/.test(card), 'цена берётся из PRINT_PRICE, а не вписана числом');
+ok(/loading="lazy"/.test(card), 'картинки грузятся лениво: 34 файла на страницу');
+
+// ─────────────── корзина ───────────────
+
+ok(/from '\.\/prints\.js'/.test(CART), 'cart.js берёт принты из prints.js');
+ok(/const print = getPrint\(line\.id\)/.test(CART), 'toLine находит принт по id');
+ok(/price: PRINT_PRICE/.test(CART), 'цена принта в корзине берётся из константы');
+ok(/Boolean\(getPrint\(id\)\)/.test(CART), 'addItem принимает id принта');
+ok(/cart__image--print/.test(RENDER_CART), 'у принта в корзине своя квадратная картинка');
+ok(/cart__image--print/.test(read('assets/css/blocks/cart.css')),
+  'квадратная картинка принта описана в стилях корзины');
+
+// ─────────────── запуск страницы и стили ───────────────
 
 ok(/function initPrintsPage\(\)/.test(SCRIPT), 'в script.js есть запуск страницы принтов');
 const printsBranch = SCRIPT.slice(SCRIPT.indexOf('function initPrintsPage'));
 const body = printsBranch.slice(0, printsBranch.indexOf('}'));
-for (const init of ['initHeader', 'initModal', 'initCart']) {
+for (const init of ['initHeader', 'initModal', 'initCart', 'renderPrints']) {
   ok(body.includes(`${init}()`), `страница принтов запускает ${init}`);
 }
 ok(/page === 'prints'/.test(SCRIPT), 'ветка prints подключена в init()');
 
-ok(STYLE.includes("url('sections/goods-print.css')"),
-  'стили секции принтов переиспользуются на новой странице');
+ok(STYLE.includes("url('pages/prints.css')"), 'стили страницы принтов подключены');
+ok(exists('assets/css/pages/prints.css'), 'файл стилей страницы принтов на месте');
 
 // ─────────────── итог ───────────────
 
 process.stdout.write(`Проверок пройдено: ${passed}\n`);
+process.stdout.write(`Принтов: ${PRINTS.length}, цена: ${PRINT_PRICE} ₽, автор: ${PRINT_AUTHOR}\n`);
 process.stdout.write(`Ссылка: «Посмотреть каталог принтов» → prints.html\n`);
 
 if (failures.length) {

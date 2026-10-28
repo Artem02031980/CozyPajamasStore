@@ -48,6 +48,8 @@
 /* 5. Страницы */
 @import url('pages/product.css');
 @import url('pages/thanks.css');
+@import url('pages/prints.css');
 
 /* 6. Утилиты и анимации — строго последними */
 @import url('utilities.css');
+

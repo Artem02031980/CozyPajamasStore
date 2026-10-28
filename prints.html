@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Каталог принтов — Магазин уютных пижам</title>
+    <title>Каталог принтов — 17 рисунков по 500 ₽ | Магазин уютных пижам</title>
     <meta
       name="description"
-      content="Каталог принтов для нанесения на пижамы: готовые дизайны магазина уютных пижам."
+      content="Каталог принтов для нанесения на пижамы: 17 рисунков дизайнера-иллюстратора Хмелёва Артёма, каждый по 500 ₽. Чёрное на светлую ткань, белое на тёмную."
     />
     <meta name="theme-color" content="#ffffff" />
 
@@ -16,10 +16,10 @@
     <link rel="icon" href="assets/images/icons/favicon.svg" type="image/svg+xml" />
   </head>
 
-  <!-- data-page="prints" — признак страницы для script.js: он запускает
-       только шапку, окна и корзину. Каталог принтов ещё не свёрстан,
-       поэтому содержимого у страницы нет: это заглушка, на которую ведёт
-       ссылка «Посмотреть каталог принтов» из секции принтов на главной -->
+  <!-- data-page="prints" — признак страницы для script.js: шапка, окна,
+       корзина и карточки принтов (их рисует render-prints.js из prints.js).
+       Заголовок, цена и правила нанесения стоят в разметке: страница читается
+       и без скрипта, не хватает только самих карточек -->
   <body data-page="prints">
     <div class="page">
       <header class="header">
@@ -84,27 +84,62 @@
       </header>
 
       <main class="main">
-        <!-- Заглушка: содержимое каталога принтов появится отдельной задачей.
-             Пока здесь только объяснение и дорога назад, чтобы страница
-             не выглядела сломанной, если человек попал на неё по ссылке -->
-        <section class="goods-print" id="prints">
-          <div class="goods-print__inner container">
-            <div class="goods-print__head">
-              <p class="goods-print__overline">Скоро здесь будет</p>
-              <h1 class="goods-print__title">КАТАЛОГ ПРИНТОВ</h1>
-              <p class="goods-print__lead">
-                готовые дизайны, которые можно нанести на пижаму
+        <section class="prints" id="prints">
+          <div class="prints__inner container">
+            <header class="prints__head">
+              <p class="prints__overline">Авторская графика · 17 рисунков</p>
+              <h1 class="prints__title">КАТАЛОГ ПРИНТОВ</h1>
+              <p class="prints__lead">
+                Рисунки для нанесения на пижамы. Автор — известный дизайнер-иллюстратор
+                Хмелёв Артём.
               </p>
+
+              <!-- Цена одна на весь каталог. Вынесена в шапку, чтобы её было
+                   видно до того, как человек начнёт листать карточки -->
+              <p class="prints__cost">
+                Каждый принт — <strong class="prints__cost-value">500 ₽</strong>
+              </p>
+            </header>
+
+            <!-- Три правила каталога: как принт ложится на ткань. Одинаковы
+                 для всех рисунков, поэтому стоят один раз в шапке, а не
+                 в каждой карточке -->
+            <div class="prints__notes">
+              <article class="prints__note">
+                <h2 class="prints__note-title">Чёрное на светлом</h2>
+                <p class="prints__note-text">
+                  Принт печатается чёрным по светлой ткани: белой, бежевой,
+                  пудровой, светло-голубой.
+                </p>
+              </article>
+
+              <article class="prints__note">
+                <h2 class="prints__note-title">Белое на тёмном</h2>
+                <p class="prints__note-text">
+                  Для тёмных тканей тот же рисунок берётся в инверсии — белым:
+                  графит, тёмно-синий, бордо, чёрный.
+                </p>
+              </article>
+
+              <article class="prints__note">
+                <h2 class="prints__note-title">Без цветности</h2>
+                <p class="prints__note-text">
+                  Принты не предполагают цветность — только нанесение. Цвет
+                  рисунка задаёт ткань, а не краска.
+                </p>
+              </article>
             </div>
 
-            <p class="goods-print__feature-title">
-              Страница ещё не свёрстана. Пока принт можно выбрать на странице
-              товара: «Добавить принт» → «Выбрать из каталога» или свой макет.
-            </p>
+            <!-- Карточки рисует render-prints.js: у всех 17 принтов разметка
+                 одинаковая, а данные лежат в assets/js/prints.js -->
+            <ol class="prints__list" data-prints-list></ol>
 
-            <a class="goods-print__button button" href="index.html#goods-print">
-              Вернуться к пижамам
-            </a>
+            <p class="prints__footnote">
+              Принт добавляется в корзину отдельной позицией и стоит 500 ₽ —
+              и в обычном состоянии, и в инверсии. При заказе товаров
+              от 15&nbsp;000&nbsp;₽ принт идёт в подарок, как и на главной.
+              Нанесение на пижаму согласует менеджер.
+            </p>
           </div>
         </section>
       </main>

@@ -42,6 +42,7 @@ import { initThanks, initThanksFeedback } from './thanks.js';
 import { initFeedback } from './feedback.js';
 import { initProduct } from './product.js';
 import { initFooterYear } from './footer-year.js';
+import { renderPrints } from './render-prints.js';
 
 /**
  * Каталог: секции, фильтры, корзина, оформление и форма вопроса.
@@ -100,6 +101,8 @@ function initPrintsPage() {
   initHeader();
   initModal();
   initCart();
+  /* Карточки принтов рисуются из prints.js: у всех 17 разметка одинаковая */
+  renderPrints();
 }
 
 /**
@@ -140,4 +143,5 @@ function init() {
 }
 
 init();
+
 

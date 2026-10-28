@@ -11,6 +11,11 @@
  * Название, цену и фото берём из data.js по id. Копировать их в хранилище
  * нельзя: поменяется цена в каталоге — в корзине останется старая.
  *
+ * Принт из каталога — тоже позиция корзины, но берётся не из data.js,
+ * а из prints.js: у принта нет размеров, зато есть два состояния рисунка
+ * и одна цена на весь каталог (PRINT_PRICE). В корзину он попадает как
+ * обычный товар с этой ценой.
+ *
  * Услуга «ПРИНТ» — обычная позиция с id 'print', но по особым правилам:
  * она бесплатна, когда сумма товаров (без неё самой) дотянула до порога.
  * Правила живут здесь, а не в разметке: цена и порог читаются из кнопки,
@@ -18,6 +23,7 @@
  */
 
 import { getProduct } from './data.js';
+import { getPrint, printLabel, PRINT_PRICE } from './prints.js';
 import { readCart, writeCart, KEYS } from './storage.js';
 import { variantKey } from './utils.js';
 
@@ -94,6 +100,24 @@ export function toLine(line, terms = getServiceTerms()) {
         price: 0,
       },
       sum: 0,
+    };
+  }
+
+  /* Принт из каталога: цена одна на весь каталог, размера нет, картинка —
+     обычное состояние рисунка (чёрное на белом) */
+  const print = getPrint(line.id);
+  if (print) {
+    return {
+      ...line,
+      product: {
+        id: print.id,
+        title: printLabel(print),
+        subtitle: 'Принт для нанесения',
+        price: PRINT_PRICE,
+        image: print.image,
+        alt: print.alt,
+      },
+      sum: PRINT_PRICE * line.qty,
     };
   }
 
@@ -207,7 +231,7 @@ export function getFreeServiceGap(terms = getServiceTerms(), lines = getLines())
 export function addItem(id, { qty = 1, size = '', file = '' } = {}) {
   /* Услуга «ПРИНТ» и свой макет товарами каталога не являются — у них свои
      правила, поэтому проверка на каталог их не касается. */
-  const special = id === SERVICE_ID || id === CUSTOM_PRINT_ID;
+  const special = id === SERVICE_ID || id === CUSTOM_PRINT_ID || Boolean(getPrint(id));
 
   if (!special && !getProduct(id)) {
     console.warn(`[cart] товара «${id}» нет в каталоге`);
@@ -307,3 +331,4 @@ function commit(items) {
 
 /** Ключи хранилища — чтобы другие модули не писали их строками. */
 export { KEYS };
+

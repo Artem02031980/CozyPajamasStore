@@ -12,6 +12,7 @@
 
 import { formatPrice, plural, assetUrl } from './utils.js';
 import { SERVICE_ID, CUSTOM_PRINT_ID } from './cart.js';
+import { getPrint } from './prints.js';
 
 /**
  * Одна позиция корзины.
@@ -30,10 +31,11 @@ export function renderCartItem(line) {
   const { product, qty, size, sum } = line;
   const isService = line.id === SERVICE_ID;
   const isCustom = line.id === CUSTOM_PRINT_ID;
+  const isPrint = Boolean(getPrint(line.id));
 
   const meta = [
     size ? `Размер: ${size}` : '',
-    isService || isCustom ? product.subtitle : '',
+    isService || isCustom || isPrint ? product.subtitle : '',
   ].filter(Boolean).join(' · ');
 
   /* Файл вынесен отдельной строкой: имя бывает длинным, и в общей подписи
@@ -45,6 +47,12 @@ export function renderCartItem(line) {
   const picture = (() => {
     if (isService) return '<div class="cart__image cart__image--service" aria-hidden="true">ПРИНТ</div>';
     if (isCustom) return '<div class="cart__image cart__image--file" aria-hidden="true"></div>';
+
+    /* Принт квадратный: картинка вписывается в квадратную плашку, а не
+       обрезается под портрет пижамы */
+    if (isPrint) {
+      return `<img class="cart__image cart__image--print" src="${assetUrl(product.image)}" alt="${product.alt ?? ''}" width="80" height="80" />`;
+    }
 
     /* Картинку подставляет скрипт, а страница товара лежит на уровень
        глубже корня: assetUrl считает адрес от корня проекта */
@@ -261,3 +269,4 @@ export function renderOrderLines(lines, total) {
 export function renderCountLabel(count) {
   return `${count} ${plural(count, 'товар', 'товара', 'товаров')}`;
 }
+

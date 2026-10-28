@@ -43,6 +43,15 @@
   border-radius: var(--radius-sm);
 }
 
+/* Принт — квадратный рисунок: вписываем его в квадратную плашку целиком,
+   без обрезки. Фон белый: принт нарисован чёрным по белому, и на бежевой
+   плашке вокруг рисунка была бы видна рамка */
+.cart__image--print {
+  aspect-ratio: 1;
+  object-fit: contain;
+  background-color: var(--color-white);
+}
+
 .cart__info {
   display: flex;
   flex-direction: column;

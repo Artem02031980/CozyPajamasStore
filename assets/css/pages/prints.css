@@ -1,0 +1,278 @@
+/* ==========================================================================
+   prints.css — страница каталога принтов (prints.html)
+
+   Блок .prints: шапка, три правила нанесения, список карточек, сноска.
+   Стили только этой страницы — общие блоки (.button, .header, .footer,
+   .modal, .cart) подключаются своими файлами.
+
+   Раскладка:
+     до 768px  — одна колонка: два превью рядом, под ними текст карточки;
+     768px     — превью слева (пара квадратов), текст справа;
+     1024px    — те же две колонки, но с большими отступами и превью.
+
+   Карточки стоят в один столбец — так просил владелец: принтов 17, и в
+   столбце каждый рисунок видно крупно, а два состояния рядом сравниваются
+   взглядом.
+   ========================================================================== */
+
+/* ==========================================================================
+   1. Секция и обёртка
+   ========================================================================== */
+
+.prints {
+  /* Фон на тон светлее страницы, как у секции принтов на главной: страница
+     про нанесение, и подложка отделяет её от товарных страниц */
+  background-color: var(--color-beige-light);
+  padding-block: var(--section-padding-y) var(--space-64);
+}
+
+.prints__inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-32);
+}
+
+/* ==========================================================================
+   2. Шапка: надзаголовок, название, лид, цена
+   ========================================================================== */
+
+.prints__head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-12);
+  text-align: center;
+}
+
+.prints__overline {
+  font-size: var(--fs-14);
+  line-height: var(--lh-snug);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.prints__title {
+  font-size: var(--fs-36);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+}
+
+.prints__lead {
+  max-width: 46ch;
+  font-size: var(--fs-18);
+  line-height: var(--lh-base);
+}
+
+.prints__cost {
+  margin-top: var(--space-4);
+  font-size: var(--fs-18);
+  line-height: var(--lh-snug);
+}
+
+/* Сама цена крупнее строки вокруг: это главное число страницы */
+.prints__cost-value {
+  font-size: var(--fs-24);
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   3. Три правила нанесения
+   ========================================================================== */
+
+.prints__notes {
+  display: grid;
+  gap: var(--space-16);
+  padding: var(--space-20);
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+}
+
+.prints__note {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.prints__note-title {
+  font-size: var(--fs-16);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-snug);
+}
+
+.prints__note-text {
+  font-size: var(--fs-14);
+  line-height: var(--lh-base);
+}
+
+@media (min-width: 768px) {
+  .prints__notes {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-24);
+    padding: var(--space-24);
+  }
+}
+
+/* ==========================================================================
+   4. Список карточек
+   ========================================================================== */
+
+.prints__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-20);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.prints__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  padding: var(--space-16);
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+}
+
+/* Пара превью: обычное состояние и инверсия */
+.prints__previews {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-8);
+}
+
+.prints__preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: 0;
+}
+
+/* Светлая плашка — «чёрное на светлом», тёмная — «белое на тёмном».
+   Фон у превью задан явно: сам рисунок прозрачный там, где нет краски */
+.prints__preview .prints__image {
+  background-color: var(--color-white);
+  border: var(--border-width-thin) solid var(--color-beige);
+}
+
+.prints__preview--dark .prints__image {
+  background-color: var(--color-dark);
+  border-color: var(--color-dark);
+}
+
+.prints__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+}
+
+.prints__preview-note {
+  font-size: var(--fs-12);
+  line-height: var(--lh-snug);
+  text-align: center;
+}
+
+/* Текст карточки */
+.prints__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.prints__number {
+  font-size: var(--fs-12);
+  line-height: var(--lh-snug);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.prints__name {
+  font-size: var(--fs-24);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+}
+
+.prints__text {
+  font-size: var(--fs-14);
+  line-height: var(--lh-base);
+}
+
+.prints__buy {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-16);
+  margin-top: auto;
+  padding-top: var(--space-8);
+}
+
+.prints__price {
+  font-size: var(--fs-24);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+}
+
+/* Кнопка тянется хотя бы на 200px, но не на всю карточку */
+.prints__button {
+  flex: 1 1 200px;
+  max-width: 260px;
+}
+
+@media (min-width: 768px) {
+  .prints__card {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--space-24);
+    padding: var(--space-24);
+  }
+
+  /* Превью занимают чуть меньше половины: текст важнее, но рисунок должен
+     оставаться крупным — в этом и смысл каталога */
+  .prints__previews {
+    flex: 0 0 46%;
+  }
+
+  .prints__body {
+    flex: 1 1 auto;
+    min-height: 100%;
+  }
+
+  .prints__list {
+    gap: var(--space-24);
+  }
+}
+
+@media (min-width: 1024px) {
+  .prints__card {
+    gap: var(--space-32);
+    padding: var(--space-32);
+  }
+
+  .prints__previews {
+    flex-basis: 42%;
+  }
+
+  .prints__name {
+    font-size: var(--fs-30);
+  }
+
+  .prints__text {
+    font-size: var(--fs-16);
+  }
+}
+
+/* ==========================================================================
+   5. Сноска под списком
+   ========================================================================== */
+
+.prints__footnote {
+  max-width: 72ch;
+  margin-inline: auto;
+  font-size: var(--fs-14);
+  line-height: var(--lh-base);
+  text-align: center;
+}
