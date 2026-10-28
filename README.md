@@ -422,7 +422,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 
 ### Страница товара
 
-Свёрстаны сорок шесть страниц по одному образцу:
+Свёрстаны сорок восемь страниц по одному образцу:
 
 | Файл | Товар | Размеры |
 |---|---|---|
@@ -464,6 +464,8 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 | `product-pages/snezhnyy-lyon.html` | «Снежный лён», женская коллекция (платье) | S, M, XL, XXL |
 | `product-pages/tonkiy-kant.html` | «Тонкий кант», женская коллекция (халатик) | S, M, XL, XXL |
 | `product-pages/uyutnyy-trikotazh.html` | «Уютный трикотаж», женская коллекция (сорочка) | S, M, XL, XXL |
+| `product-pages/lesnaya-nega.html` | «Лесная нега», женская коллекция (сорочка) | S, M, XL, XXL |
+| `product-pages/pudrovyy-sad.html` | «Пудровый сад», женская коллекция | S, M, XL, XXL |
 | `product-pages/myatnyy-vecher.html` | «Мятный вечер», мужская коллекция | M, XL, XXL, XXXL |
 | `product-pages/lyanyanoy-damask.html` | «Льняной дамаск», другие товары | нет |
 | `product-pages/nezhnoe-schaste.html` | «Нежное счастье», новая коллекция | S, M, XL, XXL |
