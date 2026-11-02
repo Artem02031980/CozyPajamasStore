@@ -130,9 +130,9 @@ for (const { section, label } of SECTIONS) {
 // ─────────────── разделы без цепочки ───────────────
 
 /* «Мятный вечер», «Лазурная клетка», «Осенний плед», «Снежный халат»,
-   «Тихое серебро», «Ночная мгла», «Акварельное утро», «Изумрудный сад»
-   и подушка: там стрелки остаются выключенными кнопками. Задача владельца
-   касалась только «Новой» и «Женской» коллекций */
+   «Тихое серебро», «Ночная мгла», «Акварельное утро», «Изумрудный сад»,
+   «Морской сон» и подушка: там стрелки остаются выключенными кнопками.
+   Задача владельца касалась только «Новой» и «Женской» коллекций */
 const UNCHANGED = [
   { page: 'product-pages/myatnyy-vecher.html', label: 'Мятный вечер (men)' },
   { page: 'product-pages/lazurnaya-kletka.html', label: 'Лазурная клетка (men)' },
@@ -142,6 +142,7 @@ const UNCHANGED = [
   { page: 'product-pages/nochnaya-mgla.html', label: 'Ночная мгла (men)' },
   { page: 'product-pages/akvarelnoe-utro.html', label: 'Акварельное утро (men)' },
   { page: 'product-pages/izumrudnyy-sad.html', label: 'Изумрудный сад (men)' },
+  { page: 'product-pages/morskoy-son.html', label: 'Морской сон (men)' },
   { page: 'product-pages/lyanyanoy-damask.html', label: 'Льняной дамаск (other)' },
 ];
 
@@ -164,7 +165,7 @@ eq(missing, [], 'файлы всех страниц с адресом сущес
 const chainTitles = PRODUCTS
   .filter((product) => ['new', 'women'].includes(product.section) && product.page)
   .map((product) => getProduct(product.id).title);
-ok(chainTitles.length === allPages.filter((file) => !['myatnyy-vecher.html', 'lazurnaya-kletka.html', 'osenniy-pled.html', 'snezhnyy-khalat.html', 'tikhoye-serebro.html', 'nochnaya-mgla.html', 'akvarelnoe-utro.html', 'izumrudnyy-sad.html', 'lyanyanoy-damask.html'].includes(file)).length,
+ok(chainTitles.length === allPages.filter((file) => !['myatnyy-vecher.html', 'lazurnaya-kletka.html', 'osenniy-pled.html', 'snezhnyy-khalat.html', 'tikhoye-serebro.html', 'nochnaya-mgla.html', 'akvarelnoe-utro.html', 'izumrudnyy-sad.html', 'morskoy-son.html', 'lyanyanoy-damask.html'].includes(file)).length,
   'в цепочку входят все страницы двух коллекций');
 
 // ─────────────── итог ───────────────
