@@ -131,9 +131,9 @@ for (const { section, label } of SECTIONS) {
 
 /* «Мятный вечер», «Лазурная клетка», «Осенний плед», «Снежный халат»,
    «Тихое серебро», «Ночная мгла», «Акварельное утро», «Изумрудный сад»,
-   «Морской сон», «Клетка горца», «Изумрудная полоска» и подушка: там
-   стрелки остаются выключенными кнопками. Задача владельца касалась
-   только «Новой» и «Женской» коллекций */
+   «Морской сон», «Клетка горца», «Изумрудная полоска», «Розовый закат»
+   и подушка: там стрелки остаются выключенными кнопками. Задача владельца
+   касалась только «Новой» и «Женской» коллекций */
 const UNCHANGED = [
   { page: 'product-pages/myatnyy-vecher.html', label: 'Мятный вечер (men)' },
   { page: 'product-pages/lazurnaya-kletka.html', label: 'Лазурная клетка (men)' },
@@ -146,6 +146,7 @@ const UNCHANGED = [
   { page: 'product-pages/morskoy-son.html', label: 'Морской сон (men)' },
   { page: 'product-pages/kletka-gortsa.html', label: 'Клетка горца (men)' },
   { page: 'product-pages/izumrudnaya-poloska.html', label: 'Изумрудная полоска (men)' },
+  { page: 'product-pages/rozovyy-zakat.html', label: 'Розовый закат (men)' },
   { page: 'product-pages/lyanyanoy-damask.html', label: 'Льняной дамаск (other)' },
 ];
 
@@ -168,7 +169,7 @@ eq(missing, [], 'файлы всех страниц с адресом сущес
 const chainTitles = PRODUCTS
   .filter((product) => ['new', 'women'].includes(product.section) && product.page)
   .map((product) => getProduct(product.id).title);
-ok(chainTitles.length === allPages.filter((file) => !['myatnyy-vecher.html', 'lazurnaya-kletka.html', 'osenniy-pled.html', 'snezhnyy-khalat.html', 'tikhoye-serebro.html', 'nochnaya-mgla.html', 'akvarelnoe-utro.html', 'izumrudnyy-sad.html', 'morskoy-son.html', 'kletka-gortsa.html', 'izumrudnaya-poloska.html', 'lyanyanoy-damask.html'].includes(file)).length,
+ok(chainTitles.length === allPages.filter((file) => !['myatnyy-vecher.html', 'lazurnaya-kletka.html', 'osenniy-pled.html', 'snezhnyy-khalat.html', 'tikhoye-serebro.html', 'nochnaya-mgla.html', 'akvarelnoe-utro.html', 'izumrudnyy-sad.html', 'morskoy-son.html', 'kletka-gortsa.html', 'izumrudnaya-poloska.html', 'rozovyy-zakat.html', 'lyanyanoy-damask.html'].includes(file)).length,
   'в цепочку входят все страницы двух коллекций');
 
 // ─────────────── итог ───────────────

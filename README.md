@@ -470,7 +470,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 
 ### Страница товара
 
-Свёрстаны шестьдесят шесть страниц по одному образцу:
+Свёрстаны шестьдесят семь страниц по одному образцу:
 
 | Файл | Товар | Размеры |
 |---|---|---|
@@ -533,6 +533,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 | `product-pages/morskoy-son.html` | «Морской сон», мужская коллекция | S, M, XL, XXL |
 | `product-pages/kletka-gortsa.html` | «Клетка горца», мужская коллекция | S, M, XL, XXL |
 | `product-pages/izumrudnaya-poloska.html` | «Изумрудная полоска», мужская коллекция | S, M, XL, XXL |
+| `product-pages/rozovyy-zakat.html` | «Розовый закат», мужская коллекция | S, M, XL, XXL |
 | `product-pages/lyanyanoy-damask.html` | «Льняной дамаск», другие товары | нет |
 | `product-pages/nezhnoe-schaste.html` | «Нежное счастье», новая коллекция | S, M, XL, XXL |
 | `product-pages/spokoynaya-noch-iv.html` | «Спокойная ночь IV», новая коллекция | S, M, XL, XXL |
