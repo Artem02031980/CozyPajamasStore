@@ -129,10 +129,12 @@ for (const { section, label } of SECTIONS) {
 
 // ─────────────── разделы без цепочки ───────────────
 
-/* «Мятный вечер» и подушка: там стрелки остаются выключенными кнопками.
-   Задача владельца касалась только «Новой» и «Женской» коллекций */
+/* «Мятный вечер», «Лазурная клетка» и подушка: там стрелки остаются
+   выключенными кнопками. Задача владельца касалась только «Новой»
+   и «Женской» коллекций */
 const UNCHANGED = [
   { page: 'product-pages/myatnyy-vecher.html', label: 'Мятный вечер (men)' },
+  { page: 'product-pages/lazurnaya-kletka.html', label: 'Лазурная клетка (men)' },
   { page: 'product-pages/lyanyanoy-damask.html', label: 'Льняной дамаск (other)' },
 ];
 
@@ -155,7 +157,7 @@ eq(missing, [], 'файлы всех страниц с адресом сущес
 const chainTitles = PRODUCTS
   .filter((product) => ['new', 'women'].includes(product.section) && product.page)
   .map((product) => getProduct(product.id).title);
-ok(chainTitles.length === allPages.filter((file) => !['myatnyy-vecher.html', 'lyanyanoy-damask.html'].includes(file)).length,
+ok(chainTitles.length === allPages.filter((file) => !['myatnyy-vecher.html', 'lazurnaya-kletka.html', 'lyanyanoy-damask.html'].includes(file)).length,
   'в цепочку входят все страницы двух коллекций');
 
 // ─────────────── итог ───────────────
