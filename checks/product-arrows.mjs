@@ -129,14 +129,15 @@ for (const { section, label } of SECTIONS) {
 
 // ─────────────── разделы без цепочки ───────────────
 
-/* «Мятный вечер», «Лазурная клетка», «Осенний плед», «Снежный халат»
-   и подушка: там стрелки остаются выключенными кнопками. Задача владельца
-   касалась только «Новой» и «Женской» коллекций */
+/* «Мятный вечер», «Лазурная клетка», «Осенний плед», «Снежный халат»,
+   «Тихое серебро» и подушка: там стрелки остаются выключенными кнопками.
+   Задача владельца касалась только «Новой» и «Женской» коллекций */
 const UNCHANGED = [
   { page: 'product-pages/myatnyy-vecher.html', label: 'Мятный вечер (men)' },
   { page: 'product-pages/lazurnaya-kletka.html', label: 'Лазурная клетка (men)' },
   { page: 'product-pages/osenniy-pled.html', label: 'Осенний плед (men)' },
   { page: 'product-pages/snezhnyy-khalat.html', label: 'Снежный халат (men)' },
+  { page: 'product-pages/tikhoye-serebro.html', label: 'Тихое серебро (men)' },
   { page: 'product-pages/lyanyanoy-damask.html', label: 'Льняной дамаск (other)' },
 ];
 
@@ -159,7 +160,7 @@ eq(missing, [], 'файлы всех страниц с адресом сущес
 const chainTitles = PRODUCTS
   .filter((product) => ['new', 'women'].includes(product.section) && product.page)
   .map((product) => getProduct(product.id).title);
-ok(chainTitles.length === allPages.filter((file) => !['myatnyy-vecher.html', 'lazurnaya-kletka.html', 'osenniy-pled.html', 'snezhnyy-khalat.html', 'lyanyanoy-damask.html'].includes(file)).length,
+ok(chainTitles.length === allPages.filter((file) => !['myatnyy-vecher.html', 'lazurnaya-kletka.html', 'osenniy-pled.html', 'snezhnyy-khalat.html', 'tikhoye-serebro.html', 'lyanyanoy-damask.html'].includes(file)).length,
   'в цепочку входят все страницы двух коллекций');
 
 // ─────────────── итог ───────────────
