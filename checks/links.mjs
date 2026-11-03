@@ -74,9 +74,9 @@ eq(withPage.map((product) => product.id), [
   'goods-women-48', 'goods-men-01', 'goods-men-02', 'goods-men-03', 'goods-men-04',
   'goods-men-05', 'goods-men-06', 'goods-men-07', 'goods-men-08', 'goods-men-09',
   'goods-men-10', 'goods-men-11', 'goods-men-12', 'goods-men-13', 'goods-men-14',
-  'goods-men-15', 'goods-men-16', 'goods-men-17', 'goods-other-16',
-], 'страницы размечены у семидесяти двух товаров: шесть новинок, сорок восемь женских, '
-  + 'семнадцать мужских и подушка');
+  'goods-men-15', 'goods-men-16', 'goods-men-17', 'goods-men-18', 'goods-other-16',
+], 'страницы размечены у семидесяти трёх товаров: шесть новинок, сорок восемь женских, '
+  + 'восемнадцать мужских и подушка');
 
 /* Адреса новинок — отдельным списком: их проверяет ещё checks/product-new.mjs,
    а здесь важно, что ссылка с карточки каталога не ведёт в пустоту */
@@ -223,6 +223,8 @@ eq(getProduct('goods-men-16').page, 'product-pages/vishnevyy-goroshek.html',
   'адрес страницы «Вишнёвого горошка»');
 eq(getProduct('goods-men-17').page, 'product-pages/kofeynyy-pled.html',
   'адрес страницы «Кофейного пледа»');
+eq(getProduct('goods-men-18').page, 'product-pages/prazdnichnyy-bant.html',
+  'адрес страницы «Праздничного банта»');
 eq(getProduct('goods-other-16').page, 'product-pages/lyanyanoy-damask.html',
   'адрес страницы «Льняного дамаска»');
 
@@ -281,7 +283,7 @@ for (const page of ['product-pages/solntse.html', 'product-pages/russkaya-dusha.
   'product-pages/izumrudnaya-poloska.html', 'product-pages/rozovyy-zakat.html',
   'product-pages/lesnoy-goroshek.html', 'product-pages/morskoy-shtrikh.html',
   'product-pages/grafitovyy-son.html', 'product-pages/vishnevyy-goroshek.html',
-  'product-pages/kofeynyy-pled.html']) {
+  'product-pages/kofeynyy-pled.html', 'product-pages/prazdnichnyy-bant.html']) {
   ok(exists(page), `страница ${page} существует`);
   ok(/href="\.\.\/prints\.html"/.test(read(page)),
     `на странице ${page} «Выбрать из каталога» ведёт на prints.html`);
@@ -413,6 +415,7 @@ process.stdout.write(`Карточка «Морской штрих» → product
 process.stdout.write(`Карточка «Графитовый сон» → product-pages/grafitovyy-son.html\n`);
 process.stdout.write(`Карточка «Вишнёвый горошек» → product-pages/vishnevyy-goroshek.html\n`);
 process.stdout.write(`Карточка «Кофейный плед» → product-pages/kofeynyy-pled.html\n`);
+process.stdout.write(`Карточка «Праздничный бант» → product-pages/prazdnichnyy-bant.html\n`);
 process.stdout.write(`Ссылка «Выбрать из каталога» → prints.html\n`);
 
 if (failures.length) {

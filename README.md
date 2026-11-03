@@ -470,7 +470,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 
 ### Страница товара
 
-Свёрстаны семьдесят две страницы по одному образцу:
+Свёрстаны семьдесят три страницы по одному образцу:
 
 | Файл | Товар | Размеры |
 |---|---|---|
@@ -539,6 +539,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 | `product-pages/grafitovyy-son.html` | «Графитовый сон», мужская коллекция | S, M, XL, XXL |
 | `product-pages/vishnevyy-goroshek.html` | «Вишнёвый горошек», мужская коллекция | S, M, XL, XXL |
 | `product-pages/kofeynyy-pled.html` | «Кофейный плед», мужская коллекция | S, M, XL, XXL |
+| `product-pages/prazdnichnyy-bant.html` | «Праздничный бант», мужская коллекция | S, M, XL, XXL |
 | `product-pages/lyanyanoy-damask.html` | «Льняной дамаск», другие товары | нет |
 | `product-pages/nezhnoe-schaste.html` | «Нежное счастье», новая коллекция | S, M, XL, XXL |
 | `product-pages/spokoynaya-noch-iv.html` | «Спокойная ночь IV», новая коллекция | S, M, XL, XXL |
