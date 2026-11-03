@@ -157,6 +157,7 @@ const UNCHANGED = [
   { page: 'product-pages/alyy-kvadrat.html', label: 'Алый квадрат (men)' },
   { page: 'product-pages/nochnoy-kontur.html', label: 'Ночной контур (men)' },
   { page: 'product-pages/smolyanaya-noch.html', label: 'Смоляная ночь (men)' },
+  { page: 'product-pages/morskaya-nit.html', label: 'Морская нить (men)' },
   { page: 'product-pages/lyanyanoy-damask.html', label: 'Льняной дамаск (other)' },
 ];
 
@@ -179,7 +180,7 @@ eq(missing, [], 'файлы всех страниц с адресом сущес
 const chainTitles = PRODUCTS
   .filter((product) => ['new', 'women'].includes(product.section) && product.page)
   .map((product) => getProduct(product.id).title);
-ok(chainTitles.length === allPages.filter((file) => !['myatnyy-vecher.html', 'lazurnaya-kletka.html', 'osenniy-pled.html', 'snezhnyy-khalat.html', 'tikhoye-serebro.html', 'nochnaya-mgla.html', 'akvarelnoe-utro.html', 'izumrudnyy-sad.html', 'morskoy-son.html', 'kletka-gortsa.html', 'izumrudnaya-poloska.html', 'rozovyy-zakat.html', 'lesnoy-goroshek.html', 'morskoy-shtrikh.html', 'grafitovyy-son.html', 'vishnevyy-goroshek.html', 'kofeynyy-pled.html', 'prazdnichnyy-bant.html', 'alyy-kvadrat.html', 'nochnoy-kontur.html', 'smolyanaya-noch.html', 'lyanyanoy-damask.html'].includes(file)).length,
+ok(chainTitles.length === allPages.filter((file) => !['myatnyy-vecher.html', 'lazurnaya-kletka.html', 'osenniy-pled.html', 'snezhnyy-khalat.html', 'tikhoye-serebro.html', 'nochnaya-mgla.html', 'akvarelnoe-utro.html', 'izumrudnyy-sad.html', 'morskoy-son.html', 'kletka-gortsa.html', 'izumrudnaya-poloska.html', 'rozovyy-zakat.html', 'lesnoy-goroshek.html', 'morskoy-shtrikh.html', 'grafitovyy-son.html', 'vishnevyy-goroshek.html', 'kofeynyy-pled.html', 'prazdnichnyy-bant.html', 'alyy-kvadrat.html', 'nochnoy-kontur.html', 'smolyanaya-noch.html', 'morskaya-nit.html', 'lyanyanoy-damask.html'].includes(file)).length,
   'в цепочку входят все страницы двух коллекций');
 
 // ─────────────── итог ───────────────
