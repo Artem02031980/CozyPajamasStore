@@ -74,9 +74,9 @@ eq(withPage.map((product) => product.id), [
   'goods-women-48', 'goods-men-01', 'goods-men-02', 'goods-men-03', 'goods-men-04',
   'goods-men-05', 'goods-men-06', 'goods-men-07', 'goods-men-08', 'goods-men-09',
   'goods-men-10', 'goods-men-11', 'goods-men-12', 'goods-men-13', 'goods-men-14',
-  'goods-men-15', 'goods-men-16', 'goods-men-17', 'goods-men-18', 'goods-men-19', 'goods-men-20', 'goods-other-16',
-], 'страницы размечены у семидесяти пяти товаров: шесть новинок, сорок восемь женских, '
-  + 'двадцать мужских и подушка');
+  'goods-men-15', 'goods-men-16', 'goods-men-17', 'goods-men-18', 'goods-men-19', 'goods-men-20', 'goods-men-21', 'goods-other-16',
+], 'страницы размечены у семидесяти шести товаров: шесть новинок, сорок восемь женских, '
+  + 'двадцать одна мужская и подушка');
 
 /* Адреса новинок — отдельным списком: их проверяет ещё checks/product-new.mjs,
    а здесь важно, что ссылка с карточки каталога не ведёт в пустоту */
@@ -229,6 +229,8 @@ eq(getProduct('goods-men-19').page, 'product-pages/alyy-kvadrat.html',
   'адрес страницы «Алого квадрата»');
 eq(getProduct('goods-men-20').page, 'product-pages/nochnoy-kontur.html',
   'адрес страницы «Ночного контура»');
+eq(getProduct('goods-men-21').page, 'product-pages/smolyanaya-noch.html',
+  'адрес страницы «Смоляной ночи»');
 eq(getProduct('goods-other-16').page, 'product-pages/lyanyanoy-damask.html',
   'адрес страницы «Льняного дамаска»');
 
@@ -288,7 +290,8 @@ for (const page of ['product-pages/solntse.html', 'product-pages/russkaya-dusha.
   'product-pages/lesnoy-goroshek.html', 'product-pages/morskoy-shtrikh.html',
   'product-pages/grafitovyy-son.html', 'product-pages/vishnevyy-goroshek.html',
   'product-pages/kofeynyy-pled.html', 'product-pages/prazdnichnyy-bant.html',
-  'product-pages/alyy-kvadrat.html', 'product-pages/nochnoy-kontur.html']) {
+  'product-pages/alyy-kvadrat.html', 'product-pages/nochnoy-kontur.html',
+  'product-pages/smolyanaya-noch.html']) {
   ok(exists(page), `страница ${page} существует`);
   ok(/href="\.\.\/prints\.html"/.test(read(page)),
     `на странице ${page} «Выбрать из каталога» ведёт на prints.html`);
@@ -423,6 +426,7 @@ process.stdout.write(`Карточка «Кофейный плед» → product
 process.stdout.write(`Карточка «Праздничный бант» → product-pages/prazdnichnyy-bant.html\n`);
 process.stdout.write(`Карточка «Алый квадрат» → product-pages/alyy-kvadrat.html\n`);
 process.stdout.write(`Карточка «Ночной контур» → product-pages/nochnoy-kontur.html\n`);
+process.stdout.write(`Карточка «Смоляная ночь» → product-pages/smolyanaya-noch.html\n`);
 process.stdout.write(`Ссылка «Выбрать из каталога» → prints.html\n`);
 
 if (failures.length) {
