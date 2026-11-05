@@ -174,6 +174,7 @@ const UNCHANGED = [
   { page: 'product-pages/severnaya-poloska.html', label: 'Северная полоска (men)' },
   { page: 'product-pages/utrenniy-svet.html', label: 'Утренний свет (men)' },
   { page: 'product-pages/buyvolovaya-kletka.html', label: 'Буйволовая клетка (men)' },
+  { page: 'product-pages/grafit-i-rubin.html', label: 'Графит и рубин (men)' },
   { page: 'product-pages/lyanyanoy-damask.html', label: 'Льняной дамаск (other)' },
 ];
 
@@ -196,7 +197,7 @@ eq(missing, [], 'файлы всех страниц с адресом сущес
 const chainTitles = PRODUCTS
   .filter((product) => ['new', 'women'].includes(product.section) && product.page)
   .map((product) => getProduct(product.id).title);
-ok(chainTitles.length === allPages.filter((file) => !['myatnyy-vecher.html', 'lazurnaya-kletka.html', 'osenniy-pled.html', 'snezhnyy-khalat.html', 'tikhoye-serebro.html', 'nochnaya-mgla.html', 'akvarelnoe-utro.html', 'izumrudnyy-sad.html', 'morskoy-son.html', 'kletka-gortsa.html', 'izumrudnaya-poloska.html', 'rozovyy-zakat.html', 'lesnoy-goroshek.html', 'morskoy-shtrikh.html', 'grafitovyy-son.html', 'vishnevyy-goroshek.html', 'kofeynyy-pled.html', 'prazdnichnyy-bant.html', 'alyy-kvadrat.html', 'nochnoy-kontur.html', 'smolyanaya-noch.html', 'morskaya-nit.html', 'tikhaya-flanel.html', 'nebesnyy-lyon.html', 'belaya-klassika-muzhskaya.html', 'slivovyy-barkhat.html', 'lavandovyy-vecher.html', 'vinnaya-polnoch.html', 'lylovyy-rassvet.html', 'zimnyaya-kletka.html', 'tikhaya-poloska.html', 'nebesnyy-goroshek.html', 'polnochnyy-uyut.html', 'golubaya-liniya.html', 'dymchataya-kletka.html', 'severnaya-poloska.html', 'utrenniy-svet.html', 'buyvolovaya-kletka.html', 'lyanyanoy-damask.html'].includes(file)).length,
+ok(chainTitles.length === allPages.filter((file) => !['myatnyy-vecher.html', 'lazurnaya-kletka.html', 'osenniy-pled.html', 'snezhnyy-khalat.html', 'tikhoye-serebro.html', 'nochnaya-mgla.html', 'akvarelnoe-utro.html', 'izumrudnyy-sad.html', 'morskoy-son.html', 'kletka-gortsa.html', 'izumrudnaya-poloska.html', 'rozovyy-zakat.html', 'lesnoy-goroshek.html', 'morskoy-shtrikh.html', 'grafitovyy-son.html', 'vishnevyy-goroshek.html', 'kofeynyy-pled.html', 'prazdnichnyy-bant.html', 'alyy-kvadrat.html', 'nochnoy-kontur.html', 'smolyanaya-noch.html', 'morskaya-nit.html', 'tikhaya-flanel.html', 'nebesnyy-lyon.html', 'belaya-klassika-muzhskaya.html', 'slivovyy-barkhat.html', 'lavandovyy-vecher.html', 'vinnaya-polnoch.html', 'lylovyy-rassvet.html', 'zimnyaya-kletka.html', 'tikhaya-poloska.html', 'nebesnyy-goroshek.html', 'polnochnyy-uyut.html', 'golubaya-liniya.html', 'dymchataya-kletka.html', 'severnaya-poloska.html', 'utrenniy-svet.html', 'buyvolovaya-kletka.html', 'grafit-i-rubin.html', 'lyanyanoy-damask.html'].includes(file)).length,
   'в цепочку входят все страницы двух коллекций');
 
 // ─────────────── итог ───────────────
