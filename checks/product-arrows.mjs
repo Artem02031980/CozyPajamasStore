@@ -166,6 +166,7 @@ const UNCHANGED = [
   { page: 'product-pages/vinnaya-polnoch.html', label: 'Винная полночь (men)' },
   { page: 'product-pages/lylovyy-rassvet.html', label: 'Лиловый рассвет (men)' },
   { page: 'product-pages/zimnyaya-kletka.html', label: 'Зимняя клетка (men)' },
+  { page: 'product-pages/tikhaya-poloska.html', label: 'Тихая полоска (men)' },
   { page: 'product-pages/lyanyanoy-damask.html', label: 'Льняной дамаск (other)' },
 ];
 
@@ -188,7 +189,7 @@ eq(missing, [], 'файлы всех страниц с адресом сущес
 const chainTitles = PRODUCTS
   .filter((product) => ['new', 'women'].includes(product.section) && product.page)
   .map((product) => getProduct(product.id).title);
-ok(chainTitles.length === allPages.filter((file) => !['myatnyy-vecher.html', 'lazurnaya-kletka.html', 'osenniy-pled.html', 'snezhnyy-khalat.html', 'tikhoye-serebro.html', 'nochnaya-mgla.html', 'akvarelnoe-utro.html', 'izumrudnyy-sad.html', 'morskoy-son.html', 'kletka-gortsa.html', 'izumrudnaya-poloska.html', 'rozovyy-zakat.html', 'lesnoy-goroshek.html', 'morskoy-shtrikh.html', 'grafitovyy-son.html', 'vishnevyy-goroshek.html', 'kofeynyy-pled.html', 'prazdnichnyy-bant.html', 'alyy-kvadrat.html', 'nochnoy-kontur.html', 'smolyanaya-noch.html', 'morskaya-nit.html', 'tikhaya-flanel.html', 'nebesnyy-lyon.html', 'belaya-klassika-muzhskaya.html', 'slivovyy-barkhat.html', 'lavandovyy-vecher.html', 'vinnaya-polnoch.html', 'lylovyy-rassvet.html', 'zimnyaya-kletka.html', 'lyanyanoy-damask.html'].includes(file)).length,
+ok(chainTitles.length === allPages.filter((file) => !['myatnyy-vecher.html', 'lazurnaya-kletka.html', 'osenniy-pled.html', 'snezhnyy-khalat.html', 'tikhoye-serebro.html', 'nochnaya-mgla.html', 'akvarelnoe-utro.html', 'izumrudnyy-sad.html', 'morskoy-son.html', 'kletka-gortsa.html', 'izumrudnaya-poloska.html', 'rozovyy-zakat.html', 'lesnoy-goroshek.html', 'morskoy-shtrikh.html', 'grafitovyy-son.html', 'vishnevyy-goroshek.html', 'kofeynyy-pled.html', 'prazdnichnyy-bant.html', 'alyy-kvadrat.html', 'nochnoy-kontur.html', 'smolyanaya-noch.html', 'morskaya-nit.html', 'tikhaya-flanel.html', 'nebesnyy-lyon.html', 'belaya-klassika-muzhskaya.html', 'slivovyy-barkhat.html', 'lavandovyy-vecher.html', 'vinnaya-polnoch.html', 'lylovyy-rassvet.html', 'zimnyaya-kletka.html', 'tikhaya-poloska.html', 'lyanyanoy-damask.html'].includes(file)).length,
   'в цепочку входят все страницы двух коллекций');
 
 // ─────────────── итог ───────────────
