@@ -470,7 +470,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 
 ### Страница товара
 
-Свёрстаны семьдесят семь страниц по одному образцу:
+Свёрстаны семьдесят восемь страниц по одному образцу:
 
 | Файл | Товар | Размеры |
 |---|---|---|
@@ -544,6 +544,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 | `product-pages/nochnoy-kontur.html` | «Ночной контур», мужская коллекция | S, M, XL, XXL |
 | `product-pages/smolyanaya-noch.html` | «Смоляная ночь», мужская коллекция | S, M, XL, XXL |
 | `product-pages/morskaya-nit.html` | «Морская нить», мужская коллекция | S, M, XL, XXL |
+| `product-pages/tikhaya-flanel.html` | «Тихая фланель», мужская коллекция | S, M, XL, XXL |
 | `product-pages/lyanyanoy-damask.html` | «Льняной дамаск», другие товары | нет |
 | `product-pages/nezhnoe-schaste.html` | «Нежное счастье», новая коллекция | S, M, XL, XXL |
 | `product-pages/spokoynaya-noch-iv.html` | «Спокойная ночь IV», новая коллекция | S, M, XL, XXL |
