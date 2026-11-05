@@ -74,7 +74,7 @@ eq(withPage.map((product) => product.id), [
   'goods-women-48', 'goods-men-01', 'goods-men-02', 'goods-men-03', 'goods-men-04',
   'goods-men-05', 'goods-men-06', 'goods-men-07', 'goods-men-08', 'goods-men-09',
   'goods-men-10', 'goods-men-11', 'goods-men-12', 'goods-men-13', 'goods-men-14',
-  'goods-men-15', 'goods-men-16', 'goods-men-17', 'goods-men-18', 'goods-men-19', 'goods-men-20', 'goods-men-21', 'goods-men-22', 'goods-men-23', 'goods-men-24', 'goods-men-25', 'goods-men-26', 'goods-other-16',
+  'goods-men-15', 'goods-men-16', 'goods-men-17', 'goods-men-18', 'goods-men-19', 'goods-men-20', 'goods-men-21', 'goods-men-22', 'goods-men-23', 'goods-men-24', 'goods-men-25', 'goods-men-26', 'goods-men-27', 'goods-other-16',
 ], 'страницы размечены у семидесяти девяти товаров: шесть новинок, сорок восемь женских, '
   + 'двадцать четыре мужские и подушка');
 
@@ -241,6 +241,8 @@ eq(getProduct('goods-men-25').page, 'product-pages/belaya-klassika-muzhskaya.htm
   'адрес страницы «Белой классики»');
 eq(getProduct('goods-men-26').page, 'product-pages/slivovyy-barkhat.html',
   'адрес страницы «Сливового бархата»');
+eq(getProduct('goods-men-27').page, 'product-pages/lavandovyy-vecher.html',
+  'адрес страницы «Лавандового вечера»');
 eq(getProduct('goods-other-16').page, 'product-pages/lyanyanoy-damask.html',
   'адрес страницы «Льняного дамаска»');
 
@@ -304,7 +306,8 @@ for (const page of ['product-pages/solntse.html', 'product-pages/russkaya-dusha.
   'product-pages/smolyanaya-noch.html', 'product-pages/morskaya-nit.html',
   'product-pages/tikhaya-flanel.html', 'product-pages/nebesnyy-lyon.html',
   'product-pages/belaya-klassika-muzhskaya.html',
-  'product-pages/slivovyy-barkhat.html']) {
+  'product-pages/slivovyy-barkhat.html',
+  'product-pages/lavandovyy-vecher.html']) {
   ok(exists(page), `страница ${page} существует`);
   ok(/href="\.\.\/prints\.html"/.test(read(page)),
     `на странице ${page} «Выбрать из каталога» ведёт на prints.html`);
@@ -445,6 +448,7 @@ process.stdout.write(`Карточка «Тихая фланель» → product
 process.stdout.write(`Карточка «Небесный лён» → product-pages/nebesnyy-lyon.html\n`);
 process.stdout.write(`Карточка «Белая классика» → product-pages/belaya-klassika-muzhskaya.html\n`);
 process.stdout.write(`Карточка «Сливовый бархат» → product-pages/slivovyy-barkhat.html\n`);
+process.stdout.write(`Карточка «Лавандовый вечер» → product-pages/lavandovyy-vecher.html\n`);
 process.stdout.write(`Ссылка «Выбрать из каталога» → prints.html\n`);
 
 if (failures.length) {
