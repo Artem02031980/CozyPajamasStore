@@ -470,7 +470,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 
 ### Страница товара
 
-Свёрстаны восемьдесят страниц по одному образцу:
+Свёрстаны восемьдесят одна страница по одному образцу:
 
 | Файл | Товар | Размеры |
 |---|---|---|
@@ -547,6 +547,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 | `product-pages/tikhaya-flanel.html` | «Тихая фланель», мужская коллекция | S, M, XL, XXL |
 | `product-pages/nebesnyy-lyon.html` | «Небесный лён», мужская коллекция | S, M, XL, XXL |
 | `product-pages/belaya-klassika-muzhskaya.html` | «Белая классика», мужская коллекция | S, M, XL, XXL |
+| `product-pages/slivovyy-barkhat.html` | «Сливовый бархат», мужская коллекция | S, M, XL, XXL |
 | `product-pages/lyanyanoy-damask.html` | «Льняной дамаск», другие товары | нет |
 | `product-pages/nezhnoe-schaste.html` | «Нежное счастье», новая коллекция | S, M, XL, XXL |
 | `product-pages/spokoynaya-noch-iv.html` | «Спокойная ночь IV», новая коллекция | S, M, XL, XXL |
