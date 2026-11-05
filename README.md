@@ -470,7 +470,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 
 ### Страница товара
 
-Свёрстаны девяносто страниц по одному образцу:
+Свёрстаны девяносто одна страница по одному образцу:
 
 | Файл | Товар | Размеры |
 |---|---|---|
@@ -557,6 +557,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 | `product-pages/polnochnyy-uyut.html` | «Полночный уют», мужская коллекция | S, M, XL, XXL |
 | `product-pages/golubaya-liniya.html` | «Голубая линия», мужская коллекция | S, M, XL, XXL |
 | `product-pages/dymchataya-kletka.html` | «Дымчатая клетка», мужская коллекция | S, M, XL, XXL |
+| `product-pages/severnaya-poloska.html` | «Северная полоска», мужская коллекция | S, M, XL, XXL |
 | `product-pages/lyanyanoy-damask.html` | «Льняной дамаск», другие товары | нет |
 | `product-pages/nezhnoe-schaste.html` | «Нежное счастье», новая коллекция | S, M, XL, XXL |
 | `product-pages/spokoynaya-noch-iv.html` | «Спокойная ночь IV», новая коллекция | S, M, XL, XXL |
