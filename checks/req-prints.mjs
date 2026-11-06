@@ -160,7 +160,7 @@ try {
       карточек: cards.length,
       картинок: images.length,
       загружено: images.filter((img) => img.complete && img.naturalWidth > 0).length,
-      безАвтора: cards.filter((card) => !/Артём Мижорниев/.test(
+      безАвтора: cards.filter((card) => !/Артём[\s\u00A0]+Мижорниев/.test(
         card.querySelector('.prints__text')?.textContent ?? '',
       )).length,
       цены: [...new Set(cards.map((card) => card.querySelector('.prints__price')?.textContent.replace(/\u00A0/g, ' ').trim()))],
@@ -217,7 +217,7 @@ try {
   eq(page.снизуПодписи, ['На светлом', 'На тёмном'], 'под превью подписано, какое состояние показано');
   eq(page.вШапке.заголовок, 'КАТАЛОГ ПРИНТОВ', 'заголовок страницы');
   ok(/500 ₽/.test(page.вШапке.цена ?? ''), 'в шапке видна цена 500 ₽', String(page.вШапке.цена));
-  ok(/Артём Мижорниев/.test(page.вШапке.лид ?? ''), 'во вступлении назван автор', String(page.вШапке.лид));
+  ok(/Артём[\s\u00A0]+Мижорниев/.test(page.вШапке.лид ?? ''), 'во вступлении назван автор', String(page.вШапке.лид));
   eq(page.правила, ['Чёрное на светлом', 'Белое на тёмном', 'Без цветности'],
     'на странице три правила нанесения');
   ok(!page.прокруткаВбок, 'страница не прокручивается вбок');
@@ -326,6 +326,7 @@ try {
   await sleep(400);
   rmSync(profile, { recursive: true, force: true });
 }
+
 
 
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Стрелки между страницами «Новой» и «Женской» коллекций.
+ * Стрелки между страницами «Новой», «Женской» и «Мужской» коллекций.
  *
  * Кадр у товара один, поэтому стрелки по краям карточки ведут не на другой
  * ракурс, а на соседний товар раздела — в том же порядке, в каком карточки
@@ -10,9 +10,8 @@
  *   у последней нет правой;
  *   у каждой средней обе, и каждая ведёт на соседнюю страницу;
  *   ссылки взаимны: у соседа в обратную сторону стоит ровно эта страница;
- *   в подписи стрелки — название товара, к которому она ведёт;
- *   у «Мятного вечера» (men) и подушки (other) всё по-старому:
- *   выключенные кнопки, ссылок нет.
+ *   подпись у стрелки общая — «Предыдущий товар» / «Следующий товар»;
+ *   у подушки (other) всё по-старому: выключенные кнопки, ссылок нет.
  *
  * Как только в раздел добавляется страница, скрипт проверки покажет, где
  * цепочка разъехалась: у соседей появятся лишние или недостающие стрелки.
@@ -62,6 +61,7 @@ const arrowOf = (html, modifier) => {
 const SECTIONS = [
   { section: 'new', label: 'Новая коллекция' },
   { section: 'women', label: 'Женская коллекция' },
+  { section: 'men', label: 'Мужская коллекция' },
 ];
 
 for (const { section, label } of SECTIONS) {
@@ -127,54 +127,13 @@ for (const { section, label } of SECTIONS) {
   });
 }
 
-// ─────────────── разделы без цепочки ───────────────
+// ─────────────── раздел без цепочки ───────────────
 
-/* «Мятный вечер», «Лазурная клетка», «Осенний плед», «Снежный халат»,
-   «Тихое серебро», «Ночная мгла», «Акварельное утро», «Изумрудный сад»,
-   «Морской сон», «Клетка горца», «Изумрудная полоска», «Розовый закат»,
-   «Лесной горошек», «Морской штрих», «Графитовый сон» и подушка: там
-   стрелки остаются выключенными кнопками. Задача владельца касалась
-   только «Новой» и «Женской» коллекций */
+/* Подушка — единственная страница, где стрелки остаются выключенными
+   кнопками: в «Других товарах» страница одна, соседей у неё нет.
+   У «Мужской коллекции» цепочка теперь такая же, как у «Новой»
+   и «Женской» */
 const UNCHANGED = [
-  { page: 'product-pages/myatnyy-vecher.html', label: 'Мятный вечер (men)' },
-  { page: 'product-pages/lazurnaya-kletka.html', label: 'Лазурная клетка (men)' },
-  { page: 'product-pages/osenniy-pled.html', label: 'Осенний плед (men)' },
-  { page: 'product-pages/snezhnyy-khalat.html', label: 'Снежный халат (men)' },
-  { page: 'product-pages/tikhoye-serebro.html', label: 'Тихое серебро (men)' },
-  { page: 'product-pages/nochnaya-mgla.html', label: 'Ночная мгла (men)' },
-  { page: 'product-pages/akvarelnoe-utro.html', label: 'Акварельное утро (men)' },
-  { page: 'product-pages/izumrudnyy-sad.html', label: 'Изумрудный сад (men)' },
-  { page: 'product-pages/morskoy-son.html', label: 'Морской сон (men)' },
-  { page: 'product-pages/kletka-gortsa.html', label: 'Клетка горца (men)' },
-  { page: 'product-pages/izumrudnaya-poloska.html', label: 'Изумрудная полоска (men)' },
-  { page: 'product-pages/rozovyy-zakat.html', label: 'Розовый закат (men)' },
-  { page: 'product-pages/lesnoy-goroshek.html', label: 'Лесной горошек (men)' },
-  { page: 'product-pages/morskoy-shtrikh.html', label: 'Морской штрих (men)' },
-  { page: 'product-pages/grafitovyy-son.html', label: 'Графитовый сон (men)' },
-  { page: 'product-pages/vishnevyy-goroshek.html', label: 'Вишнёвый горошек (men)' },
-  { page: 'product-pages/kofeynyy-pled.html', label: 'Кофейный плед (men)' },
-  { page: 'product-pages/prazdnichnyy-bant.html', label: 'Праздничный бант (men)' },
-  { page: 'product-pages/alyy-kvadrat.html', label: 'Алый квадрат (men)' },
-  { page: 'product-pages/nochnoy-kontur.html', label: 'Ночной контур (men)' },
-  { page: 'product-pages/smolyanaya-noch.html', label: 'Смоляная ночь (men)' },
-  { page: 'product-pages/morskaya-nit.html', label: 'Морская нить (men)' },
-  { page: 'product-pages/tikhaya-flanel.html', label: 'Тихая фланель (men)' },
-  { page: 'product-pages/nebesnyy-lyon.html', label: 'Небесный лён (men)' },
-  { page: 'product-pages/belaya-klassika-muzhskaya.html', label: 'Белая классика (men)' },
-  { page: 'product-pages/slivovyy-barkhat.html', label: 'Сливовый бархат (men)' },
-  { page: 'product-pages/lavandovyy-vecher.html', label: 'Лавандовый вечер (men)' },
-  { page: 'product-pages/vinnaya-polnoch.html', label: 'Винная полночь (men)' },
-  { page: 'product-pages/lylovyy-rassvet.html', label: 'Лиловый рассвет (men)' },
-  { page: 'product-pages/zimnyaya-kletka.html', label: 'Зимняя клетка (men)' },
-  { page: 'product-pages/tikhaya-poloska.html', label: 'Тихая полоска (men)' },
-  { page: 'product-pages/nebesnyy-goroshek.html', label: 'Небесный горошек (men)' },
-  { page: 'product-pages/polnochnyy-uyut.html', label: 'Полночный уют (men)' },
-  { page: 'product-pages/golubaya-liniya.html', label: 'Голубая линия (men)' },
-  { page: 'product-pages/dymchataya-kletka.html', label: 'Дымчатая клетка (men)' },
-  { page: 'product-pages/severnaya-poloska.html', label: 'Северная полоска (men)' },
-  { page: 'product-pages/utrenniy-svet.html', label: 'Утренний свет (men)' },
-  { page: 'product-pages/buyvolovaya-kletka.html', label: 'Буйволовая клетка (men)' },
-  { page: 'product-pages/grafit-i-rubin.html', label: 'Графит и рубин (men)' },
   { page: 'product-pages/lyanyanoy-damask.html', label: 'Льняной дамаск (other)' },
 ];
 
@@ -204,10 +163,12 @@ ok(chainTitles.length === allPages.filter((file) => !['myatnyy-vecher.html', 'la
 
 const womenPages = PRODUCTS.filter((p) => p.section === 'women' && p.page).length;
 const newPages = PRODUCTS.filter((p) => p.section === 'new' && p.page).length;
+const menPages = PRODUCTS.filter((p) => p.section === 'men' && p.page).length;
 
 process.stdout.write(`Проверок пройдено: ${passed}\n`);
-process.stdout.write(`«Новая коллекция»: ${newPages} страниц, «Женская коллекция»: ${womenPages} страниц\n`);
-process.stdout.write('Цепочка: Солнце → … → Кремовый вальс и Нежное счастье → … → Выгодная философия\n');
+process.stdout.write(`«Новая коллекция»: ${newPages} страниц, «Женская коллекция»: ${womenPages}, «Мужская коллекция»: ${menPages}\n`);
+process.stdout.write('Цепочки: Солнце → … → Кремовый вальс, Нежное счастье → … → Выгодная философия,\n');
+process.stdout.write('Мятный вечер → … → Графит и рубин\n');
 
 if (failures.length) {
   process.stdout.write(`\nНЕ ПРОШЛО: ${failures.length}\n`);

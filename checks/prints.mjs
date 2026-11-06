@@ -130,7 +130,15 @@ ok(/class="footer"/.test(PRINTS_HTML), 'есть подвал');
 
 /* Содержимое: заголовок, автор, цена, правила нанесения, контейнер карточек */
 ok(/class="prints__title"[^>]*>КАТАЛОГ ПРИНТОВ</.test(PRINTS_HTML), 'на странице есть заголовок каталога');
-ok(new RegExp(`class="prints__lead"[\\s\\S]{0,200}?${PRINT_AUTHOR}`).test(PRINTS_HTML),
+/* Имя в разметке может стоять с неразрывным пробелом — типографика
+   ставит его между именем и фамилией, — поэтому ищем по любому пробелу
+   или сущности &nbsp; */
+const AUTHOR_RE = new RegExp(PRINT_AUTHOR.replace(/\s+/g, '(?:[\\s\\u00A0]|&nbsp;)+'));
+const LEAD_BLOCK = PRINTS_HTML.slice(
+  PRINTS_HTML.indexOf('prints__lead'),
+  PRINTS_HTML.indexOf('prints__cost'),
+);
+ok(AUTHOR_RE.test(LEAD_BLOCK),
   'во вступлении назван автор рисунков');
 ok(/class="prints__cost"[^>]*>[\s\S]{0,80}?500 ₽/.test(PRINTS_HTML),
   'цена принта стоит в шапке страницы');
@@ -311,4 +319,5 @@ if (failures.length) {
 }
 
 process.stdout.write('\nВсё чисто.\n');
+
 
