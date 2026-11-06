@@ -470,7 +470,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 
 ### Страница товара
 
-Свёрстаны девяносто шесть страниц по одному образцу:
+Свёрстаны девяносто семь страниц по одному образцу:
 
 | Файл | Товар | Размеры |
 |---|---|---|
@@ -564,6 +564,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 | `product-pages/lyanyanoy-damask.html` | «Льняной дамаск», другие товары | нет |
 | `product-pages/solnechnyy-romb.html` | «Солнечный ромб», другие товары | нет |
 | `product-pages/karamelnyy-velyur.html` | «Карамельный велюр», другие товары | нет |
+| `product-pages/krest-nakrest.html` | «Крест-накрест», другие товары | нет |
 | `product-pages/nezhnoe-schaste.html` | «Нежное счастье», новая коллекция | S, M, XL, XXL |
 | `product-pages/spokoynaya-noch-iv.html` | «Спокойная ночь IV», новая коллекция | S, M, XL, XXL |
 | `product-pages/rozovye-perekrestki.html` | «Розовые перекрестки», новая коллекция | S, M, XL, XXL |
