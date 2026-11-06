@@ -74,9 +74,9 @@ eq(withPage.map((product) => product.id), [
   'goods-women-48', 'goods-men-01', 'goods-men-02', 'goods-men-03', 'goods-men-04',
   'goods-men-05', 'goods-men-06', 'goods-men-07', 'goods-men-08', 'goods-men-09',
   'goods-men-10', 'goods-men-11', 'goods-men-12', 'goods-men-13', 'goods-men-14',
-  'goods-men-15', 'goods-men-16', 'goods-men-17', 'goods-men-18', 'goods-men-19', 'goods-men-20', 'goods-men-21', 'goods-men-22', 'goods-men-23', 'goods-men-24', 'goods-men-25', 'goods-men-26', 'goods-men-27', 'goods-men-28', 'goods-men-29', 'goods-men-30', 'goods-men-31', 'goods-men-32', 'goods-men-33', 'goods-men-34', 'goods-men-35', 'goods-men-36', 'goods-men-37', 'goods-men-38', 'goods-men-39', 'goods-other-16', 'goods-other-17', 'goods-other-18', 'goods-other-19', 'goods-other-20', 'goods-other-21', 'goods-other-23', 'goods-other-25', 'goods-other-30',
-], 'страницы размечены у ста двух товаров: шесть новинок, сорок восемь женских, '
-  + 'тридцать девять мужских и девять подушек');
+  'goods-men-15', 'goods-men-16', 'goods-men-17', 'goods-men-18', 'goods-men-19', 'goods-men-20', 'goods-men-21', 'goods-men-22', 'goods-men-23', 'goods-men-24', 'goods-men-25', 'goods-men-26', 'goods-men-27', 'goods-men-28', 'goods-men-29', 'goods-men-30', 'goods-men-31', 'goods-men-32', 'goods-men-33', 'goods-men-34', 'goods-men-35', 'goods-men-36', 'goods-men-37', 'goods-men-38', 'goods-men-39', 'goods-other-16', 'goods-other-17', 'goods-other-18', 'goods-other-19', 'goods-other-20', 'goods-other-21', 'goods-other-23', 'goods-other-25', 'goods-other-30', 'goods-other-32',
+], 'страницы размечены у ста трёх товаров: шесть новинок, сорок восемь женских, '
+  + 'тридцать девять мужских и десять подушек');
 
 /* Адреса новинок — отдельным списком: их проверяет ещё checks/product-new.mjs,
    а здесь важно, что ссылка с карточки каталога не ведёт в пустоту */
@@ -285,6 +285,8 @@ eq(getProduct('goods-other-25').page, 'product-pages/rubinovyy-romb.html',
   'адрес страницы «Рубинового ромба»');
 eq(getProduct('goods-other-30').page, 'product-pages/mekhovoe-oblako.html',
   'адрес страницы «Мехового облака»');
+eq(getProduct('goods-other-32').page, 'product-pages/belaya-bakhroma.html',
+  'адрес страницы «Белой бахромы»');
 
 for (const page of withPage) {
   ok(exists(page.page), `файл страницы «${page.title}» на месте`, page.page);

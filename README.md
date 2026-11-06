@@ -470,7 +470,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 
 ### Страница товара
 
-Свёрстаны сто две страницы по одному образцу:
+Свёрстаны сто три страницы по одному образцу:
 
 | Файл | Товар | Размеры |
 |---|---|---|
@@ -570,6 +570,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 | `product-pages/alyy-uzor.html` | «Алый узор», другие товары | нет |
 | `product-pages/rubinovyy-romb.html` | «Рубиновый ромб», другие товары | нет |
 | `product-pages/mekhovoe-oblako.html` | «Меховое облако», другие товары | нет |
+| `product-pages/belaya-bakhroma.html` | «Белая бахрома», другие товары | нет |
 | `product-pages/nezhnoe-schaste.html` | «Нежное счастье», новая коллекция | S, M, XL, XXL |
 | `product-pages/spokoynaya-noch-iv.html` | «Спокойная ночь IV», новая коллекция | S, M, XL, XXL |
 | `product-pages/rozovye-perekrestki.html` | «Розовые перекрестки», новая коллекция | S, M, XL, XXL |
