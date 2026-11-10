@@ -74,9 +74,9 @@ eq(withPage.map((product) => product.id), [
   'goods-women-48', 'goods-men-01', 'goods-men-02', 'goods-men-03', 'goods-men-04',
   'goods-men-05', 'goods-men-06', 'goods-men-07', 'goods-men-08', 'goods-men-09',
   'goods-men-10', 'goods-men-11', 'goods-men-12', 'goods-men-13', 'goods-men-14',
-  'goods-men-15', 'goods-men-16', 'goods-men-17', 'goods-men-18', 'goods-men-19', 'goods-men-20', 'goods-men-21', 'goods-men-22', 'goods-men-23', 'goods-men-24', 'goods-men-25', 'goods-men-26', 'goods-men-27', 'goods-men-28', 'goods-men-29', 'goods-men-30', 'goods-men-31', 'goods-men-32', 'goods-men-33', 'goods-men-34', 'goods-men-35', 'goods-men-36', 'goods-men-37', 'goods-men-38', 'goods-men-39', 'goods-other-16', 'goods-other-39', 'goods-other-17', 'goods-other-22', 'goods-other-40', 'goods-other-18', 'goods-other-41', 'goods-other-19', 'goods-other-42', 'goods-other-20', 'goods-other-43', 'goods-other-21', 'goods-other-44', 'goods-other-23', 'goods-other-45', 'goods-other-25', 'goods-other-46', 'goods-other-30', 'goods-other-47', 'goods-other-32', 'goods-other-48',
-], 'страницы размечены у ста четырнадцати товаров: шесть новинок, сорок восемь женских, '
-  + 'тридцать девять мужских и двадцать одно изделие из секции «Другие товары»');
+  'goods-men-15', 'goods-men-16', 'goods-men-17', 'goods-men-18', 'goods-men-19', 'goods-men-20', 'goods-men-21', 'goods-men-22', 'goods-men-23', 'goods-men-24', 'goods-men-25', 'goods-men-26', 'goods-men-27', 'goods-men-28', 'goods-men-29', 'goods-men-30', 'goods-men-31', 'goods-men-32', 'goods-men-33', 'goods-men-34', 'goods-men-35', 'goods-men-36', 'goods-men-37', 'goods-men-38', 'goods-men-39', 'goods-other-16', 'goods-other-39', 'goods-other-17', 'goods-other-22', 'goods-other-40', 'goods-other-24', 'goods-other-18', 'goods-other-41', 'goods-other-19', 'goods-other-42', 'goods-other-20', 'goods-other-43', 'goods-other-21', 'goods-other-44', 'goods-other-23', 'goods-other-45', 'goods-other-25', 'goods-other-46', 'goods-other-30', 'goods-other-47', 'goods-other-32', 'goods-other-48',
+], 'страницы размечены у ста пятнадцати товаров: шесть новинок, сорок восемь женских, '
+  + 'тридцать девять мужских и двадцать два изделия из секции «Другие товары»');
 
 /* Адреса новинок — отдельным списком: их проверяет ещё checks/product-new.mjs,
    а здесь важно, что ссылка с карточки каталога не ведёт в пустоту */
@@ -273,6 +273,8 @@ eq(getProduct('goods-other-17').page, 'product-pages/solnechnyy-romb.html',
   'адрес страницы «Солнечного ромба»');
 eq(getProduct('goods-other-22').page, 'product-pages/seryy-kotyonok.html',
   'адрес страницы «Серого котёнка»');
+eq(getProduct('goods-other-24').page, 'product-pages/polosatyy-yagnyonok.html',
+  'адрес страницы «Полосатого ягнёнка»');
 eq(getProduct('goods-other-18').page, 'product-pages/karamelnyy-velyur.html',
   'адрес страницы «Карамельного велюра»');
 eq(getProduct('goods-other-19').page, 'product-pages/krest-nakrest.html',

@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Полосатый ягнёнок | Магазин уютных пижам</title>
+    <meta
+      name="description"
+      content="Мягкая игрушка «Полосатый ягнёнок»: вязаный ягнёнок в сине-белую полоску с синим бантом, сидит. 2 700 ₽."
+    />
+
+    <meta name="theme-color" content="#ffffff" />
+
+    <!-- Иконка вкладки — та же, что на остальных страницах -->
+    <link rel="icon" type="image/svg+xml" href="../assets/images/icons/favicon.svg" />
+
+    <!-- Шрифты: Roboto Slab Regular (400) и Bold (700), кириллица -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap"
+    />
+
+    <!-- Единственный подключаемый CSS: внутри только @import.
+         Страница лежит на уровень глубже корня, поэтому путь через ../ -->
+    <link rel="stylesheet" href="../assets/css/style.css" />
+  </head>
+
+  <!-- data-page — какой набор скриптов запускать, data-section — какой фон
+       страницы брать из assets/images/product-page: bg_other.png. От вида
+       товара зависит и акцент: у «других товаров» вместо розового бежевое,
+       а вместо голубого тёмное (см. конец product.css) -->
+  <body data-page="product" data-section="other">
+    <div class="root">
+      <!-- Шапка та же, что на главной: разметку страницы товара сверяют
+           с главной глазами, и расхождение в шапке бросается в глаза.
+           Пункты меню ведут на секции главной, поэтому пути через ../ -->
+      <header class="header">
+        <div class="header__inner container">
+          <button
+            class="header__burger"
+            type="button"
+            data-burger
+            aria-label="Меню"
+            aria-expanded="false"
+            aria-controls="header-nav"
+          >
+            <span class="header__burger-line"></span>
+            <span class="header__burger-line"></span>
+            <span class="header__burger-line"></span>
+          </button>
+
+          <nav class="header__nav" id="header-nav" data-nav aria-label="Основное меню">
+            <ul class="header__list">
+              <li class="header__item">
+                <a class="header__link" href="../index.html#goods-new">Новая коллекция</a>
+              </li>
+              <li class="header__item">
+                <a class="header__link" href="../index.html#goods-women">Женские пижамы</a>
+              </li>
+              <li class="header__item">
+                <a class="header__link" href="../index.html#goods-men">Мужские пижамы</a>
+              </li>
+              <li class="header__item">
+                <a class="header__link" href="../prints.html">Принты</a>
+              </li>
+              <li class="header__item">
+                <a class="header__link" href="../index.html#goods-other">Другие товары</a>
+              </li>
+            </ul>
+          </nav>
+
+          <button class="header__cart" type="button" data-cart-open>
+            <span class="header__cart-text">
+              <span class="header__cart-label">Корзина</span>
+              <span class="header__cart-count" data-cart-counter>0</span>
+            </span>
+          </button>
+
+          <div class="header__socials">
+            <a
+              class="header__social header__social--instagram"
+              href="https://www.instagram.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+            ></a>
+            <a
+              class="header__social header__social--vk"
+              href="https://vk.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="VK"
+            ></a>
+          </div>
+        </div>
+      </header>
+
+      <main class="main">
+        <!-- Страница товара. Разметка одной карточки, без сетки: галерея
+             слева, описание справа. Всё, что относится к конкретному товару,
+             стоит здесь, а не рисуется скриптом: страница должна читаться
+             и без JavaScript. -->
+        <section class="product">
+          <div class="product__inner container">
+            <article class="product__card">
+              <!-- Первая колонка: фото, сведения и кнопки покупки.
+                   С 1280px карточка делится надвое именно здесь, поэтому
+                   купить товар и прочитать про него можно не перескакивая
+                   взглядом через весь экран. До 1280px описание идёт следом
+                   за кнопками, как в макете. -->
+              <div class="product__main">
+              <!-- ==================== Галерея ====================
+                   Снимок один: вторых ракурсов в проекте нет. Стрелки и точки
+                   показываются только на мобильном, где в макете видно
+                   листание; при одном кадре product.js проставляет стрелкам
+                   disabled и не даёт листать в пустоту. -->
+              <div class="product__gallery">
+                <button
+                  class="product__arrow product__arrow--prev"
+                  type="button"
+                  data-product-prev
+                  aria-label="Предыдущее фото"
+                  disabled
+                >
+                  <span class="product__arrow-icon" aria-hidden="true"></span>
+                </button>
+
+                <div class="product__stage">
+                  <img
+                    class="product__image"
+                    src="../assets/images/products/other/SoftToys/12.png"
+                    alt="Мягкая игрушка кремовый вязаный ягнёнок в сине-белую полоску с синим бантом"
+                    width="1024"
+                    height="1024"
+                  />
+                </div>
+
+                <button
+                  class="product__arrow product__arrow--next"
+                  type="button"
+                  data-product-next
+                  aria-label="Следующее фото"
+                  disabled
+                >
+                  <span class="product__arrow-icon" aria-hidden="true"></span>
+                </button>
+              </div>
+
+              <!-- ==================== Информация ====================
+                   У «других товаров» фото и сведения стоят друг под другом
+                   в одной колонке: карточка получается из двух колонок,
+                   а не из трёх, как у пижам. Поэтому подпись идёт сразу
+                   под фото, а всё остальное выровнено по левому краю -->
+              <div class="product__info">
+                <!-- Секция каталога и тип изделия одной строкой, мельче
+                     названия: это подпись к фото, а не заголовок -->
+                <p class="product__subtitle">Другие товары — мягкая игрушка</p>
+
+                <h1 class="product__title">Полосатый ягнёнок</h1>
+
+                <p class="product__price">2 700 ₽</p>
+
+                <div class="product__buttons">
+                  <!-- Иконка корзины — та же, что в шапке и в карточках:
+                       assets/images/icons/cart-white.svg.
+                       Текст подписи завёрнут в span не для красоты: отзыв
+                       «В корзине» (cart-ui.js) заменяет текст кнопки,
+                       а присваивание button.textContent стирало бы иконку
+                       вместе с текстом. Подпись ищется по data-cart-label -->
+                  <button
+                    class="product__button product__button--cart button button--pink"
+                    type="button"
+                    data-cart-add="goods-other-24"
+                  >
+                    <span class="product__button-icon product__button-icon--cart" aria-hidden="true"></span>
+                    <span class="product__button-label" data-cart-label>Добавить в корзину</span>
+                  </button>
+
+                  <!-- «Купить в один клик» сразу оформляет заказ: товар
+                       сохраняется как заказ, и человек попадает на страницу
+                       благодарности. Корзина при этом не трогается. Размера
+                       у игрушки нет, поэтому заказ собирается из одного
+                       товара. Путь к странице задан атрибутом: с этой
+                       страницы она на уровень выше корня -->
+                  <button
+                    class="product__button product__button--cart button button--outline-pink"
+                    type="button"
+                    data-buy-now="goods-other-24"
+                    data-buy-now-redirect="../thanks-cart.html"
+                  >
+                    Купить в один клик
+                  </button>
+                </div>
+
+              </div>
+              <!-- конец .product__info и .product__main -->
+              </div>
+
+              <!-- ==================== Вторая колонка ====================
+                   Описание и характеристики. Живут отдельным блоком,
+                   а не внутри карточки информации: с 1280px они встают
+                   второй колонкой рядом с фото и кнопками. -->
+              <div class="product__specs">
+                <section class="product__block">
+                  <h2 class="product__block-title">Описание:</h2>
+
+                  <p class="product__text">
+                    Мягкая игрушка — кремовый вязаный ягнёнок в сине-белую полоску.
+                    Мягкая трикотажная вязка приятна на ощупь, а плотная набивка держит
+                    форму: ягнёнок устойчиво сидит и не заваливается. Синий бант на шее
+                    добавляет образу озорства. Игрушка подходит для объятий, игр
+                    и украшения полки — понравится и ребёнку, и взрослому.
+                  </p>
+                </section>
+
+                <!-- Декоративный разделитель между описанием и
+                     характеристиками. Файл выбирается по виду товара —
+                     body[data-section], как и фон страницы: у «других
+                     товаров» кольцо бежевое, у женской коллекции розовое,
+                     у мужской голубое. Для скринридера это пустое место,
+                     поэтому aria-hidden -->
+                <div class="product__divider" aria-hidden="true"></div>
+
+                <section class="product__block">
+                  <h2 class="product__block-title">Характеристики</h2>
+                  <dl class="product__details">
+                    <dt class="product__details-name">Назначение</dt>
+                    <dd class="product__details-value">Мягкая игрушка для объятий и игр</dd>
+
+                    <dt class="product__details-name">Высота</dt>
+                    <dd class="product__details-value">30 см</dd>
+
+                    <dt class="product__details-name">Материал</dt>
+                    <dd class="product__details-value">Трикотажная вязка (полиэстер), набивка холлофайбер</dd>
+
+                    <dt class="product__details-name">Цвет</dt>
+                    <dd class="product__details-value">Кремовый с сине-белой полоской</dd>
+
+                    <dt class="product__details-name">Поза</dt>
+                    <dd class="product__details-value">Сидит</dd>
+
+                    <dt class="product__details-name">Уход</dt>
+                    <dd class="product__details-value">Ручная стирка при 30°</dd>
+
+                    <dt class="product__details-name">Коллекция</dt>
+                    <dd class="product__details-value">Весна-Лето 2023</dd>
+                  </dl>
+                </section>
+              </div>
+            </article>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <div class="footer__inner container">
+          <p class="footer__copyright">ООО «Магазин уютных пижам» © 2023 - <span data-copyright-year>2026</span></p>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Модальное окно корзины: то же, что на главной. Открывает кнопка
+         «Корзина» в шапке и «Купить в один клик». -->
+    <div
+      class="modal is-hidden"
+      data-modal="cart"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cart-title"
+      aria-hidden="true"
+    >
+      <div class="modal__overlay" data-modal-close></div>
+
+      <div class="modal__dialog">
+        <div class="modal__head">
+          <h2 class="modal__title" id="cart-title">Корзина</h2>
+          <button class="modal__close" type="button" data-modal-close aria-label="Закрыть корзину">
+            ×
+          </button>
+        </div>
+
+        <div class="cart" data-cart-body></div>
+      </div>
+    </div>
+
+    <!-- Единственный подключаемый скрипт: точка входа с импортами модулей -->
+    <script type="module" src="../assets/js/script.js"></script>
+  </body>
+</html>
