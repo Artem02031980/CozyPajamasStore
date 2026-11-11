@@ -470,7 +470,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 
 ### Страница товара
 
-Свёрстаны сто двадцать две страницы по одному образцу:
+Свёрстаны сто двадцать три страницы по одному образцу:
 
 | Файл | Товар | Размеры |
 |---|---|---|
@@ -590,6 +590,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 | `product-pages/kudryavyy-shchenok.html` | «Кудрявый щенок», другие товары | нет |
 | `product-pages/mishka-v-bante.html` | «Мишка в банте», другие товары | нет |
 | `product-pages/zayka-s-bantom.html` | «Зайка с бантом», другие товары | нет |
+| `product-pages/slonyonok-tisha.html` | «Слонёнок Тиша», другие товары | нет |
 | `product-pages/nezhnoe-schaste.html` | «Нежное счастье», новая коллекция | S, M, XL, XXL |
 | `product-pages/spokoynaya-noch-iv.html` | «Спокойная ночь IV», новая коллекция | S, M, XL, XXL |
 | `product-pages/rozovye-perekrestki.html` | «Розовые перекрестки», новая коллекция | S, M, XL, XXL |
