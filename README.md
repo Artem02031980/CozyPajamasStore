@@ -470,7 +470,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 
 ### Страница товара
 
-Свёрстаны сто двадцать шесть страниц по одному образцу:
+Свёрстаны сто двадцать семь страниц по одному образцу:
 
 | Файл | Товар | Размеры |
 |---|---|---|
@@ -594,6 +594,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 | `product-pages/mishka-v-sharfe.html` | «Мишка в шарфе», другие товары | нет |
 | `product-pages/seryy-slon.html` | «Серый слон», другие товары | нет |
 | `product-pages/mishka-dlya-obyatiy.html` | «Мишка для объятий», другие товары | нет |
+| `product-pages/pushistyy-son.html` | «Пушистый сон», другие товары | нет |
 | `product-pages/nezhnoe-schaste.html` | «Нежное счастье», новая коллекция | S, M, XL, XXL |
 | `product-pages/spokoynaya-noch-iv.html` | «Спокойная ночь IV», новая коллекция | S, M, XL, XXL |
 | `product-pages/rozovye-perekrestki.html` | «Розовые перекрестки», новая коллекция | S, M, XL, XXL |
