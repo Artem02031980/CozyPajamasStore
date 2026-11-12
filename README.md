@@ -470,7 +470,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 
 ### Страница товара
 
-Свёрстаны сто тридцать восемь страниц по одному образцу:
+Свёрстаны сто тридцать девять страниц по одному образцу:
 
 | Файл | Товар | Размеры |
 |---|---|---|
@@ -606,6 +606,7 @@ S, M, XL, XXL, как в макете; у «Других товаров» — «
 | `product-pages/prokhladnyy-shelk.html` | «Прохладный шёлк», другие товары | нет |
 | `product-pages/tropicheskiy-sad.html` | «Тропический сад», другие товары | нет |
 | `product-pages/solnechnaya-tishina.html` | «Солнечная тишина», другие товары | нет |
+| `product-pages/tihiy-chas.html` | «Тихий час», другие товары | нет |
 | `product-pages/nezhnoe-schaste.html` | «Нежное счастье», новая коллекция | S, M, XL, XXL |
 | `product-pages/spokoynaya-noch-iv.html` | «Спокойная ночь IV», новая коллекция | S, M, XL, XXL |
 | `product-pages/rozovye-perekrestki.html` | «Розовые перекрестки», новая коллекция | S, M, XL, XXL |
