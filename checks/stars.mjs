@@ -69,7 +69,7 @@ ok(!SCRIPT.slice(SCRIPT.indexOf('function initProductPage')).includes('initStars
 
 // ─────────────── полёт в стилях ───────────────
 
-ok(/--stars-duration: 1\.4s/.test(CSS), 'длительность полёта задана переменной');
+ok(/--stars-duration: 5s/.test(CSS), 'длительность полёта задана переменной — 5 секунд');
 ok(/--stars-timing: cubic-bezier/.test(CSS), 'у полёта своя кривая: плавный выбег');
 ok(/transition:\s*\r?\n?\s*top var\(--stars-duration\)/.test(CSS),
   'анимируются top/left/right через переменные полёта');
@@ -101,7 +101,7 @@ ok(!/\.feedback\.is-stars-in[^{]*\{[^}]*transform: translate/.test(CSS),
 // ─────────────── итог ───────────────
 
 process.stdout.write(`Проверок пройдено: ${passed}\n`);
-process.stdout.write('Полёт звёзд: 1.4s, лесенка 0/0.12/0.24s, конец — края заголовка и соцсети\n');
+process.stdout.write('Полёт звёзд: 5s, лесенка 0/0.12/0.24s, конец — края заголовка и соцсети\n');
 
 if (failures.length) {
   process.stdout.write(`\nНЕ ПРОШЛО: ${failures.length}\n`);

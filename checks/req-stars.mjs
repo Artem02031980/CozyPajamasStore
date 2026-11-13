@@ -44,7 +44,7 @@ const до = {
 
 /* Прокрутка до подвала — так же, как это делает человек */
 window.scrollTo(0, document.documentElement.scrollHeight);
-await wait(3800);
+await wait(6200);   /* полёт 5s + задержка лесенки 0.24s и запас */
 
 const после = {
   классы: section.className,
