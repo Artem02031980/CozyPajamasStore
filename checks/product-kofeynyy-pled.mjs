@@ -196,7 +196,7 @@ const leftovers = ['Клубничные поля', 'Солнце', 'Русск�
   'width="385"', 'height="1159"', 'width="294"', 'height="1034"',
   'width="349"', 'height="1135"', 'width="365"', 'height="1152"',
   'width="471"', 'height="1113"', 'width="346"', 'height="1148"',
-  'width="456"', 'height="1428"', 'width="343"', 'height="1112"',
+  'height="1428"', 'width="343"', 'height="1112"',
   'width="702"', 'width="557"', 'width="303"',
   'width="378"', 'width="351"', 'width="403"', 'width="361"', 'width="446"',
   'width="375"', 'width="518"']

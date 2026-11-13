@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * Стрелки между страницами «Новой», «Женской» и «Мужской» коллекций.
+ * Стрелки между страницами всех разделов: «Новой», «Женской»,
+ * «Мужской» коллекций и «Других товаров».
  *
  * Кадр у товара один, поэтому стрелки по краям карточки ведут не на другой
  * ракурс, а на соседний товар раздела — в том же порядке, в каком карточки
@@ -11,7 +12,7 @@
  *   у каждой средней обе, и каждая ведёт на соседнюю страницу;
  *   ссылки взаимны: у соседа в обратную сторону стоит ровно эта страница;
  *   подпись у стрелки общая — «Предыдущий товар» / «Следующий товар»;
- *   у подушки (other) всё по-старому: выключенные кнопки, ссылок нет.
+ *   выключенных кнопок-стрелок в проекте не осталось.
  *
  * Как только в раздел добавляется страница, скрипт проверки покажет, где
  * цепочка разъехалась: у соседей появятся лишние или недостающие стрелки.
@@ -62,6 +63,7 @@ const SECTIONS = [
   { section: 'new', label: 'Новая коллекция' },
   { section: 'women', label: 'Женская коллекция' },
   { section: 'men', label: 'Мужская коллекция' },
+  { section: 'other', label: 'Другие товары' },
 ];
 
 for (const { section, label } of SECTIONS) {
@@ -127,46 +129,41 @@ for (const { section, label } of SECTIONS) {
   });
 }
 
-// ─────────────── раздел без цепочки ───────────────
+// ─────────────── выключенных кнопок не осталось ───────────────
 
-/* Подушка — единственная страница, где стрелки остаются выключенными
-   кнопками: в «Других товарах» страница одна, соседей у неё нет.
-   У «Мужской коллекции» цепочка теперь такая же, как у «Новой»
-   и «Женской» */
-const UNCHANGED = [
-  { page: 'product-pages/lyanyanoy-damask.html', label: 'Льняной дамаск (other)' },
-];
+/* Раньше стрелки были кнопками листания кадра, и у подушки они остались
+   выключенными. Теперь цепочка есть в каждом разделе, поэтому кнопок
+   с адресом в проекте быть не должно: стрелка — всегда ссылка */
+const withButtons = PRODUCTS
+  .filter((product) => product.page)
+  .filter((product) => {
+    const html = read(product.page);
+    return html.includes('data-product-prev') || html.includes('data-product-next');
+  })
+  .map((product) => product.page.split('/').pop());
 
-for (const { page, label } of UNCHANGED) {
-  const html = read(page);
-  const prev = arrowOf(html, 'prev');
-  const next = arrowOf(html, 'next');
+eq(withButtons, [], 'ни на одной странице не осталось кнопок-стрелок');
 
-  eq(prev?.тег, 'button', `${label}: левая стрелка осталась кнопкой`);
-  eq(next?.тег, 'button', `${label}: правая стрелка осталась кнопкой`);
-  ok(prev?.выключена && next?.выключена, `${label}: обе стрелки выключены`);
-  eq(prev?.href, null, `${label}: у кнопок нет адреса`);
-}
+/* Все страницы с адресом входят в одну из четырёх цепочек */
+const withPages = PRODUCTS.filter((product) => product.page);
+const chainTitles = withPages.map((product) => product.title);
+eq(chainTitles.length, new Set(withPages.map((product) => product.page)).size,
+  'у каждого товара со страницей своя страница, и все они в цепочках');
 
 /* Все адреса из стрелок существуют и принадлежат товарам раздела */
-const allPages = PRODUCTS.filter((product) => product.page).map((product) => product.page.split('/').pop());
+const allPages = withPages.map((product) => product.page.split('/').pop());
 const missing = [...new Set(allPages)].filter((file) => !exists(`product-pages/${file}`));
 eq(missing, [], 'файлы всех страниц с адресом существуют');
-
-const chainTitles = PRODUCTS
-  .filter((product) => ['new', 'women'].includes(product.section) && product.page)
-  .map((product) => getProduct(product.id).title);
-ok(chainTitles.length === allPages.filter((file) => !['myatnyy-vecher.html', 'lazurnaya-kletka.html', 'osenniy-pled.html', 'snezhnyy-khalat.html', 'tikhoye-serebro.html', 'nochnaya-mgla.html', 'akvarelnoe-utro.html', 'izumrudnyy-sad.html', 'morskoy-son.html', 'kletka-gortsa.html', 'izumrudnaya-poloska.html', 'rozovyy-zakat.html', 'lesnoy-goroshek.html', 'morskoy-shtrikh.html', 'grafitovyy-son.html', 'vishnevyy-goroshek.html', 'kofeynyy-pled.html', 'prazdnichnyy-bant.html', 'alyy-kvadrat.html', 'nochnoy-kontur.html', 'smolyanaya-noch.html', 'morskaya-nit.html', 'tikhaya-flanel.html', 'nebesnyy-lyon.html', 'belaya-klassika-muzhskaya.html', 'slivovyy-barkhat.html', 'lavandovyy-vecher.html', 'vinnaya-polnoch.html', 'lylovyy-rassvet.html', 'zimnyaya-kletka.html', 'tikhaya-poloska.html', 'nebesnyy-goroshek.html', 'polnochnyy-uyut.html', 'golubaya-liniya.html', 'dymchataya-kletka.html', 'severnaya-poloska.html', 'utrenniy-svet.html', 'buyvolovaya-kletka.html', 'grafit-i-rubin.html', 'lyanyanoy-damask.html'].includes(file)).length,
-  'в цепочку входят все страницы двух коллекций');
 
 // ─────────────── итог ───────────────
 
 const womenPages = PRODUCTS.filter((p) => p.section === 'women' && p.page).length;
 const newPages = PRODUCTS.filter((p) => p.section === 'new' && p.page).length;
 const menPages = PRODUCTS.filter((p) => p.section === 'men' && p.page).length;
+const otherPages = PRODUCTS.filter((p) => p.section === 'other' && p.page).length;
 
 process.stdout.write(`Проверок пройдено: ${passed}\n`);
-process.stdout.write(`«Новая коллекция»: ${newPages} страниц, «Женская коллекция»: ${womenPages}, «Мужская коллекция»: ${menPages}\n`);
+process.stdout.write(`«Новая коллекция»: ${newPages} страниц, «Женская коллекция»: ${womenPages}, «Мужская коллекция»: ${menPages}, «Другие товары»: ${otherPages}\n`);
 process.stdout.write('Цепочки: Солнце → … → Кремовый вальс, Нежное счастье → … → Выгодная философия,\n');
 process.stdout.write('Мятный вечер → … → Графит и рубин\n');
 

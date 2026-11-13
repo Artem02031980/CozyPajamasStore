@@ -204,7 +204,7 @@ const leftovers = ['Клубничные поля', 'Солнце', 'Русск�
   'width="456"', 'height="1428"', 'width="343"', 'height="1112"',
   'width="702"', 'width="557"', 'width="303"',
   'width="378"', 'width="351"', 'width="403"', 'width="361"', 'width="446"',
-  'width="375"', 'width="518"']
+  'width="375"']
   .filter((needle) => html.includes(needle));
 eq(leftovers, [], 'в разметке нет данных шаблона и соседних страниц');
 

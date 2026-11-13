@@ -112,20 +112,21 @@
                    за кнопками, как в макете. -->
               <div class="product__main">
               <!-- ==================== Галерея ====================
-                   Снимок один: вторых ракурсов в проекте нет. Стрелки и точки
-                   показываются только на мобильном, где в макете видно
-                   листание; при одном кадре product.js проставляет стрелкам
-                   disabled и не даёт листать в пустоту. -->
+                   Снимок один: вторых ракурсов в проекте нет, поэтому
+                   стрелки по краям карточки ведут не на другой кадр,
+                   а на соседний товар раздела: влево — предыдущий, вправо —
+                   следующий. Порядок тот же, что у карточек на главной.
+                   У первой страницы раздела левой стрелки нет, у последней —
+                   правой. -->
               <div class="product__gallery">
-                <button
+                <a
                   class="product__arrow product__arrow--prev"
-                  type="button"
-                  data-product-prev
-                  aria-label="Предыдущее фото"
-                  disabled
+                  href="mishka-dlya-obyatiy.html"
+                  aria-label="Предыдущий товар"
+                  rel="prev"
                 >
                   <span class="product__arrow-icon" aria-hidden="true"></span>
-                </button>
+                </a>
 
                 <div class="product__stage">
                   <img
@@ -137,15 +138,6 @@
                   />
                 </div>
 
-                <button
-                  class="product__arrow product__arrow--next"
-                  type="button"
-                  data-product-next
-                  aria-label="Следующее фото"
-                  disabled
-                >
-                  <span class="product__arrow-icon" aria-hidden="true"></span>
-                </button>
               </div>
 
               <!-- ==================== Информация ====================
