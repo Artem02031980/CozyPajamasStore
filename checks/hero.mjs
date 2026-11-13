@@ -72,8 +72,12 @@ ok(/padding: var\(--space-12\);/.test(textBlock),
   'отступ внутри плашки 12px со всех сторон: текст не липнет к краю');
 ok(!/padding: var\(--space-12\) var\(--space-12\) var\(--space-12\) 0/.test(textBlock),
   'прежнего нулевого отступа слева больше нет');
-ok(/margin-block: calc\(-1 \* var\(--space-12\)\)/.test(textBlock),
-  'отрицательные поля возвращают прежний ритм между заголовком и кнопкой');
+/* Зазоры считаются от flex-gap 24px: сверху margin 0 — до заголовка 24px
+   (было 12), снизу 12px — до кнопки 36px (было 12) */
+ok(/margin-block: 0 var\(--space-12\)/.test(textBlock),
+  'зазор до кнопки увеличен втрое: 12px сверху gap даёт 36px');
+ok(!/margin-block: calc\(-1/.test(textBlock),
+  'отрицательных полей, подтягивавших плашку к соседям, больше нет');
 ok(!/box-shadow: 0 0 0/.test(textBlock), 'разлива тени под плашкой больше нет');
 ok(/border-radius: var\(--radius-sm\)/.test(textBlock), 'у плашки скругление из шкалы сайта');
 
@@ -95,8 +99,8 @@ ok(shadowLines.length > 0, 'у абзаца осталась тень букв',
 ok(!/0 0 20px/.test(shadowLines), 'широкое свечение вокруг букв убрано: это и был грязный ореол');
 ok(/0 1px 2px/.test(shadowLines), 'тень узкая и мягкая');
 
-ok(/@media \(min-width: 768px\)[\s\S]{0,900}?max-width: calc\(430px \+ var\(--space-12\)\)/.test(CSS),
-  'с 768px коробка шире текста на вынос плашки: переносы строк прежние');
+ok(/@media \(min-width: 768px\)[\s\S]{0,900}?max-width: calc\(500px \+ var\(--space-20\)\)/.test(CSS),
+  'с 768px ширина плашки 500px + --space-20, как просил владелец');
 
 ok(/@media \(min-width: 1280px\)[\s\S]{0,300}?\.hero__text \{\s*font-size: var\(--fs-18\)/.test(CSS),
   'на десктопе лид крупнее прежних 16px');

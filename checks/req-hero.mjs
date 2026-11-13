@@ -75,6 +75,11 @@ const titleBox = title.getBoundingClientRect();
 const textBox = text.getBoundingClientRect();
 const buttonBox = button.getBoundingClientRect();
 
+/* Зазоры вокруг плашки: считаются по её коробке, потому что видно её край */
+const зазорЗаголовок = Math.round(textBox.top - titleBox.bottom);
+const зазорКнопка = Math.round(buttonBox.top - textBox.bottom);
+const ширинаПлашки = Math.round(textBox.width);
+
 return {
   наведена: hovered,
   кнопка: {
@@ -138,6 +143,24 @@ return {
         : Math.abs(Math.round((buttonBox.left + buttonBox.right) / 2)
           - Math.round((titleBox.left + titleBox.right) / 2)) <= 2,
       факт: `заголовок ${Math.round(titleBox.left)}, кнопка ${Math.round(buttonBox.left)}`,
+    },
+    {
+      /* До 768px у плашки нет max-width: она занимает всю ширину контейнера */
+      пункт: левоеВыравнивание
+        ? 'ширина плашки 500px + 20px'
+        : 'до 768px плашка на всю ширину контейнера',
+      прошло: левоеВыравнивание ? ширинаПлашки === 520 : ширинаПлашки <= window.innerWidth,
+      факт: `${ширинаПлашки}px`,
+    },
+    {
+      пункт: 'от заголовка до плашки 24px — вдвое больше прежних 12',
+      прошло: зазорЗаголовок === 24,
+      факт: `${зазорЗаголовок}px`,
+    },
+    {
+      пункт: 'от плашки до кнопки 36px — втрое больше прежних 12',
+      прошло: зазорКнопка === 36,
+      факт: `${зазорКнопка}px`,
     },
     {
       пункт: 'отступ внутри плашки 12px со всех сторон',
