@@ -80,6 +80,9 @@ const зазорЗаголовок = Math.round(textBox.top - titleBox.bottom);
 const зазорКнопка = Math.round(buttonBox.top - textBox.bottom);
 const ширинаПлашки = Math.round(textBox.width);
 
+/* Где начинается текст кнопки: её левый край плюс padding-inline */
+const текстКнопки = Math.round(buttonBox.left + parseFloat(buttonStyle.paddingLeft));
+
 return {
   наведена: hovered,
   кнопка: {
@@ -163,19 +166,30 @@ return {
       факт: `${зазорКнопка}px`,
     },
     {
-      пункт: 'отступ внутри плашки 12px со всех сторон',
-      прошло: textStyle.paddingLeft === '12px' && textStyle.paddingRight === '12px'
-        && textStyle.paddingTop === '12px',
-      факт: `слева ${textStyle.paddingLeft}, справа ${textStyle.paddingRight}, сверху ${textStyle.paddingTop}`,
+      пункт: 'остальные отступы плашки 12px',
+      прошло: textStyle.paddingRight === '12px' && textStyle.paddingTop === '12px'
+        && textStyle.paddingBottom === '12px',
+      факт: `справа ${textStyle.paddingRight}, сверху ${textStyle.paddingTop}, снизу ${textStyle.paddingBottom}`,
     },
     {
-      /* До 768px текст по центру, и «отступ слева» там не про первое слово */
+      /* До 768px макет центрированный: там текст абзаца по центру,
+         а кнопка — отдельный блок по центру */
       пункт: левоеВыравнивание
-        ? 'текст начинается на 12px правее края плашки'
+        ? 'текст абзаца начинается там же, где текст кнопки'
+        : 'до 768px тексты центрированы, как в макете',
+      прошло: левоеВыравнивание
+        ? Math.abs(текстСлева - текстКнопки) <= 1
+        : Math.abs(текстСлева - Math.round(textBox.left + parseFloat(textStyle.paddingLeft))) <= 1,
+      факт: `абзац ${текстСлева}, кнопка ${текстКнопки}`,
+    },
+    {
+      /* До 768px текст по центру — там сравнивать левые края текстов нечего */
+      пункт: левоеВыравнивание
+        ? 'текст абзаца отступает от края плашки на 24px'
         : 'до 768px текст по центру, отступ задан padding',
       прошло: левоеВыравнивание
-        ? Math.abs(текстСлева - (Math.round(textBox.left) + 12)) <= 1
-        : textStyle.paddingLeft === '12px',
+        ? Math.abs(текстСлева - (Math.round(textBox.left) + 24)) <= 1
+        : textStyle.paddingLeft === '24px',
       факт: `плашка ${Math.round(textBox.left)}, текст ${текстСлева}`,
     },
     {
