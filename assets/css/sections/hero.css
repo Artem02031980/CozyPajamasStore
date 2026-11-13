@@ -21,6 +21,11 @@
 }
 
 .hero__content {
+  /* isolation: подложка под абзацем лежит в z-index: -1 и без своего
+     контекста наложения уходила под фон .hero__inner — то есть была
+     не видна вовсе */
+  position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -35,17 +40,39 @@
 }
 
 .hero__text {
+  /* Текст лежит на пёстром фоне картинки: белое на розово-синих облаках
+     читалось плохо. Тень отделяет буквы от фона, а мягкая подложка
+     под абзацем (псевдоэлемент ниже) гасит самые светлые пятна */
+  position: relative;
   color: var(--color-white);
   font-size: var(--fs-18);
+  text-shadow:
+    0 1px 3px rgba(18, 20, 50, 0.55),
+    0 0 20px rgba(18, 20, 50, 0.45);
+}
+
+/* Подложка без резких краёв: прямоугольник с размытием читается как
+   «здесь темнее», а не как серая плашка поверх иллюстрации */
+.hero__text::before {
+  content: '';
+  position: absolute;
+  inset: -12px -18px;
+  z-index: -1;
+  background-color: rgba(22, 24, 62, 0.38);
+  border-radius: var(--radius-md);
+  filter: blur(18px);
 }
 
 .hero__button {
-  background-image: url("../../images/hero/i-hero.svg");
-  background-repeat: no-repeat;
-  background-position: right var(--space-12) center;
-  background-size: 8px 30px;
+  /* Стрелка вниз теперь шрифтовая (↓ в самой ссылке), картинку-иконку
+     убрали: на экране она читалась как восклицательный знак. Свечение —
+     как ореол вокруг девушки на фоне: два слоя белого, узкий яркий
+     и широкий мягкий */
   padding-inline: var(--space-24);
   text-align: left;
+  box-shadow:
+    0 0 22px 6px rgba(255, 255, 255, 0.6),
+    0 0 64px 24px rgba(255, 255, 255, 0.3);
 }
 
 /* 480px — крупный телефон.
@@ -109,6 +136,11 @@
 @media (min-width: 1280px) {
   .hero {
     padding-block: var(--space-32);
+  }
+
+  /* Кегль лида на десктопе: 16px на пёстрой картинке читался мелко */
+  .hero__text {
+    font-size: var(--fs-18);
   }
   .hero__title {
     font-size: var(--fs-36);
