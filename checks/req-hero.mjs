@@ -1,16 +1,20 @@
 /**
- * Запрос: первый экран — стрелка в кнопке, свечение, плашка под абзацем.
+ * Запрос: первый экран — кнопка, плашка абзаца, выравнивание по левому краю.
  *
  * Проверяется то, что видно только в браузере:
- *   — в кнопке текст со стрелкой «↓», иконки-картинки нет;
- *   — у кнопки непустое белое свечение (box-shadow);
- *   — у абзаца синяя плашка из палитры, она шире текста за счёт разлива
- *     тени и не задевает соседние блоки;
+ *   — в кнопке текст со стрелкой «↓»;
+ *   — цвета кнопки: бежевый фон и белый текст, при наведении розовый
+ *     (ховер включается ключом --mouse-to, см. ниже);
+ *   — плашка абзаца синяя из палитры и выровнена по левому краю
+ *     с заголовком и кнопкой: их левые границы совпадают;
  *   — стрелка рисуется своим шрифтом, а не квадратиком-заглушкой.
  *
- * Запуск:
+ * Запуск (два раза — покой и наведение):
  *   node ~/.dsh/bin/browser.mjs --url http://127.0.0.1:8124/ \
  *     --request checks/req-hero.mjs --widths 1280 --no-preflight --settle 2000
+ *   node ~/.dsh/bin/browser.mjs --url http://127.0.0.1:8124/ \
+ *     --request checks/req-hero.mjs --widths 1280 --no-preflight --settle 2000 \
+ *     --mouse-to ".hero__button"
  */
 
 const button = document.querySelector('.hero__button');
@@ -20,6 +24,17 @@ const title = document.querySelector('.hero__title');
 const style = (el, pseudo = null) => getComputedStyle(el, pseudo);
 const buttonStyle = style(button);
 const textStyle = style(text);
+
+const rgb = (value) => {
+  const numbers = value.match(/[\d.]+/g) ?? [];
+  if (value.startsWith('color(')) {
+    /* color-mix отдаёт color(srgb r g b / a) с долями от единицы */
+    const [r, g, b] = numbers.slice(0, 3).map((n) => Math.round(Number(n) * 255));
+    return { r, g, b };
+  }
+  const [r, g, b] = numbers.map(Number);
+  return { r, g, b };
+};
 
 /* Ширина стрелки и «пустого» глифа: если шрифт не знает стрелку,
    она рисуется квадратиком той же ширины, что и заведомая заглушка */
@@ -34,33 +49,47 @@ const glyphWidth = (symbol) => {
 };
 
 const buttonText = button.textContent.trim();
-const textBox = text.getBoundingClientRect();
-const titleBox = title.getBoundingClientRect();
+const hovered = button.matches(':hover');
+const bg = rgb(buttonStyle.backgroundColor);
+const fg = rgb(buttonStyle.color);
 
-/* Разлив тени читается из box-shadow: «0 0 0 12px rgba(...)» */
-/* Разлив тени: computed-значение может начинаться и с rgba(), и с color(srgb …) */
-const spread = Number(
-  textStyle.boxShadow.match(/0px 0px 0px (\d+(?:\.\d+)?)px/)?.[1] ?? 0,
-);
+/* Палитра сайта: беж #dbcbb2, розовый #cd74a2 */
+const BEIGE = '219, 203, 178';
+const PINK = '205, 116, 162';
+const close = (value, expected, tolerance = 6) => {
+  const [r, g, b] = expected.split(',').map((n) => Number(n.trim()));
+  return Math.abs(value.r - r) <= tolerance
+    && Math.abs(value.g - g) <= tolerance
+    && Math.abs(value.b - b) <= tolerance;
+};
+
+/* align-items: flex-start у контента — признак левого выравнивания (с 768px) */
+const левоеВыравнивание = style(document.querySelector('.hero__content')).alignItems === 'flex-start';
+
+const titleBox = title.getBoundingClientRect();
+const textBox = text.getBoundingClientRect();
+const buttonBox = button.getBoundingClientRect();
 
 return {
+  наведена: hovered,
   кнопка: {
     текст: buttonText,
-    стрелкаВТексте: buttonText.includes('↓'),
-    восклицательныйЗнак: buttonText.includes('!'),
-    фонКартинкой: buttonStyle.backgroundImage !== 'none',
+    фон: buttonStyle.backgroundColor,
+    текстЦвет: buttonStyle.color,
     свечение: buttonStyle.boxShadow,
+    скругление: buttonStyle.borderRadius,
   },
-  абзац: {
+  плашка: {
     заливка: textStyle.backgroundColor,
-    теньПлашки: textStyle.boxShadow,
     скругление: textStyle.borderRadius,
-    теньБукв: textStyle.textShadow,
-    размер: textStyle.fontSize,
+    слеваPadding: textStyle.paddingLeft,
+    справаPadding: textStyle.paddingRight,
     псевдоПодложка: style(text, '::before').content,
-    ширина: Math.round(textBox.width),
-    высота: Math.round(textBox.height),
-    зазорДоЗаголовка: Math.round(textBox.top - titleBox.bottom),
+  },
+  края: {
+    заголовок: Math.round(titleBox.left),
+    абзац: Math.round(textBox.left),
+    кнопка: Math.round(buttonBox.left),
   },
   проверки: [
     {
@@ -69,9 +98,14 @@ return {
       факт: buttonText,
     },
     {
-      пункт: 'у кнопки нет фона-картинки',
-      прошло: buttonStyle.backgroundImage === 'none',
-      факт: buttonStyle.backgroundImage,
+      пункт: hovered ? 'при наведении фон розовый — --color-pink' : 'фон кнопки бежевый — --color-beige',
+      прошло: hovered ? close(bg, PINK) : close(bg, BEIGE),
+      факт: buttonStyle.backgroundColor,
+    },
+    {
+      пункт: 'текст кнопки белый',
+      прошло: fg.r > 245 && fg.g > 245 && fg.b > 245,
+      факт: buttonStyle.color,
     },
     {
       пункт: 'вокруг кнопки белое свечение',
@@ -79,30 +113,36 @@ return {
       факт: buttonStyle.boxShadow,
     },
     {
-      пункт: 'плашка абзаца синяя из палитры, а не чёрная',
-      прошло: /rgba\(147, 179, 214/.test(textStyle.backgroundColor)
-        || /color\(srgb 0\.\d+ 0\.\d+ 0\.\d+/.test(textStyle.backgroundColor),
+      пункт: 'плашка абзаца синяя из палитры',
+      прошло: close(rgb(textStyle.backgroundColor), '147, 179, 214', 6),
       факт: textStyle.backgroundColor,
     },
     {
-      пункт: 'плашка на 12px шире текста на 1280',
-      прошло: spread >= 8 && spread <= 16,
-      факт: `разлив ${spread}px`,
+      пункт: 'левый край плашки совпадает с заголовком',
+      прошло: Math.abs(Math.round(textBox.left) - Math.round(titleBox.left)) <= 1,
+      факт: `заголовок ${Math.round(titleBox.left)}, плашка ${Math.round(textBox.left)}`,
     },
     {
-      пункт: 'у плашки скругление из шкалы',
-      прошло: textStyle.borderRadius === '8px',
-      факт: textStyle.borderRadius,
+      /* До 768px макет центрированный: там совпадать должны центры,
+         выравнивание по левому краю — с 768px */
+      пункт: левоеВыравнивание
+        ? 'левый край кнопки совпадает с заголовком'
+        : 'до 768px кнопка по центру, как в макете',
+      прошло: левоеВыравнивание
+        ? Math.abs(Math.round(buttonBox.left) - Math.round(titleBox.left)) <= 1
+        : Math.abs(Math.round((buttonBox.left + buttonBox.right) / 2)
+          - Math.round((titleBox.left + titleBox.right) / 2)) <= 2,
+      факт: `заголовок ${Math.round(titleBox.left)}, кнопка ${Math.round(buttonBox.left)}`,
     },
     {
-      пункт: 'размытой подложки-псевдоэлемента больше нет',
+      пункт: 'слева у плашки нет отступа, справа есть вынос',
+      прошло: textStyle.paddingLeft === '0px' && parseFloat(textStyle.paddingRight) > 0,
+      факт: `слева ${textStyle.paddingLeft}, справа ${textStyle.paddingRight}`,
+    },
+    {
+      пункт: 'размытой подложки-псевдоэлемента нет',
       прошло: style(text, '::before').content === 'none',
       факт: style(text, '::before').content,
-    },
-    {
-      пункт: 'тень букв узкая, без широкого свечения',
-      прошло: /0px 1px 2px/.test(textStyle.textShadow) && !/20px/.test(textStyle.textShadow),
-      факт: textStyle.textShadow,
     },
     {
       пункт: 'стрелка рисуется шрифтом, а не заглушкой',
