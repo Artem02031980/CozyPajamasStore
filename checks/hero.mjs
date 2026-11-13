@@ -50,8 +50,8 @@ ok(!/\.hero__button \{[\s\S]{0,300}?background-image/.test(CSS),
 const buttonBlock = blockOf('.hero__button');
 ok(/box-shadow:/.test(buttonBlock), 'вокруг кнопки есть свечение');
 ok(/color: var\(--color-white\)/.test(buttonBlock), 'текст кнопки белый');
-ok(/background-color: var\(--color-beige\)/.test(buttonBlock),
-  'фон кнопки бежевый — из палитры, а не придуманный');
+ok(/background-color: var\(--color-blue\)/.test(buttonBlock),
+  'фон кнопки синий — из палитры, а не придуманный');
 ok(/\.hero__button:hover,\s*\n?\s*\.hero__button:focus-visible \{[\s\S]{0,200}?background-color: var\(--color-pink\)/.test(CSS),
   'при наведении кнопка становится розовой');
 ok(/background-color: var\(--color-pink\)/.test(CSS) && !/button--soft:hover/.test(buttonBlock),
@@ -65,11 +65,13 @@ const textBlock = blockOf('.hero__text');
 
 ok(/--hero-veil:/.test(textBlock), 'цвет плашки вынесен в переменную', textBlock.replace(/\s+/g, ' '));
 ok(/background-color: var\(--hero-veil\)/.test(textBlock), 'плашка заливает сам абзац');
-/* Плашка выровнена по левому краю с заголовком: слева padding нулевой,
-   справа вынос 12px. Разлив box-shadow убран — именно он выносил плашку
-   левее заголовка, и левый край «разъезжался» */
-ok(/padding: var\(--space-12\) var\(--space-12\) var\(--space-12\) 0/.test(textBlock),
-  'слева у плашки нет отступа: её край совпадает с буквами и с заголовком');
+/* Плашка выровнена по левому краю с заголовком, а текст внутри неё
+   отступает на 12px: плашка стоит на месте, буквы дышат от её края.
+   Разлив box-shadow убран — он выносил плашку левее заголовка */
+ok(/padding: var\(--space-12\);/.test(textBlock),
+  'отступ внутри плашки 12px со всех сторон: текст не липнет к краю');
+ok(!/padding: var\(--space-12\) var\(--space-12\) var\(--space-12\) 0/.test(textBlock),
+  'прежнего нулевого отступа слева больше нет');
 ok(/margin-block: calc\(-1 \* var\(--space-12\)\)/.test(textBlock),
   'отрицательные поля возвращают прежний ритм между заголовком и кнопкой');
 ok(!/box-shadow: 0 0 0/.test(textBlock), 'разлива тени под плашкой больше нет');

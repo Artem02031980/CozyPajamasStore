@@ -53,8 +53,8 @@ const hovered = button.matches(':hover');
 const bg = rgb(buttonStyle.backgroundColor);
 const fg = rgb(buttonStyle.color);
 
-/* Палитра сайта: беж #dbcbb2, розовый #cd74a2 */
-const BEIGE = '219, 203, 178';
+/* Палитра сайта: синий #93b3d6, розовый #cd74a2 */
+const BLUE = '147, 179, 214';
 const PINK = '205, 116, 162';
 const close = (value, expected, tolerance = 6) => {
   const [r, g, b] = expected.split(',').map((n) => Number(n.trim()));
@@ -65,6 +65,11 @@ const close = (value, expected, tolerance = 6) => {
 
 /* align-items: flex-start у контента — признак левого выравнивания (с 768px) */
 const левоеВыравнивание = style(document.querySelector('.hero__content')).alignItems === 'flex-start';
+
+/* Где начинается сам текст внутри плашки: Range по содержимому абзаца */
+const текстRange = document.createRange();
+текстRange.selectNodeContents(text);
+const текстСлева = Math.round(текстRange.getBoundingClientRect().left);
 
 const titleBox = title.getBoundingClientRect();
 const textBox = text.getBoundingClientRect();
@@ -98,8 +103,8 @@ return {
       факт: buttonText,
     },
     {
-      пункт: hovered ? 'при наведении фон розовый — --color-pink' : 'фон кнопки бежевый — --color-beige',
-      прошло: hovered ? close(bg, PINK) : close(bg, BEIGE),
+      пункт: hovered ? 'при наведении фон розовый — --color-pink' : 'фон кнопки синий — --color-blue',
+      прошло: hovered ? close(bg, PINK) : close(bg, BLUE),
       факт: buttonStyle.backgroundColor,
     },
     {
@@ -135,9 +140,20 @@ return {
       факт: `заголовок ${Math.round(titleBox.left)}, кнопка ${Math.round(buttonBox.left)}`,
     },
     {
-      пункт: 'слева у плашки нет отступа, справа есть вынос',
-      прошло: textStyle.paddingLeft === '0px' && parseFloat(textStyle.paddingRight) > 0,
-      факт: `слева ${textStyle.paddingLeft}, справа ${textStyle.paddingRight}`,
+      пункт: 'отступ внутри плашки 12px со всех сторон',
+      прошло: textStyle.paddingLeft === '12px' && textStyle.paddingRight === '12px'
+        && textStyle.paddingTop === '12px',
+      факт: `слева ${textStyle.paddingLeft}, справа ${textStyle.paddingRight}, сверху ${textStyle.paddingTop}`,
+    },
+    {
+      /* До 768px текст по центру, и «отступ слева» там не про первое слово */
+      пункт: левоеВыравнивание
+        ? 'текст начинается на 12px правее края плашки'
+        : 'до 768px текст по центру, отступ задан padding',
+      прошло: левоеВыравнивание
+        ? Math.abs(текстСлева - (Math.round(textBox.left) + 12)) <= 1
+        : textStyle.paddingLeft === '12px',
+      факт: `плашка ${Math.round(textBox.left)}, текст ${текстСлева}`,
     },
     {
       пункт: 'размытой подложки-псевдоэлемента нет',
