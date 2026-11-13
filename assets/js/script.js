@@ -42,6 +42,7 @@ import { initThanks, initThanksFeedback } from './thanks.js';
 import { initFeedback } from './feedback.js';
 import { initProduct, initPrintFileUpload } from './product.js';
 import { initFooterYear } from './footer-year.js';
+import { initStars } from './stars.js';
 import { renderPrints } from './render-prints.js';
 
 /**
@@ -63,6 +64,9 @@ function initHome() {
   initSizePicker();
   initCheckout();
   initFeedback();
+  /* Звёзды секции обратной связи: перелёт к заголовку и соцсетям, когда
+     человек докрутил до подвала. Один раз за загрузку страницы */
+  initStars();
 }
 
 /** Страница благодарности за заказ: показывает сохранённый заказ. */

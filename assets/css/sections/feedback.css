@@ -230,7 +230,23 @@
    относительно секции, а не контейнера. Файл 40×40, в макете рисунок
    занимает 23×28 — печатаем его 40px с фоном contain.
    На 320 звёзд нет, поэтому до 768px они скрыты.
+
+   Полёт. Углы — стартовые позиции. Когда человек докручивает до подвала,
+   stars.js ставит на секцию класс is-stars-in, и звёзды уезжают внутрь:
+   две верхние — к краям заголовка на его последнюю строку, нижняя — к
+   соцсетям. Дальше они там и остаются: класс не снимается.
+   Анимируются left/right/top, а не transform: положение задано в
+   процентах от секции, и только они дают точное место на любой ширине
+   (в translate проценты считаются от самой звёздочки, а не от секции).
+   Полёт один раз за загрузку страницы, в localStorage ничего не пишется.
    ========================================================================== */
+
+.feedback {
+  /* Полёт звёзд: 1.4s — чтобы движение читалось как «перелетели и встали»,
+     а не как рывок; ease-out в конце замедляется */
+  --stars-duration: 1.4s;
+  --stars-timing: cubic-bezier(0.22, 1, 0.36, 1);
+}
 
 .feedback::before,
 .feedback::after,
@@ -243,6 +259,10 @@
   background-image: url('../../images/icons/elem_star.png');
   background-repeat: no-repeat;
   background-size: contain;
+  transition:
+    top var(--stars-duration) var(--stars-timing),
+    left var(--stars-duration) var(--stars-timing),
+    right var(--stars-duration) var(--stars-timing);
 }
 
 .feedback::before {
@@ -256,11 +276,44 @@
   right: var(--space-80);
 }
 
-/* Третья — низ-слева, привязана к контейнеру: у секции только два
-   псевдоэлемента, а контейнер уже position: relative от .feedback */
+/* Третья — низ-слева. Считаем от верха секции, а не от низа: иначе ей
+   нечего анимировать — у auto-top перехода нет */
 .feedback__inner::after {
-  bottom: 0;
+  top: calc(100% - 40px);
   left: var(--space-16);
+}
+
+/* ── конечные места ──
+   Левые звёзды встают по краю заголовка: он 690px и стоит по центру,
+   значит его край — это 50% − 345px. Верхние останавливаются на последней
+   строке заголовка, нижняя — над соцсетями, слева от кружков (они 395px
+   по центру, то есть левый край — 50% − 197px, звезда встаёт за 53px
+   до них). Задержки идут лесенкой: сначала левая, за ней правая, потом
+   нижняя — так полёт читается как движение, а не как рывок трёх сразу */
+.feedback.is-stars-in::before {
+  top: calc(var(--section-padding-y) + 90px);
+  left: calc(50% - 345px);
+}
+
+.feedback.is-stars-in::after {
+  top: calc(var(--section-padding-y) + 90px);
+  right: calc(50% - 345px);
+  transition-delay: 0.12s;
+}
+
+.feedback.is-stars-in .feedback__inner::after {
+  top: calc(100% - 200px);
+  left: calc(50% - 290px);
+  transition-delay: 0.24s;
+}
+
+/* Кому движение мешает — звёзды сразу на местах, без перелёта */
+@media (prefers-reduced-motion: reduce) {
+  .feedback::before,
+  .feedback::after,
+  .feedback__inner::after {
+    transition: none;
+  }
 }
 
 /* ==========================================================================
