@@ -21,11 +21,6 @@
 }
 
 .hero__content {
-  /* isolation: подложка под абзацем лежит в z-index: -1 и без своего
-     контекста наложения уходила под фон .hero__inner — то есть была
-     не видна вовсе */
-  position: relative;
-  isolation: isolate;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -40,27 +35,30 @@
 }
 
 .hero__text {
-  /* Текст лежит на пёстром фоне картинки: белое на розово-синих облаках
-     читалось плохо. Тень отделяет буквы от фона, а мягкая подложка
-     под абзацем (псевдоэлемент ниже) гасит самые светлые пятна */
-  position: relative;
+  /* Абзац лежит на пёстром фоне картинки, и белое на розово-синих облаках
+     читалось плохо. Затемнение — только под абзацем: плашка того же цвета,
+     что и фон, но шире текста на 12px (box-shadow с разливом). Разлив
+     вместо padding: буквы остаются на своих местах, строка не сужается
+     и не съезжает относительно заголовка.
+     Цвет — из палитры: --color-blue (#93b3d6) с прозрачностью. Синий,
+     а не чёрный: чёрная плашка на иллюстрации выглядела грязным пятном.
+     Если color-mix не поддерживается, остаётся rgba-запасной вариант. */
+  --hero-veil: rgba(147, 179, 214, 0.45);
   color: var(--color-white);
   font-size: var(--fs-18);
-  text-shadow:
-    0 1px 3px rgba(18, 20, 50, 0.55),
-    0 0 20px rgba(18, 20, 50, 0.45);
+  background-color: var(--hero-veil);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 0 0 var(--space-8) var(--hero-veil);
+  /* Тень узкая и мягкая: держит буквы на светлых облаках, но не мажет
+     вокруг них — широкое свечение и давало «грязный» вид */
+  text-shadow: 0 1px 2px rgba(16, 26, 60, 0.45);
 }
 
-/* Подложка без резких краёв: прямоугольник с размытием читается как
-   «здесь темнее», а не как серая плашка поверх иллюстрации */
-.hero__text::before {
-  content: '';
-  position: absolute;
-  inset: -12px -18px;
-  z-index: -1;
-  background-color: rgba(22, 24, 62, 0.38);
-  border-radius: var(--radius-md);
-  filter: blur(18px);
+/* Семантика вместо rgba: цвет привязан к токену палитры, а не к числу */
+@supports (background-color: color-mix(in srgb, red 50%, transparent)) {
+  .hero__text {
+    --hero-veil: color-mix(in srgb, var(--color-blue) 45%, transparent);
+  }
 }
 
 .hero__button {
@@ -119,6 +117,7 @@
   .hero__text {
     max-width: 430px;
     font-size: var(--fs-16);
+    box-shadow: 0 0 0 var(--space-12) var(--hero-veil);
   }
 }
 

@@ -1,13 +1,12 @@
 /**
- * Запрос: первый экран — стрелка в кнопке, свечение, подложка под абзацем.
+ * Запрос: первый экран — стрелка в кнопке, свечение, плашка под абзацем.
  *
  * Проверяется то, что видно только в браузере:
  *   — в кнопке текст со стрелкой «↓», иконки-картинки нет;
- *   — у кнопки непустое белое свечение (box-shadow), а не тень от фона;
- *   — у абзаца тень букв, а под ним — размытая подложка, которая
- *     действительно видна (её цвет читается у псевдоэлемента);
- *   — стрелка рисуется своим шрифтом, а не квадратиком-заглушкой:
- *     ширина «↓» сравнивается с шириной заведомо отсутствующего глифа.
+ *   — у кнопки непустое белое свечение (box-shadow);
+ *   — у абзаца синяя плашка из палитры, она шире текста за счёт разлива
+ *     тени и не задевает соседние блоки;
+ *   — стрелка рисуется своим шрифтом, а не квадратиком-заглушкой.
  *
  * Запуск:
  *   node ~/.dsh/bin/browser.mjs --url http://127.0.0.1:8124/ \
@@ -16,12 +15,11 @@
 
 const button = document.querySelector('.hero__button');
 const text = document.querySelector('.hero__text');
-const content = document.querySelector('.hero__content');
+const title = document.querySelector('.hero__title');
 
 const style = (el, pseudo = null) => getComputedStyle(el, pseudo);
 const buttonStyle = style(button);
 const textStyle = style(text);
-const scrimStyle = style(text, '::before');
 
 /* Ширина стрелки и «пустого» глифа: если шрифт не знает стрелку,
    она рисуется квадратиком той же ширины, что и заведомая заглушка */
@@ -36,35 +34,38 @@ const glyphWidth = (symbol) => {
 };
 
 const buttonText = button.textContent.trim();
-const arrowInText = buttonText.includes('↓');
+const textBox = text.getBoundingClientRect();
+const titleBox = title.getBoundingClientRect();
+
+/* Разлив тени читается из box-shadow: «0 0 0 12px rgba(...)» */
+/* Разлив тени: computed-значение может начинаться и с rgba(), и с color(srgb …) */
+const spread = Number(
+  textStyle.boxShadow.match(/0px 0px 0px (\d+(?:\.\d+)?)px/)?.[1] ?? 0,
+);
 
 return {
   кнопка: {
     текст: buttonText,
-    стрелкаВТексте: arrowInText,
+    стрелкаВТексте: buttonText.includes('↓'),
     восклицательныйЗнак: buttonText.includes('!'),
     фонКартинкой: buttonStyle.backgroundImage !== 'none',
     свечение: buttonStyle.boxShadow,
-    свечениеБелое: /rgba\(255, 255, 255/.test(buttonStyle.boxShadow),
-    радиус: buttonStyle.borderRadius,
   },
   абзац: {
-    тень: textStyle.textShadow,
+    заливка: textStyle.backgroundColor,
+    теньПлашки: textStyle.boxShadow,
+    скругление: textStyle.borderRadius,
+    теньБукв: textStyle.textShadow,
     размер: textStyle.fontSize,
-    цвет: textStyle.color,
-    подложкаЦвет: scrimStyle.backgroundColor,
-    подложкаРазмытие: scrimStyle.filter,
-    подложкаПозиция: scrimStyle.position,
-    контекстНаложения: style(content).isolation,
-  },
-  шрифт: {
-    стрелка: glyphWidth('↓'),
-    заглушка: glyphWidth('\uFFFF'),
+    псевдоПодложка: style(text, '::before').content,
+    ширина: Math.round(textBox.width),
+    высота: Math.round(textBox.height),
+    зазорДоЗаголовка: Math.round(textBox.top - titleBox.bottom),
   },
   проверки: [
     {
       пункт: 'в кнопке текст со стрелкой и без восклицательного знака',
-      прошло: arrowInText && !buttonText.includes('!'),
+      прошло: buttonText.includes('↓') && !buttonText.includes('!'),
       факт: buttonText,
     },
     {
@@ -78,24 +79,35 @@ return {
       факт: buttonStyle.boxShadow,
     },
     {
-      пункт: 'у абзаца тень букв',
-      прошло: textStyle.textShadow !== 'none',
+      пункт: 'плашка абзаца синяя из палитры, а не чёрная',
+      прошло: /rgba\(147, 179, 214/.test(textStyle.backgroundColor)
+        || /color\(srgb 0\.\d+ 0\.\d+ 0\.\d+/.test(textStyle.backgroundColor),
+      факт: textStyle.backgroundColor,
+    },
+    {
+      пункт: 'плашка на 12px шире текста на 1280',
+      прошло: spread >= 8 && spread <= 16,
+      факт: `разлив ${spread}px`,
+    },
+    {
+      пункт: 'у плашки скругление из шкалы',
+      прошло: textStyle.borderRadius === '8px',
+      факт: textStyle.borderRadius,
+    },
+    {
+      пункт: 'размытой подложки-псевдоэлемента больше нет',
+      прошло: style(text, '::before').content === 'none',
+      факт: style(text, '::before').content,
+    },
+    {
+      пункт: 'тень букв узкая, без широкого свечения',
+      прошло: /0px 1px 2px/.test(textStyle.textShadow) && !/20px/.test(textStyle.textShadow),
       факт: textStyle.textShadow,
     },
     {
-      пункт: 'под абзацем видимая размытая подложка',
-      прошло: /rgba\(22, 24, 62/.test(scrimStyle.backgroundColor) && scrimStyle.filter.includes('blur'),
-      факт: `${scrimStyle.backgroundColor}, ${scrimStyle.filter}`,
-    },
-    {
-      пункт: 'у контента свой контекст наложения',
-      прошло: style(content).isolation === 'isolate',
-      факт: style(content).isolation,
-    },
-    {
       пункт: 'стрелка рисуется шрифтом, а не заглушкой',
-      прошло: glyphWidth('↓') !== glyphWidth('\uFFFF') || glyphWidth('↓') > 0,
-      факт: `ширина стрелки ${glyphWidth('↓')}px`,
+      прошло: glyphWidth('↓') !== glyphWidth('\uFFFF'),
+      факт: `стрелка ${glyphWidth('↓')}px, заглушка ${glyphWidth('\uFFFF')}px`,
     },
   ],
 };
