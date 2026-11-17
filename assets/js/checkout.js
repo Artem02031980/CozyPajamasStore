@@ -14,7 +14,7 @@
  * в каталоге, и заказ за прошлый день не должен переписаться.
  */
 
-import { $, $$, formatPrice } from './utils.js';
+import { $, $$, formatPrice, pageUrl } from './utils.js';
 import * as cart from './cart.js';
 import { writeOrder } from './storage.js';
 import { getProduct } from './data.js';
@@ -278,15 +278,16 @@ export function submitOrder(form) {
 /**
  * Куда идти после оформления.
  *
- * Адрес задаётся атрибутом data-checkout-redirect у формы: страница товара
- * сможет вести на свою страницу благодарности, не переписывая модуль.
- * На главной атрибута нет — берём общий thanks-cart.html.
+ * Адрес задаётся атрибутом data-checkout-redirect у формы, по умолчанию —
+ * thanks-cart.html. Путь считается от корня сайта (pageUrl): форма стоит
+ * на странице любой вложенности, и без этого со страницы товара браузер
+ * уходил на product-pages/thanks-cart.html — 404 вместо благодарности.
  *
  * @param {HTMLElement} form
  * @returns {string}
  */
 function redirectFrom(form) {
-  return form.dataset.checkoutRedirect || 'thanks-cart.html';
+  return pageUrl(form.dataset.checkoutRedirect || 'thanks-cart.html');
 }
 
 /**
@@ -337,7 +338,7 @@ export function initCheckout() {
  * @returns {string}
  */
 function buyNowRedirectFrom(button) {
-  return button.dataset.buyNowRedirect || 'thanks-cart.html';
+  return pageUrl(button.dataset.buyNowRedirect || 'thanks-cart.html');
 }
 
 /**

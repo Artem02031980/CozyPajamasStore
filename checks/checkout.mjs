@@ -242,6 +242,24 @@ for (const [name, branch] of [
   ok(body.includes('initCheckout()'), `на ${name} обработчик оформления подключён`);
 }
 
+// ─────────────── переход на страницу благодарности ───────────────
+
+/* Путь к благодарности считается от корня сайта (pageUrl): форма стоит
+   на странице любой вложенности, и на странице товара относительный
+   thanks-cart.html превращался в product-pages/thanks-cart.html — 404 */
+const UTILS = read('assets/js/utils.js');
+const CHECKOUT = read('assets/js/checkout.js');
+
+ok(/export function pageUrl\(/.test(UTILS), 'в utils.js есть pageUrl — путь от корня сайта');
+ok(/new URL\(`\.\.\/\.\.\/\$\{raw\}`, import\.meta\.url\)/.test(UTILS),
+  'pageUrl считает от корня проекта, как assetUrl');
+ok(/import \{[^}]*pageUrl[^}]*\} from '\.\/utils\.js'/.test(CHECKOUT),
+  'checkout.js берёт pageUrl из utils.js');
+ok(/function redirectFrom\(form\) \{\s*\n\s*return pageUrl\(/.test(CHECKOUT),
+  'переход после оформления считается от корня сайта');
+ok(/function buyNowRedirectFrom\(button\) \{\s*\n\s*return pageUrl\(/.test(CHECKOUT),
+  'покупка в один клик считает адрес так же');
+
 process.stdout.write(`Проверок пройдено: ${passed}\n`);
 
 if (failures.length) {

@@ -162,3 +162,34 @@ export function assetUrl(path) {
   const clean = String(path ?? '').replace(/^\/+/, '');
   return new URL(`../../${clean}`, import.meta.url).href;
 }
+
+/**
+ * Адрес страницы проекта по пути от её корня.
+ *
+ * Та же беда, что у картинок: `thanks-cart.html` — путь от корня сайта,
+ * а форма оформления стоит на странице товара в product-pages/, и
+ * относительный адрес превращался в product-pages/thanks-cart.html —
+ * браузер отдавал 404 вместо страницы благодарности. Считаем от модуля,
+ * как assetUrl: utils.js лежит в assets/js/, два уровня вверх — корень.
+ *
+ * Готовые адреса не трогаем: `https://…`, `mailto:`, `/страница` и пути
+ * вида `../страница` (их пишут страницы, которым нужен свой уровень)
+ * возвращаются как есть или считаются от текущей страницы.
+ *
+ * @param {string} path путь от корня проекта, например 'thanks-cart.html'
+ * @returns {string} адрес, который откроется с любой страницы
+ */
+export function pageUrl(path) {
+  const raw = String(path ?? '').trim();
+  if (!raw) return '';
+
+  // Готовый адрес: схема (https:, mailto:) или корень сервера
+  if (/^[a-z][a-z\d+.-]*:/i.test(raw) || raw.startsWith('/')) return raw;
+
+  // Путь, который страница задала сама: он считается от её расположения
+  if (raw.startsWith('../') || raw.startsWith('./')) {
+    return new URL(raw, document.baseURI).href;
+  }
+
+  return new URL(`../../${raw}`, import.meta.url).href;
+}
