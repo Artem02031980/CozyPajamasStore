@@ -149,9 +149,21 @@ return {
   })(),
   раскладка: {
     ...geometry,
-    /* Фото и сведения — друг под другом, а не рядом */
+    /* Фото и сведения — друг под другом: так до 768px и с 1280px */
     другПодДругом: Boolean(geometry.галерея && geometry.инфо)
       && geometry.инфо.top >= geometry.галерея.bottom - 1,
+    /* 768–1279: сведения стоят рядом с фото, отдельной колонкой справа */
+    вРяду: Boolean(geometry.галерея && geometry.инфо)
+      && geometry.инфо.left > geometry.галерея.left
+      && geometry.инфо.top < geometry.галерея.bottom - 1
+      && geometry.галерея.top < geometry.галерея.bottom - 1,
+    /* 768–1279: кадр выровнен по центру колонки по вертикали */
+    кадрПоЦентру: Boolean(geometry.галерея && geometry.фото)
+      ? Math.abs((geometry.фото.top - geometry.галерея.top)
+        - (geometry.галерея.bottom - geometry.фото.bottom)) <= 2
+      : null,
+    /* Правая колонка не сужается: у неё фиксированные 300px */
+    колонкаСведений: geometry.инфо ? geometry.инфо.width : null,
     /* Фото прижато к левому краю колонки (по правке владельца) */
     фотоСлева: Boolean(geometry.галерея && geometry.фото)
       ? Math.abs(geometry.фото.left - geometry.галерея.left) <= 2

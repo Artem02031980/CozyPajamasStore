@@ -138,15 +138,17 @@ ok(/font-size:\s*var\(--fs-16\)/.test(ruleOf(`${body} .product__subtitle`)),
   'подпись под фото мельче названия (16px)',
   ruleOf(`${body} .product__subtitle`).replace(/\s+/g, ' '));
 
-/* Раскладка: фото и сведения — в одной колонке, карточка из двух колонок */
+/* Раскладка: с 768px фото слева, сведения справа. Колонка сведений
+   фиксирована (300px) и не сжимается — место отдаётся фото */
 const mainRule = (() => {
   const blocks = css.match(/@media[^{]*\{[\s\S]*?\n\}/g) ?? [];
   return blocks.find((block) => block.includes(`${body} .product__main`)) ?? '';
 })();
 ok(mainRule.includes(`${body} .product__main`),
   'для страницы подушки есть своё правило раскладки');
-ok(/grid-template-columns:\s*minmax\(0,\s*1fr\)/.test(mainRule),
-  'фото и сведения стоят в одной колонке', mainRule.replace(/\s+/g, ' ').slice(0, 200));
+ok(/grid-template-columns:\s*minmax\(0,\s*1fr\)\s+300px/.test(mainRule),
+  'с 768px фото слева, сведения справа, колонка сведений 300px',
+  mainRule.replace(/\s+/g, ' ').slice(0, 200));
 
 ok(/align-items:\s*flex-start/.test(ruleOf(`${body} .product__info`)),
   'сведения выровнены по левому краю');
@@ -223,8 +225,8 @@ const mediaRule = (selector) => {
   return at < 0 ? '' : media768.slice(at, media768.indexOf('}', at));
 };
 
-ok(/max-width:\s*300px/.test(mediaRule(`${body} .product__image`)),
-  'с 768px фото ограничено 300px',
+ok(/max-width:\s*min\(300px,\s*100%\)/.test(mediaRule(`${body} .product__image`)),
+  'с 768px фото ограничено 300px и шириной колонки',
   mediaRule(`${body} .product__image`).replace(/\s+/g, ' '));
 ok(/max-width:\s*300px/.test(mediaRule(`${body} .product__buttons .product__button`)),
   'с 768px кнопки покупки ограничены 300px');
