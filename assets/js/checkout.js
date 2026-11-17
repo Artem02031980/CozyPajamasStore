@@ -113,17 +113,22 @@ export function buildOrder(values, { terms = cart.getServiceTerms(), date = new 
       comment: String(values.comment ?? '').trim(),
     },
     /* Снимок позиций: id для ссылки на товар, название и цена — чтобы
-       страница благодарности не зависела от текущего состояния каталога */
+       страница благодарности не зависела от текущего состояния каталога.
+       Бесплатная печать сохраняется нулём: иначе в составе заказа она
+       стоила бы 500 ₽, а в итоге — ничего */
     items: lines.map((line) => ({
       id: line.id,
       title: line.product.title,
       price: line.product.price,
       qty: line.qty,
       size: line.size,
-      sum: line.sum,
+      sum: cart.isPrintLine(line) && totals.printsFree ? 0 : line.sum,
     })),
     totals: {
       products: totals.products,
+      prints: totals.prints,
+      printsFree: totals.printsFree,
+      printQty: totals.printQty,
       service: totals.service,
       serviceFree: totals.serviceFree,
       serviceQty: totals.serviceQty,

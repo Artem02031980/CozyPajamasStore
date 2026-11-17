@@ -216,6 +216,52 @@ const mixed = cart.getTotals(TERMS, cart.getLines());
 eq(mixed.products, 7699, 'товар считается без макета');
 eq(mixed.total, 7699 + 500, 'итог: товар и платная услуга, макет даёт ноль');
 
+// ── принты из каталога: та же услуга, своя строка ────────────────────
+
+/* Принт — это нанесение, а не товар: он не входит в сумму товаров,
+   иначе сам приближал бы порог бесплатной печати. Когда товаров хватает,
+   печать бесплатна — и в позиции, и в итоге */
+
+reset();
+cart.addItem('print-01');                     // принт, 500 ₽
+cart.addItem('goods-men-04');                 // 8999
+const printBelow = cart.getTotals(TERMS, cart.getLines());
+eq(printBelow.products, 8999, 'принт не входит в сумму товаров');
+eq(printBelow.printQty, 1, 'принт посчитан отдельно');
+eq(printBelow.prints, 500, 'ниже порога печать стоит 500');
+eq(printBelow.printsFree, false, 'ниже порога печать платная');
+eq(printBelow.total, 9499, 'итог: товар и платная печать');
+
+reset();
+cart.addItem('print-01');
+cart.addItem('goods-men-04');
+cart.addItem('goods-men-07');                 // 8999 + 7299 = 16298 ≥ 15000
+const printAbove = cart.getTotals(TERMS, cart.getLines());
+ok(printAbove.products >= TERMS.freeFrom, 'товаров выше порога', String(printAbove.products));
+eq(printAbove.products, 16298, 'принт не увеличивает сумму товаров');
+eq(printAbove.printsFree, true, 'выше порога печать бесплатна');
+eq(printAbove.prints, 0, 'бесплатная печать не добавляет денег');
+eq(printAbove.total, 16298, 'итог равен сумме товаров');
+
+/* Несколько принтов считаются по количеству, а не по числу позиций */
+reset();
+cart.addItem('print-01');
+cart.addItem('print-02', { qty: 2 });
+const manyPrints = cart.getTotals(TERMS, cart.getLines());
+eq(manyPrints.printQty, 3, 'количество принтов складывается');
+eq(manyPrints.prints, 1500, 'три принта по 500');
+eq(manyPrints.total, 1500, 'итог из одних принтов');
+
+/* Свой макет денег не добавляет и порог не приближает */
+reset();
+cart.addItem(cart.CUSTOM_PRINT_ID, { file: 'макет.pdf' });
+cart.addItem('print-01');
+const customAndPrint = cart.getTotals(TERMS, cart.getLines());
+eq(customAndPrint.products, 0, 'макет и принт не дают суммы товаров');
+eq(customAndPrint.printQty, 1, 'макет не считается принтом с ценой');
+eq(customAndPrint.prints, 500, 'платная печать считается только у принта');
+eq(customAndPrint.total, 500, 'макет в итог не входит');
+
 // ── сброс и мусор в хранилище ────────────────────────────────────────
 
 reset();

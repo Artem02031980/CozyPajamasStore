@@ -139,15 +139,35 @@ export function getLines(terms = getServiceTerms()) {
 }
 
 /**
- * Сумма товаров без услуги «ПРИНТ».
- * Именно она решает, бесплатна ли услуга, поэтому считается отдельно.
+ * Сумма товаров: только товары каталога.
+ *
+ * Ни услуга «ПРИНТ», ни принты сюда не входят: именно эта сумма решает,
+ * бесплатна ли печать. Если считать принт товаром, он сам приближал бы
+ * порог — набрал 14 800, добавил принт за 500, и порог «достигнут»,
+ * хотя товаров по-прежнему мало.
+ *
  * @param {Array<object>} [lines]
  * @returns {number}
  */
 export function getProductsTotal(lines = getLines()) {
   return lines
-    .filter((line) => line.id !== SERVICE_ID)
+    .filter((line) => line.id !== SERVICE_ID && !isPrintLine(line))
     .reduce((sum, line) => sum + line.sum, 0);
+}
+
+/**
+ * Позиция-принт из каталога (`print-01`…`print-17`).
+ *
+ * По деньгам принт — та же услуга, что «ПРИНТ»: это нанесение, а не товар.
+ * Поэтому он не входит в сумму товаров (иначе сам себе приближал бы порог
+ * бесплатной печати) и становится бесплатным, когда товаров набралось
+ * на порог. Свой макет (`print-custom`) — тоже принт, но цены у него нет.
+ *
+ * @param {object} line
+ * @returns {boolean}
+ */
+export function isPrintLine(line) {
+  return Boolean(getPrint(line.id));
 }
 
 /** Есть ли в корзине услуга «ПРИНТ». */
@@ -177,32 +197,48 @@ export function getServiceTerms(attrs = {}) {
 }
 
 /**
- * Итог корзины: сумма товаров, стоимость услуги и общая сумма.
+ * Итог корзины: товары, принты, услуга «ПРИНТ» и общая сумма.
  *
- * Услуга бесплатна, когда сумма товаров дотянула до порога. Считаем её
- * стоимость нулём, а не вычитаем скидку из итога: так в интерфейсе видно
+ * Печать бесплатна, когда сумма **товаров** дотянула до порога. Считаем
+ * её нулём, а не вычитаем скидку из итога: так в интерфейсе видно
  * «бесплатно», а не «500 ₽ минус 500 ₽».
+ *
+ * Принты из каталога и услуга «ПРИНТ» считаются по одному правилу, но
+ * отдельными строками: принтов в заказе может быть несколько, и цена
+ * у каждого своя — PRINT_PRICE. Свой макет бесплатен всегда: его цену
+ * называет менеджер, поэтому в итог он не входит.
  *
  * @param {object} [terms] условия услуги
  * @param {Array<object>} [lines]
- * @returns {{products: number, service: number, serviceFree: boolean,
+ * @returns {{products: number, prints: number, printsFree: boolean,
+ *            printQty: number, service: number, serviceFree: boolean,
  *            serviceQty: number, total: number, count: number}}
  */
 export function getTotals(terms = getServiceTerms(), lines = getLines()) {
   const products = getProductsTotal(lines);
+  const printQty = lines
+    .filter(isPrintLine)
+    .reduce((sum, line) => sum + line.qty, 0);
   const serviceQty = lines
     .filter((line) => line.id === SERVICE_ID)
     .reduce((sum, line) => sum + line.qty, 0);
 
-  const serviceFree = serviceQty > 0 && products >= terms.freeFrom;
+  const reached = products >= terms.freeFrom;
+  const printsFree = printQty > 0 && reached;
+  const serviceFree = serviceQty > 0 && reached;
+
+  const prints = printsFree ? 0 : printQty * PRINT_PRICE;
   const service = serviceFree ? 0 : serviceQty * terms.price;
 
   return {
     products,
+    prints,
+    printsFree,
+    printQty,
     service,
     serviceFree,
     serviceQty,
-    total: products + service,
+    total: products + prints + service,
     count: lines.reduce((sum, line) => sum + line.qty, 0),
   };
 }

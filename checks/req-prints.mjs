@@ -160,9 +160,12 @@ try {
       карточек: cards.length,
       картинок: images.length,
       загружено: images.filter((img) => img.complete && img.naturalWidth > 0).length,
-      безАвтора: cards.filter((card) => !/Артём[\s\u00A0]+Мижорниев/.test(
-        card.querySelector('.prints__text')?.textContent ?? '',
-      )).length,
+      /* Сравниваем простой строкой с пробелом: код уходит в страницу
+         шаблонной строкой, и «\s» в ней теряет обратную косую черту —
+         регулярное выражение приезжало в браузер сломанным */
+      безАвтора: cards.filter((card) => !(card.querySelector('.prints__text')?.textContent ?? '')
+        .replace(/\u00A0/g, ' ')
+        .includes('Артём Мижорниев')).length,
       цены: [...new Set(cards.map((card) => card.querySelector('.prints__price')?.textContent.replace(/\u00A0/g, ' ').trim()))],
       снизуПодписи: [...new Set(cards.slice(0, 3).flatMap(
         (card) => [...card.querySelectorAll('.prints__preview-note')].map((n) => n.textContent.trim()),
