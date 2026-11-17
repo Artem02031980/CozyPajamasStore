@@ -150,22 +150,24 @@ function renderCheckoutForm() {
       >
         <h3 class="checkout__title">Оформление</h3>
 
-        <div class="checkout__actions">
-          <button class="button button--block cart__checkout" type="submit" data-cart-checkout>
-            Оформить заказ
-          </button>
-          <button class="cart__clear" type="button" data-cart-clear>Очистить корзину</button>
-        </div>
-
+        <!-- Поля идут перед кнопками: сначала заполняют, потом отправляют.
+             Иначе ошибки проверки появлялись бы под кнопкой, ниже полей,
+             и нажатие выглядело бы как «ничего не произошло».
+             Имя и телефон обязательные — и атрибутом required, и звёздочкой
+             в подписи; форма с novalidate, поэтому системных подсказок нет,
+             проверяет checkout.js и пишет текст под полем -->
         <div class="checkout__row">
           <label class="checkout__field">
-            <span class="checkout__label">Имя</span>
+            <span class="checkout__label">
+              Имя <span class="checkout__required" aria-hidden="true">*</span>
+            </span>
             <input
               class="checkout__input"
               type="text"
               name="name"
               autocomplete="name"
               placeholder="Как к вам обращаться"
+              required
               data-checkout-field
               aria-describedby="checkout-error-name"
             />
@@ -173,13 +175,16 @@ function renderCheckoutForm() {
           </label>
 
           <label class="checkout__field">
-            <span class="checkout__label">Телефон</span>
+            <span class="checkout__label">
+              Телефон <span class="checkout__required" aria-hidden="true">*</span>
+            </span>
             <input
               class="checkout__input"
               type="tel"
               name="phone"
               autocomplete="tel"
               placeholder="+7 900 000-00-00"
+              required
               data-checkout-field
               aria-describedby="checkout-error-phone"
             />
@@ -200,6 +205,13 @@ function renderCheckoutForm() {
           />
           <span class="checkout__error" id="checkout-error-email" data-checkout-error="email"></span>
         </label>
+
+        <div class="checkout__actions">
+          <button class="button button--block cart__checkout" type="submit" data-cart-checkout>
+            Оформить заказ
+          </button>
+          <button class="cart__clear" type="button" data-cart-clear>Очистить корзину</button>
+        </div>
 
         <!-- Общая ошибка формы: пустая корзина и подобное -->
         <p class="checkout__error checkout__error--form" data-checkout-error="cart" role="alert"></p>

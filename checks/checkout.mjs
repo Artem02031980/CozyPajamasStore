@@ -11,6 +11,8 @@
 
 // ── заглушки окружения: до импорта модулей ────────────────────────────
 
+import { readFileSync } from 'node:fs';
+
 const store = new Map();
 
 globalThis.window = {
@@ -203,6 +205,42 @@ eq(checkout.buildOneClickOrder('нет-такого', { date }), null,
 reset();
 
 // ── итог ─────────────────────────────────────────────────────────────
+
+// ─────────────── форма в окне корзины ───────────────
+
+/* Имя и телефон обязательные: без них заказ не оформить. Проверяется
+   и разметка (required + звёздочка), и порядок блоков: поля идут выше
+   кнопки, иначе ошибки проверки появлялись бы под ней */
+const read = (rel) => readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
+const RENDER_CART = read('assets/js/render-cart.js');
+const SCRIPT = read('assets/js/script.js');
+
+ok(/name="name"[\s\S]{0,400}?required/.test(RENDER_CART),
+  'поле имени помечено required');
+ok(/name="phone"[\s\S]{0,400}?required/.test(RENDER_CART),
+  'поле телефона помечено required');
+ok(/name="email"[\s\S]{0,400}?required/.test(RENDER_CART) === false,
+  'почта осталась необязательной');
+eq((RENDER_CART.match(/checkout__required/g) ?? []).length, 2,
+  'у обязательных полей по звёздочке');
+ok(RENDER_CART.indexOf('checkout__row') < RENDER_CART.indexOf('checkout__actions'),
+  'поля стоят выше кнопок: ошибки появятся над кнопкой «Оформить заказ»');
+ok(RENDER_CART.indexOf('data-cart-checkout') > RENDER_CART.indexOf('checkout__row'),
+  'кнопка «Оформить заказ» идёт после полей');
+
+// ─────────────── оформление подключено на всех страницах с корзиной ───────────────
+
+const INIT_CHECKOUT = (SCRIPT.match(/initCheckout\(\)/g) ?? []).length;
+eq(INIT_CHECKOUT, 3, 'initCheckout вызывается на главной, странице товара и в каталоге принтов');
+for (const [name, branch] of [
+  ['главной', 'function initHome()'],
+  ['странице товара', 'function initProductPage()'],
+  ['каталоге принтов', 'function initPrintsPage()'],
+]) {
+  const from = SCRIPT.indexOf(branch);
+  const body = SCRIPT.slice(from, SCRIPT.indexOf('\n}', from));
+  ok(body.includes('initCheckout()'), `на ${name} обработчик оформления подключён`);
+}
 
 process.stdout.write(`Проверок пройдено: ${passed}\n`);
 
