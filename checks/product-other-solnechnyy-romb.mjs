@@ -138,17 +138,19 @@ ok(/font-size:\s*var\(--fs-16\)/.test(ruleOf(`${body} .product__subtitle`)),
   'подпись под фото мельче названия (16px)',
   ruleOf(`${body} .product__subtitle`).replace(/\s+/g, ' '));
 
-/* Раскладка: с 768px фото слева, сведения справа. Колонка сведений
-   фиксирована (300px) и не сжимается — место отдаётся фото */
+/* Раскладка: с 768px фото слева, сведения справа, пара по центру.
+   Колонка сведений фиксирована (300px) и не сжимается — место отдаётся фото */
 const mainRule = (() => {
   const blocks = css.match(/@media[^{]*\{[\s\S]*?\n\}/g) ?? [];
   return blocks.find((block) => block.includes(`${body} .product__main`)) ?? '';
 })();
 ok(mainRule.includes(`${body} .product__main`),
   'для страницы подушки есть своё правило раскладки');
-ok(/grid-template-columns:\s*minmax\(0,\s*1fr\)\s+300px/.test(mainRule),
-  'с 768px фото слева, сведения справа, колонка сведений 300px',
+ok(/grid-template-columns:\s*minmax\(0,\s*300px\)\s+300px/.test(mainRule),
+  'с 768px фото слева, сведения справа, обе колонки до 300px',
   mainRule.replace(/\s+/g, ' ').slice(0, 200));
+ok(/justify-content:\s*center/.test(mainRule),
+  'пара колонок стоит по центру карточки, а не растянута по краям');
 
 ok(/align-items:\s*flex-start/.test(ruleOf(`${body} .product__info`)),
   'сведения выровнены по левому краю');

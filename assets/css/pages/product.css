@@ -840,7 +840,14 @@ body[data-page='product'][data-section='men'] .product__button--print:focus-visi
 
 @media (min-width: 768px) {
   body[data-page='product'][data-section='other'] .product__main {
-    grid-template-columns: minmax(0, 1fr) 300px;
+    /* Две колонки по содержимому: фото до 300px и сведения ровно 300px.
+       justify-content: center ставит пару по центру карточки, а не
+       растягивает её на всю ширину — иначе между фото и сведениями
+       оставалась пустота в 130–350px. Фото при этом не сжимается раньше
+       времени: колонка у него 300px, и только когда карточка уже не
+       вмещает пару (на 768px это 586px), кадр ужимается вместе с колонкой */
+    grid-template-columns: minmax(0, 300px) 300px;
+    justify-content: center;
     gap: var(--space-32);
   }
 }
