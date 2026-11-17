@@ -197,61 +197,120 @@ export function getServiceTerms(attrs = {}) {
 }
 
 /**
- * Итог корзины: товары, принты, услуга «ПРИНТ» и общая сумма.
+ * Сколько принтов печатается бесплатно.
  *
- * Печать бесплатна, когда сумма **товаров** дотянула до порога. Считаем
- * её нулём, а не вычитаем скидку из итога: так в интерфейсе видно
- * «бесплатно», а не «500 ₽ минус 500 ₽».
+ * Правило маркетинга: один бесплатный принт за каждые 15 000 ₽ товаров.
+ * Два бесплатных — только от 30 000 ₽, три — от 45 000 ₽ и так далее.
+ * Считаем от суммы **товаров**, без самих принтов: иначе принт сам себе
+ * приближал бы следующий бесплатный.
  *
- * Принты из каталога и услуга «ПРИНТ» считаются по одному правилу, но
- * отдельными строками: принтов в заказе может быть несколько, и цена
- * у каждого своя — PRINT_PRICE. Свой макет бесплатен всегда: его цену
- * называет менеджер, поэтому в итог он не входит.
+ * @param {object} [terms] условия: цена и порог
+ * @param {Array<object>} [lines]
+ * @returns {number}
+ */
+export function getFreePrints(terms = getServiceTerms(), lines = getLines()) {
+  return Math.floor(getProductsTotal(lines) / terms.freeFrom);
+}
+
+/**
+ * Итог корзины: товары, печать и общая сумма.
+ *
+ * Печать — это принты из каталога и услуга «ПРИНТ»: одно и то же нанесение,
+ * просто разные способы его заказать. Бесплатных единиц печати столько,
+ * сколько раз порог уложился в сумму товаров (см. getFreePrints); остальные
+ * стоят PRINT_PRICE. Бесплатные раздаются по порядку позиций, поэтому
+ * в интерфейсе видно, какие именно принты обнулились.
+ *
+ * Скидку не вычитаем из итога, а считаем печать нулём: в интерфейсе
+ * должно быть «бесплатно», а не «500 ₽ минус 500 ₽».
  *
  * @param {object} [terms] условия услуги
  * @param {Array<object>} [lines]
  * @returns {{products: number, prints: number, printsFree: boolean,
- *            printQty: number, service: number, serviceFree: boolean,
- *            serviceQty: number, total: number, count: number}}
+ *            printQty: number, freePrints: number, paidPrints: number,
+ *            printLines: Record<string, {free: number, paid: number, cost: number}>,
+ *            service: number, serviceFree: boolean, serviceQty: number,
+ *            total: number, count: number}}
  */
 export function getTotals(terms = getServiceTerms(), lines = getLines()) {
   const products = getProductsTotal(lines);
-  const printQty = lines
-    .filter(isPrintLine)
-    .reduce((sum, line) => sum + line.qty, 0);
+
+  /* Единицы печати по порядку позиций: сначала принты каталога, потом
+     услуга «ПРИНТ» — в том порядке, в каком они лежат в корзине */
+  const printUnits = lines.filter((line) => isPrintLine(line) || line.id === SERVICE_ID);
+  const printQty = printUnits.reduce((sum, line) => sum + line.qty, 0);
+
+  let freeLeft = Math.min(printQty, getFreePrints(terms, lines));
+  const printLines = {};
+
+  printUnits.forEach((line) => {
+    const free = Math.min(line.qty, freeLeft);
+    freeLeft -= free;
+    const paid = line.qty - free;
+    printLines[lineKey(line)] = { free, paid, cost: paid * PRINT_PRICE };
+  });
+
+  const prints = Object.values(printLines).reduce((sum, item) => sum + item.cost, 0);
+  const freePrints = Math.min(printQty, getFreePrints(terms, lines));
+  const paidPrints = printQty - freePrints;
+
+  /* Служебные поля про услугу «ПРИНТ»: она входит в печать, поэтому в итог
+     отдельно не добавляется. Держим их для разметки и проверок, которым
+     удобно спрашивать про услугу отдельно */
   const serviceQty = lines
     .filter((line) => line.id === SERVICE_ID)
     .reduce((sum, line) => sum + line.qty, 0);
-
-  const reached = products >= terms.freeFrom;
-  const printsFree = printQty > 0 && reached;
-  const serviceFree = serviceQty > 0 && reached;
-
-  const prints = printsFree ? 0 : printQty * PRINT_PRICE;
-  const service = serviceFree ? 0 : serviceQty * terms.price;
+  const service = lines
+    .filter((line) => line.id === SERVICE_ID)
+    .reduce((sum, line) => sum + (printLines[lineKey(line)]?.cost ?? line.qty * terms.price), 0);
 
   return {
     products,
     prints,
-    printsFree,
+    /* Порог и цена — чтобы разметка не повторяла числа из маркетинга */
+    freeFrom: terms.freeFrom,
+    printPrice: PRINT_PRICE,
+    /* «Вся печать бесплатна» — когда платных единиц не осталось */
+    printsFree: printQty > 0 && paidPrints === 0,
     printQty,
+    freePrints,
+    paidPrints,
+    printLines,
     service,
-    serviceFree,
+    serviceFree: serviceQty > 0 && service === 0,
     serviceQty,
-    total: products + prints + service,
+    total: products + prints,
     count: lines.reduce((sum, line) => sum + line.qty, 0),
   };
 }
 
+/** Ключ позиции для printLines: id и размер, как в data-cart-line. */
+export function lineKey(line) {
+  return `${line.id}::${line.size ?? ''}`;
+}
+
 /**
- * Сколько не хватает до бесплатной услуги.
+ * Сколько не хватает до следующего бесплатного принта.
+ *
+ * Добирать до порога имеет смысл, только пока следующий принт ещё
+ * не бесплатен: при товарах 24 697 и пороге 15 000 один принт уже
+ * бесплатен, а следующий начнётся с 30 000 — добрать нужно 5 303.
+ *
  * @param {object} [terms]
  * @param {Array<object>} [lines]
- * @returns {number} 0, если добирать нечего
+ * @returns {number} 0, если принтов в корзине нет
  */
 export function getFreeServiceGap(terms = getServiceTerms(), lines = getLines()) {
   const products = getProductsTotal(lines);
-  return Math.max(0, terms.freeFrom - products);
+  const печать = lines.filter((line) => isPrintLine(line) || line.id === SERVICE_ID)
+    .reduce((sum, line) => sum + line.qty, 0);
+
+  if (!печать) return 0;
+
+  const freePrints = getFreePrints(terms, lines);
+  if (freePrints >= печать) return 0;
+
+  return terms.freeFrom * (freePrints + 1) - products;
 }
 
 /**

@@ -11,7 +11,7 @@
  */
 
 import { formatPrice, plural, assetUrl } from './utils.js';
-import { SERVICE_ID, CUSTOM_PRINT_ID } from './cart.js';
+import { SERVICE_ID, CUSTOM_PRINT_ID, lineKey } from './cart.js';
 import { getPrint, PRINT_PRICE } from './prints.js';
 
 /**
@@ -27,19 +27,23 @@ import { getPrint, PRINT_PRICE } from './prints.js';
  * @param {object} line позиция с данными товара (см. cart.js: toLine)
  * @returns {string}
  */
-export function renderCartItem(line, { printsFree = false } = {}) {
+export function renderCartItem(line, { print = null, freeFrom = 15000 } = {}) {
   const { product, qty, size, sum } = line;
   const isService = line.id === SERVICE_ID;
   const isCustom = line.id === CUSTOM_PRINT_ID;
   const isPrint = Boolean(getPrint(line.id));
+  const isPrinting = isPrint || isService;
 
-  /* Цена позиции. У принта она может обнулиться: печать бесплатна, когда
-     товаров набралось на порог, — тогда печатаем «бесплатно», а не 0 ₽.
-     В снимке заказа сумма уже ноль (так и приходит со страницы
-     благодарности), поэтому проверяем и её */
+  /* Цена позиции. Бесплатных принтов столько, сколько раз порог уложился
+     в сумму товаров, и они раздаются по порядку позиций: в одной позиции
+     часть единиц может быть бесплатной, часть — платной. Тогда печатаем
+     стоимость платных, а сколько обнулилось — подписью ниже.
+     В снимке заказа сумма уже с вычетом, поэтому её тоже уважаем */
   const price = isCustom
     ? 'по согласованию'
-    : (isPrint && (printsFree || sum === 0) ? 'бесплатно' : formatPrice(sum));
+    : (isPrinting && (print?.cost === 0 || (print === null && sum === 0))
+      ? 'бесплатно'
+      : formatPrice(isPrinting && print ? print.cost : sum));
 
   const meta = [
     size ? `Размер: ${size}` : '',
@@ -47,10 +51,13 @@ export function renderCartItem(line, { printsFree = false } = {}) {
   ].filter(Boolean).join(' · ');
 
   /* Файл вынесен отдельной строкой: имя бывает длинным, и в общей подписи
-     через точку оно терялось бы */
+     через точку оно терялось бы. У печати своя подпись: сколько единиц
+     из позиции бесплатны */
   const note = isCustom
     ? `<p class="cart__note cart__note--item">Стоимость уточнит менеджер: свяжется с вами отдельно</p>`
-    : '';
+    : (isPrinting && print && print.free > 0
+      ? `<p class="cart__note cart__note--item">Бесплатно ${print.free} из ${qty}: по одному принту за каждые ${formatPrice(freeFrom)} в товарах</p>`
+      : '');
 
   const picture = (() => {
     if (isService) return '<div class="cart__image cart__image--service" aria-hidden="true">ПРИНТ</div>';
@@ -110,30 +117,42 @@ export function renderCartItem(line, { printsFree = false } = {}) {
  * @returns {string}
  */
 export function renderCartSummary(totals, gap) {
-  /* Принты из каталога и услуга «ПРИНТ» — одна и та же печать, поэтому
-     показываем их одной строкой и по одному правилу: бесплатно, когда
-     товаров набралось на порог */
-  const печать = (totals.printQty ?? 0) + (totals.serviceQty ?? 0);
-  const печатьБесплатна = печать > 0
-    && (totals.printsFree || totals.serviceFree)
-    && (totals.prints ?? 0) + (totals.service ?? 0) === 0;
+  /* Принты из каталога и услуга «ПРИНТ» — одна и та же печать: одна
+     строка в итогах. Бесплатных единиц столько, сколько раз порог
+     уложился в сумму товаров, остальные стоят PRINT_PRICE */
+  const печать = totals.printQty ?? 0;
+  const бесплатно = totals.freePrints ?? 0;
+
+  const подсказка = (() => {
+    if (!печать) {
+      return `Печать принтов стоит ${formatPrice(totals.printPrice ?? PRINT_PRICE)}
+        и бесплатна от ${formatPrice(totals.freeFrom ?? 15000)} в товарах`;
+    }
+
+    if (totals.printsFree) {
+      return `Печать бесплатна: по одному принту за каждые ${formatPrice(totals.freeFrom ?? 15000)} в товарах`;
+    }
+
+    if (бесплатно > 0) {
+      return `Бесплатных принтов: ${бесплатно} из ${печать} — по одному за каждые
+        ${formatPrice(totals.freeFrom ?? 15000)} в товарах. До следующего
+        осталось ${formatPrice(gap)}`;
+    }
+
+    return `До бесплатного принта осталось ${formatPrice(gap)}`;
+  })();
 
   const печатьRow = печать
     ? `
         <div class="cart__row" data-cart-print-row>
           <span>Печать «ПРИНТ»${печать > 1 ? ` × ${печать}` : ''}</span>
-          <span data-cart-print-sum>${печатьБесплатна
+          <span data-cart-print-sum>${totals.printsFree
             ? 'бесплатно'
-            : formatPrice((totals.prints ?? 0) + (totals.service ?? 0))}</span>
+            : formatPrice(totals.prints ?? 0)}</span>
         </div>
-        ${печатьБесплатна
-          ? '<p class="cart__note" data-cart-print-note>Печать бесплатна: сумма товаров дотянула до порога</p>'
-          : `<p class="cart__note" data-cart-print-note>До бесплатной печати осталось ${formatPrice(gap)}</p>`}`
+        <p class="cart__note" data-cart-print-note>${подсказка}</p>`
     : `
-        <p class="cart__note" data-cart-print-note>
-          Печать принтов стоит ${formatPrice(PRINT_PRICE)} и бесплатна от
-          ${formatPrice(15000)} в товарах
-        </p>`;
+        <p class="cart__note" data-cart-print-note>${подсказка}</p>`;
 
   return `
       <div class="cart__summary">
@@ -259,7 +278,10 @@ export function renderCart(lines, totals, gap) {
 
   return `
       <ul class="cart__list">
-        ${lines.map((line) => renderCartItem(line, { printsFree: totals.printsFree })).join('\n')}
+        ${lines.map((line) => renderCartItem(line, {
+          print: totals.printLines?.[lineKey(line)] ?? null,
+          freeFrom: totals.freeFrom,
+        })).join('\n')}
       </ul>
       ${renderCartSummary(totals, gap)}
       ${renderCheckoutForm()}`;

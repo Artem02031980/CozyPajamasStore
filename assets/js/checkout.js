@@ -116,19 +116,29 @@ export function buildOrder(values, { terms = cart.getServiceTerms(), date = new 
        страница благодарности не зависела от текущего состояния каталога.
        Бесплатная печать сохраняется нулём: иначе в составе заказа она
        стоила бы 500 ₽, а в итоге — ничего */
-    items: lines.map((line) => ({
-      id: line.id,
-      title: line.product.title,
-      price: line.product.price,
-      qty: line.qty,
-      size: line.size,
-      sum: cart.isPrintLine(line) && totals.printsFree ? 0 : line.sum,
-    })),
+    items: lines.map((line) => {
+      /* Печать в снимке — по деньгам: бесплатные единицы обнуляются,
+         платные остаются по PRINT_PRICE. Так состав заказа сходится
+         с итогом даже когда часть принтов досталась бесплатно */
+      const print = totals.printLines?.[cart.lineKey(line)];
+
+      return {
+        id: line.id,
+        title: line.product.title,
+        price: line.product.price,
+        qty: line.qty,
+        size: line.size,
+        sum: print ? print.cost : line.sum,
+      };
+    }),
     totals: {
       products: totals.products,
       prints: totals.prints,
       printsFree: totals.printsFree,
       printQty: totals.printQty,
+      freePrints: totals.freePrints,
+      paidPrints: totals.paidPrints,
+      freeFrom: totals.freeFrom,
       service: totals.service,
       serviceFree: totals.serviceFree,
       serviceQty: totals.serviceQty,
