@@ -143,7 +143,7 @@ eq(selectProducts(women, emptyFilters()).length, women.length,
   'без фильтров видны все товары секции');
 
 /* Отбор по метке сверяем с данными, а не с вписанными названиями: состав
-   и метки задаёт таблица prompts/женские пижамы.xlsx, и они меняются
+   и метки задаёт таблица женской коллекции у владельца, и они меняются
    без правки проверок. Так проверка ловит и потерю метки, и её дубли */
 const byTag = (list, field, tag) => list.filter((p) => p[field].includes(tag)).map((p) => p.id);
 const selection = (list, filters) => selectProducts(list, filters).map((p) => p.id);
