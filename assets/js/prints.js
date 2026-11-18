@@ -42,8 +42,8 @@ export const PRINTS = [
     title: 'Good Morning!',
     text: 'Чашка кофе, круассан, восходящее солнце и будильник — жирный росчерк '
       + 'на всё поле, будто нарисованный маркером на салфетке.',
-    image: `${FOLDER}01.png`,
-    inverted: `${FOLDER}01_i.png`,
+    image: `${FOLDER}01.webp`,
+    inverted: `${FOLDER}01_i.webp`,
     alt: 'Леттеринг Good Morning! с чашкой кофе, круассаном и будильником',
   },
   {
@@ -52,8 +52,8 @@ export const PRINTS = [
     title: 'Good Morning!',
     text: 'Тот же сюжет — чашка, круассан, солнце и птицы — но тонкой линией: '
       + 'рисунок выходит легче и тише, его приятно видеть на светлой ткани.',
-    image: `${FOLDER}02.png`,
-    inverted: `${FOLDER}02_i.png`,
+    image: `${FOLDER}02.webp`,
+    inverted: `${FOLDER}02_i.webp`,
     alt: 'Леттеринг Good Morning! тонкой линией с чашкой и солнцем',
   },
   {
@@ -63,8 +63,8 @@ export const PRINTS = [
     text: 'Кот под одеялом в ночном колпаке, месяц, облака и звёзды. Тёплая '
       + 'картинка для тех, кто ложится рано и любит, когда перед сном есть '
       + 'что рассматривать.',
-    image: `${FOLDER}03.png`,
-    inverted: `${FOLDER}03_i.png`,
+    image: `${FOLDER}03.webp`,
+    inverted: `${FOLDER}03_i.webp`,
     alt: 'Леттеринг Good Night! с котом в постели, месяцем и звёздами',
   },
   {
@@ -73,8 +73,8 @@ export const PRINTS = [
     title: 'Good Morning!',
     text: 'Восход над горизонтом, чашка на блюдце, круассан и будильник — '
       + 'утро, в котором никуда не нужно спешить.',
-    image: `${FOLDER}04.png`,
-    inverted: `${FOLDER}04_i.png`,
+    image: `${FOLDER}04.webp`,
+    inverted: `${FOLDER}04_i.webp`,
     alt: 'Леттеринг Good Morning! с восходом, чашкой и круассаном',
   },
   {
@@ -83,8 +83,8 @@ export const PRINTS = [
     title: 'Good Night!',
     text: 'Чёрный кот сидит рядом с кроватью, второй спит под одеялом. Месяц, '
       + 'звёзды и три «z» — рисунок про дом, в котором уже всё спокойно.',
-    image: `${FOLDER}05.png`,
-    inverted: `${FOLDER}05_i.png`,
+    image: `${FOLDER}05.webp`,
+    inverted: `${FOLDER}05_i.webp`,
     alt: 'Леттеринг Good Night! с чёрным котом и спящим котом в кровати',
   },
   {
@@ -93,8 +93,8 @@ export const PRINTS = [
     title: 'Good Night!',
     text: 'Кот в ночном колпаке на подушке, месяц и звёздное небо. Детский '
       + 'сюжет и взрослая аккуратность линий — подойдёт и пижаме, и наволочке.',
-    image: `${FOLDER}06.png`,
-    inverted: `${FOLDER}06_i.png`,
+    image: `${FOLDER}06.webp`,
+    inverted: `${FOLDER}06_i.webp`,
     alt: 'Леттеринг Good Night! с котом в колпаке на подушке',
   },
   {
@@ -103,8 +103,8 @@ export const PRINTS = [
     title: 'Good Night!',
     text: 'Самый тихий принт каталога: торшер, месяц, облако и звёздочки, '
       + 'никаких лишних деталей. Хорошо смотрится на тонкой ночной сорочке.',
-    image: `${FOLDER}07.png`,
-    inverted: `${FOLDER}07_i.png`,
+    image: `${FOLDER}07.webp`,
+    inverted: `${FOLDER}07_i.webp`,
     alt: 'Леттеринг Good Night! тонкой линией с торшером и месяцем',
   },
   {
@@ -113,8 +113,8 @@ export const PRINTS = [
     title: 'GOOD MORNING!',
     text: 'Окно со шторами, солнце с лицом, кружка кофе и круассан на подоконнике. '
       + 'Шапка из капса, а внутри — совсем ручная графика.',
-    image: `${FOLDER}08.png`,
-    inverted: `${FOLDER}08_i.png`,
+    image: `${FOLDER}08.webp`,
+    inverted: `${FOLDER}08_i.webp`,
     alt: 'Надпись GOOD MORNING! с окном, солнцем и кружкой кофе',
   },
   {
@@ -123,8 +123,8 @@ export const PRINTS = [
     title: 'Good Morning!',
     text: 'Изящный леттеринг с птицей, карманными часами и чашкой на блюдце. '
       + 'Самый «вечерний» из утренних принтов — длинные тонкие росчерки.',
-    image: `${FOLDER}09.png`,
-    inverted: `${FOLDER}09_i.png`,
+    image: `${FOLDER}09.webp`,
+    inverted: `${FOLDER}09_i.webp`,
     alt: 'Леттеринг Good Morning! с птицей, часами и чашкой',
   },
   {
@@ -133,8 +133,8 @@ export const PRINTS = [
     title: 'Спокойной ночи!',
     text: 'Кот, кровать, колпак, месяц и облака — уютная сцена с подписью '
       + 'по-русски. Спящая луна в облаке и «z-z-z» у кровати.',
-    image: `${FOLDER}10.jpeg`,
-    inverted: `${FOLDER}10_i.png`,
+    image: `${FOLDER}10.webp`,
+    inverted: `${FOLDER}10_i.webp`,
     alt: 'Надпись «Спокойной ночи!» с котом, кроватью и звёздами',
   },
   {
@@ -143,8 +143,8 @@ export const PRINTS = [
     title: 'Спокойной ночи!',
     text: 'Надпись живёт внутри круга-полумесяца, звёзды идут по его краю. '
       + 'Плотное пятно даёт на ткани чёткий силуэт даже на маленьком формате.',
-    image: `${FOLDER}11.jpeg`,
-    inverted: `${FOLDER}11_i.png`,
+    image: `${FOLDER}11.webp`,
+    inverted: `${FOLDER}11_i.webp`,
     alt: 'Надпись «Спокойной ночи!» внутри полумесяца со звёздами',
   },
   {
@@ -153,8 +153,8 @@ export const PRINTS = [
     title: 'Спокойной ночи!',
     text: 'Слова идут дугой, под ними спит кот в колпаке на кровати. Месяц, '
       + 'облака и звёзды собраны так, чтобы рисунок читался и с расстояния.',
-    image: `${FOLDER}12.jpeg`,
-    inverted: `${FOLDER}12_i.png`,
+    image: `${FOLDER}12.webp`,
+    inverted: `${FOLDER}12_i.webp`,
     alt: 'Надпись «Спокойной ночи!» дугой над спящим котом на кровати',
   },
   {
@@ -163,8 +163,8 @@ export const PRINTS = [
     title: 'Спокойной ночи!',
     text: 'Тонкая линия без заливок: месяц, облака и кот в кровати с шариками '
       + 'на спинке. Самый воздушный вариант для светлой ткани.',
-    image: `${FOLDER}13.jpeg`,
-    inverted: `${FOLDER}13_i.png`,
+    image: `${FOLDER}13.webp`,
+    inverted: `${FOLDER}13_i.webp`,
     alt: 'Надпись «Спокойной ночи!» тонкой линией с котом в кровати',
   },
   {
@@ -173,8 +173,8 @@ export const PRINTS = [
     title: 'Доброе утро!',
     text: 'Чашка кофе, круассан, будильник и лучи вокруг надписи. Рисунок '
       + 'собран по кругу — его удобно ставить и на грудь, и на карман.',
-    image: `${FOLDER}14.jpeg`,
-    inverted: `${FOLDER}14_i.png`,
+    image: `${FOLDER}14.webp`,
+    inverted: `${FOLDER}14_i.webp`,
     alt: 'Надпись «Доброе утро!» с чашкой кофе и будильником',
   },
   {
@@ -183,8 +183,8 @@ export const PRINTS = [
     title: 'Доброе утро!',
     text: 'Надпись в круге из звёзд, солнце, чашка и круассан. Аккуратная '
       + 'графика с плотными буквами — хорошо читается на плотной ткани.',
-    image: `${FOLDER}15.jpeg`,
-    inverted: `${FOLDER}15_i.png`,
+    image: `${FOLDER}15.webp`,
+    inverted: `${FOLDER}15_i.webp`,
     alt: 'Надпись «Доброе утро!» в круге из звёзд с солнцем и чашкой',
   },
   {
@@ -193,8 +193,8 @@ export const PRINTS = [
     title: 'Доброе утро!',
     text: 'Восход над полем, чашка, круассан и птицы. Спокойная деревенская '
       + 'сцена — для тех, кто любит вставать с первым светом.',
-    image: `${FOLDER}16.jpeg`,
-    inverted: `${FOLDER}16_i.png`,
+    image: `${FOLDER}16.webp`,
+    inverted: `${FOLDER}16_i.webp`,
     alt: 'Надпись «Доброе утро!» с восходом над полем и чашкой',
   },
   {
@@ -203,8 +203,8 @@ export const PRINTS = [
     title: 'Доброе утро!',
     text: 'Две чашки, солнце, круассан и будильник — утро на двоих. Самая '
       + 'крупная надпись каталога: на спине пижамной куртки читается издалека.',
-    image: `${FOLDER}17.jpeg`,
-    inverted: `${FOLDER}17_i.png`,
+    image: `${FOLDER}17.webp`,
+    inverted: `${FOLDER}17_i.webp`,
     alt: 'Надпись «Доброе утро!» с двумя чашками и круассаном',
   },
 ].map((print) => ({ ...print, text: `${print.text} ${AUTHOR_LINE}` }));

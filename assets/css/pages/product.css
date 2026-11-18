@@ -64,15 +64,15 @@ body[data-page='product'][data-section='other'] {
   }
 
   body[data-page='product'][data-section='women']::before {
-    background-image: url('../../images/product-page/bg_women.png');
+    background-image: url('../../images/product-page/bg_women.webp');
   }
 
   body[data-page='product'][data-section='men']::before {
-    background-image: url('../../images/product-page/bg_men.png');
+    background-image: url('../../images/product-page/bg_men.webp');
   }
 
   body[data-page='product'][data-section='other']::before {
-    background-image: url('../../images/product-page/bg_other.png');
+    background-image: url('../../images/product-page/bg_other.webp');
   }
 }
 

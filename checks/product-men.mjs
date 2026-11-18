@@ -138,7 +138,7 @@ ok(/\[data-section='men'\] \.product__button--print \.product__button-icon--cata
   'у мужской коллекции иконка каталога голубая');
 ok(/\[data-section='men'\] \.product__divider[\s\S]{0,120}?icon-circle_men\.svg/.test(css),
   'у мужской коллекции кольцо-разделитель своё');
-ok(/\[data-section='men'\][\s\S]{0,120}?bg_men\.png/.test(css), 'фон страницы — мужской');
+ok(/\[data-section='men'\][\s\S]{0,120}?bg_men\.webp/.test(css), 'фон страницы — мужской');
 
 // ─────────────── итог ───────────────
 

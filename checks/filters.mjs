@@ -10,6 +10,7 @@
  */
 
 import { readFileSync, readdirSync } from 'node:fs';
+import { imageSize } from './lib/images.mjs';
 import {
   emptyFilters, hasAnyFilter, parsePriceLabel, matchesFilters, selectProducts, sortKeys,
 } from '../assets/js/filters-query.js';
@@ -254,8 +255,8 @@ eq(newItems.length, 6, 'в новой коллекции шесть товаро
 
 /** Кто на картинке — установлено просмотром файлов, а не по подписям. */
 const FILE_SEX = {
-  'new_01.png': 'F', 'new_02.png': 'F', 'new_06.png': 'F',
-  'new_03.png': 'M', 'new_04.png': 'M', 'new_05.png': 'M',
+  'new_01.webp': 'F', 'new_02.webp': 'F', 'new_06.webp': 'F',
+  'new_03.webp': 'M', 'new_04.webp': 'M', 'new_05.webp': 'M',
 };
 
 /** Кого ждёт позиция: нечётные — женские (розовые), чётные — мужские. */
@@ -288,9 +289,9 @@ eq(newItems.map((p) => p.titleColor === COLOUR_OF_SEX[FILE_SEX[fileName(p)]]),
    с привязкой картинок, и width/height не совпадали с реальными. */
 const sizeMismatch = newItems.filter((p) => {
   const bytes = readFileSync(new URL(`../assets/images/products/new/${fileName(p)}`, import.meta.url));
-  const isPng = bytes.slice(0, 8).toString('hex') === '89504e470d0a1a0a';
-  if (!isPng) return false;
-  return bytes.readUInt32BE(16) !== p.width || bytes.readUInt32BE(20) !== p.height;
+  const size = imageSize(bytes);
+  if (!size) return true;
+  return size.width !== p.width || size.height !== p.height;
 });
 eq(sizeMismatch.map((p) => p.id), [],
   'ширина и высота в данных совпадают с файлами картинок');

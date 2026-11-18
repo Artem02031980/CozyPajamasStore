@@ -247,7 +247,7 @@ ok(/justify-content:\s*center/.test(media1280),
 /* Иконки и фон — от вида товара */
 ok(/\[data-section='other'\] \.product__divider[\s\S]{0,120}?icon-circle_other\.svg/.test(css),
   'кольцо-разделитель — из «других товаров»');
-ok(/\[data-section='other'\][\s\S]{0,160}?bg_other\.png/.test(css), 'фон страницы — bg_other.png');
+ok(/\[data-section='other'\][\s\S]{0,160}?bg_other\.webp/.test(css), 'фон страницы — bg_other.webp');
 
 // ─────────────── итог ───────────────
 

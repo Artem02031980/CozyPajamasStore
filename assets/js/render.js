@@ -68,6 +68,8 @@ export function renderCard(product) {
             alt="${alt}"
             width="${width}"
             height="${height}"
+            loading="lazy"
+            decoding="async"
           />
         </div>
         <h3 class="${titleClass}">${title}</h3>

@@ -122,7 +122,7 @@ for (const item of PAGES) {
 
   // ── от шаблона не осталось чужого ──
   const leftovers = ['Клубничные поля', 'Мятный вечер', 'goods-women-03', 'goods-men-01',
-    '12 199', '5 499', 'w03.png', 'm01.png', 'махров', 'велсофт', 'мятно']
+    '12 199', '5 499', 'w03.webp', 'm01.webp', 'махров', 'велсофт', 'мятно']
     .filter((needle) => html.includes(needle));
   eq(leftovers, [], `${tag}: в разметке нет данных шаблона`);
 

@@ -137,7 +137,7 @@ ok(/product\.page \?\? 'product-pages\/'/.test(read('assets/js/render.js')),
 
 // ─────────────── от шаблона не осталось чужого ───────────────
 
-const leftovers = ['Клубничные поля', 'goods-women-03', 'w03.png', '12 199', 'махров',
+const leftovers = ['Клубничные поля', 'goods-women-03', 'w03.webp', '12 199', 'махров',
   'велсофт', 'Весна-Лето 2023', 'Майка', 'width="385"', 'height="1159"']
   .filter((needle) => html.includes(needle));
 eq(leftovers, [], 'в разметке нет данных шаблона');

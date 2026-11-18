@@ -11,6 +11,7 @@
  */
 
 import { readFileSync, existsSync } from 'node:fs';
+import { imageSize } from './lib/images.mjs';
 import { PRODUCTS, getProduct } from '../assets/js/data.js';
 
 let passed = 0;
@@ -134,11 +135,12 @@ const imageFile = bytes(product.image);
 ok(Boolean(imageFile), 'файл фото товара существует', product.image);
 
 if (imageFile && imageAttribute) {
-  const png = imageFile.slice(0, 8).toString('hex') === '89504e470d0a1a0a';
-  ok(png, 'фото товара — PNG', product.image);
-  eq(Number(imageAttribute[1]), imageFile.readUInt32BE(16), 'width на странице равен ширине файла');
-  eq(Number(imageAttribute[2]), imageFile.readUInt32BE(20), 'height на странице равен высоте файла');
-  eq([product.width, product.height], [imageFile.readUInt32BE(16), imageFile.readUInt32BE(20)],
+  const size = imageSize(imageFile);
+  ok(Boolean(size), 'формат фото распознан', product.image);
+  eq(size?.format, 'webp', 'фото товара — WebP', product.image);
+  eq(Number(imageAttribute[1]), size?.width, 'width на странице равен ширине файла');
+  eq(Number(imageAttribute[2]), size?.height, 'height на странице равен высоте файла');
+  eq([product.width, product.height], [size?.width, size?.height],
     'размеры в data.js совпадают с файлом');
 }
 
@@ -356,16 +358,16 @@ const SECTIONS_WITH_BG = ['women', 'men', 'other'];
 const backgrounds = {};
 
 for (const section of SECTIONS_WITH_BG) {
-  const file = bytes(`assets/images/product-page/bg_${section}.png`);
+  const file = bytes(`assets/images/product-page/bg_${section}.webp`);
   backgrounds[section] = file;
 
   ok(Boolean(file), `фон коллекции «${section}» лежит на месте`,
     `assets/images/product-page/bg_${section}.png`);
   if (!file) continue;
 
-  ok(file.slice(0, 8).toString('hex') === '89504e470d0a1a0a',
-    `bg_${section}.png — PNG`);
-  eq([file.readUInt32BE(16), file.readUInt32BE(20)], [1536, 864],
+  const size = imageSize(file);
+  eq(size?.format, 'webp', `bg_${section}.webp — WebP`);
+  eq([size?.width, size?.height], [1536, 864],
     `размер фона «${section}» из макета`);
 }
 
@@ -408,7 +410,7 @@ ok(!css.includes('product-page/bg.png'), 'в стилях нет ссылки н
 for (const section of SECTIONS_WITH_BG) {
   ok(css.includes(`data-section='${section}'`) || css.includes(`data-section="${section}"`),
     `стили знают вид товара «${section}»`);
-  ok(css.includes(`bg_${section}.png`), `в стилях подключён фон «${section}»`);
+  ok(css.includes(`bg_${section}.webp`), `в стилях подключён фон «${section}»`);
 }
 
 /* Фон рисует закреплённый слой (body::before с position: fixed), а не сам

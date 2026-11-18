@@ -94,7 +94,7 @@
   /* 40px — размер звёздочки из макета */
   width: 40px;
   height: 40px;
-  background-image: url('../../images/goods-print/elem.png');
+  background-image: url('../../images/goods-print/elem.webp');
   background-repeat: no-repeat;
   background-size: contain;
   pointer-events: none;
@@ -166,7 +166,7 @@
   aspect-ratio: 323 / 1128;
   max-height: 600px;
   background-color: var(--color-beige-light);
-  background-image: url('../../images/goods-print/print.png');
+  background-image: url('../../images/goods-print/print.webp');
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;

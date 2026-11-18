@@ -1,7 +1,7 @@
 /* До 768 px */
 .hero {
   background-color: var(--color-pink-light);
-  background-image: url("../../images/hero/bg-hero.jpg");
+  background-image: url("../../images/hero/bg-hero.webp");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: left center;
@@ -128,7 +128,7 @@
 
   .hero__inner {
     background-color: var(--color-pink-light);
-    background-image: url("../../images/hero/bg-hero.jpg");
+    background-image: url("../../images/hero/bg-hero.webp");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: right center;

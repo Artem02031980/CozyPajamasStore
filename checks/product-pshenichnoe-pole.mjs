@@ -136,7 +136,7 @@ ok(/product\.page \?\? 'product-pages\/'/.test(read('assets/js/render.js')),
 // ─────────────── чужих данных не осталось ───────────────
 
 const leftovers = ['Клубничные поля', 'Солнце', 'Русская душа', 'goods-women-01',
-  'goods-women-02', 'goods-women-03', 'w01.png', 'w02.png', 'w03.png', '12 199',
+  'goods-women-02', 'goods-women-03', 'w01.webp', 'w02.webp', 'w03.webp', '12 199',
   '7 699', '3 999', 'махров', 'велсофт', 'Весна-Лето 2023', 'Майка',
   'width="385"', 'height="1159"', 'width="294"', 'height="1034"',
   'width="349"', 'height="1135"']
