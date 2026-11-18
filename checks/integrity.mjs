@@ -104,6 +104,39 @@ for (const file of htmlFiles) {
 }
 
 ok(htmlFiles.length > 140, 'в проект попало больше 140 страниц', String(htmlFiles.length));
+// ── «Перейти к содержимому»: WCAG 2.4.1 ──────────────────────────────
+
+/* Ссылка должна быть первой в теле страницы: иначе с клавиатуры её надо
+   искать среди пунктов меню, и смысл теряется. Ведёт на #main — он есть
+   на каждой странице, это проверяет общий обход якорей выше */
+
+const безПропуска = [];
+const неПервая = [];
+
+for (const file of htmlFiles) {
+  const html = readFileSync(file, 'utf8');
+  const where = relative(ROOT, file);
+
+  if (!/href="#main"/.test(html)) безПропуска.push(where);
+
+  const body = html.indexOf('<body');
+  const firstLink = html.indexOf('<a ', body);
+  if (body !== -1 && !html.slice(firstLink, firstLink + 400).includes('href="#main"')) {
+    неПервая.push(where);
+  }
+}
+
+ok(безПропуска.length === 0, 'на каждой странице есть ссылка «Перейти к содержимому»',
+  безПропуска.slice(0, 5).join(', '));
+ok(неПервая.length === 0, 'это первая ссылка в теле страницы',
+  неПервая.slice(0, 5).join(', '));
+
+const UTILITIES = readFileSync(join(ROOT, 'assets/css/utilities.css'), 'utf8');
+ok(/\.visually-hidden--focusable:focus-visible/.test(UTILITIES),
+  'видимой ссылка становится при фокусе — правило в utilities.css');
+ok(/Перейти к содержимому/.test(readFileSync(join(ROOT, 'index.html'), 'utf8')),
+  'текст ссылки по-русски и понятен без контекста');
+
 ok(brokenFiles.length === 0, 'все href и src ведут на существующие файлы',
   brokenFiles.slice(0, 6).join(' | '));
 ok(brokenAnchors.length === 0, 'все якоря существуют на своих страницах',

@@ -317,6 +317,25 @@ eq(поПорядку.printLines[cart.lineKey({ id: 'print-01', size: '' })],
 eq(поПорядку.printLines[cart.lineKey({ id: 'print-02', size: '' })],
   { free: 0, paid: 2, cost: 1000 }, 'второй принт платный');
 
+// ── свой макет: количество всегда единица ────────────────────────────
+
+/* Заявка на печать своего файла — одна: два одинаковых файла в одной
+   заявке смысла не имеют, а кнопки +/− у неё в корзине не рисуются.
+   Проверка нужна на уровне данных: число могло прийти не из разметки */
+
+reset();
+cart.addItem(cart.CUSTOM_PRINT_ID, { file: 'макет.pdf' });
+cart.changeQty(cart.CUSTOM_PRINT_ID, 3);
+eq(cart.getItems()[0].qty, 1, 'кнопка «+» не увеличивает количество макета');
+
+cart.setQty(cart.CUSTOM_PRINT_ID, 7);
+eq(cart.getItems()[0].qty, 1, 'и setQty не поднимает его выше единицы');
+
+const CUSTOM_LINE = cart.getItems()[0];
+cart.setQty(cart.CUSTOM_PRINT_ID, 0);
+eq(cart.getItems().length, 0, 'а нулём заявка удаляется, как обычная позиция');
+ok(Boolean(CUSTOM_LINE), 'позиция до удаления была');
+
 // ── сброс и мусор в хранилище ────────────────────────────────────────
 
 reset();

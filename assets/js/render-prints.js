@@ -11,7 +11,7 @@
  * ляжет на светлую и на тёмную ткань.
  */
 
-import { PRINTS, PRINT_PRICE, printLabel } from './prints.js';
+import { PRINTS, PRINT_PRICE, PRINT_SIZE, printLabel } from './prints.js';
 import { formatPrice } from './utils.js';
 
 /** Разметка одной карточки. */
@@ -27,8 +27,8 @@ function renderCard(print) {
                 class="prints__image"
                 src="${print.image}"
                 alt="${print.alt} — чёрное на светлом"
-                width="1024"
-                height="1024"
+                width="${PRINT_SIZE}"
+                height="${PRINT_SIZE}"
                 loading="lazy"
               />
               <figcaption class="prints__preview-note">На светлом</figcaption>
@@ -39,8 +39,8 @@ function renderCard(print) {
                 class="prints__image"
                 src="${print.inverted}"
                 alt="${print.alt} — белое на тёмном"
-                width="1024"
-                height="1024"
+                width="${PRINT_SIZE}"
+                height="${PRINT_SIZE}"
                 loading="lazy"
               />
               <figcaption class="prints__preview-note">На тёмном</figcaption>

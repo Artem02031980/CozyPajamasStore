@@ -70,24 +70,36 @@ export function validate(values, fields = Object.keys(RULES)) {
 }
 
 /**
- * Номер заказа: дата и время.
+ * Номер заказа: дата, время с секундами и короткий случайный хвост.
  *
- * Читаемый номер нужен, чтобы человек мог назвать его по телефону:
- * «заказ 202610071832» понятнее, чем случайный набор символов.
+ * Читаемая часть нужна, чтобы человек мог назвать номер по телефону:
+ * «20261007183245» понятнее случайного набора. Секунды и хвост —
+ * от совпадений: пока в номере были только минуты, два заказа в одну
+ * минуту получали одинаковый номер. По-настоящему уникальным номер
+ * делает сервер, который его выдаёт; здесь — разумная замена.
  *
  * @param {Date} [date]
+ * @param {() => number} [random] источник случайности: в проверках
+ *   подменяется, чтобы номер был предсказуемым
  * @returns {string}
  */
-export function makeOrderNumber(date = new Date()) {
+export function makeOrderNumber(date = new Date(), random = Math.random) {
   const pad = (n) => String(n).padStart(2, '0');
 
-  return [
+  const stamp = [
     date.getFullYear(),
     pad(date.getMonth() + 1),
     pad(date.getDate()),
     pad(date.getHours()),
     pad(date.getMinutes()),
+    pad(date.getSeconds()),
   ].join('');
+
+  /* 1000–9999: четыре цифры читаются по телефону и дают 9000 вариантов
+     на одну секунду — совпадение перестаёт быть реальным сценарием */
+  const tail = 1000 + Math.floor(random() * 9000);
+
+  return `${stamp}-${tail}`;
 }
 
 /**

@@ -324,7 +324,9 @@ try {
   ok(thanks.orderTotal === 24398, 'итог заказа без платы за бесплатную услугу', String(thanks.orderTotal));
   ok(thanks.customer?.name === 'Анна', 'в заказе имя покупателя', String(thanks.customer?.name));
   ok(thanks.cartAfter === '[]', 'корзина очищена после оформления', String(thanks.cartAfter));
-  ok(/^Заказ № \d{12}$/.test(thanks.number ?? ''), 'номер заказа показан', String(thanks.number));
+  /* Номер: 14 цифр времени, дефис, четыре цифры хвоста — секунды и хвост
+   добавлены, чтобы два заказа в одну минуту не получали один номер */
+ok(/^Заказ № \d{14}-\d{4}$/.test(thanks.number ?? ''), 'номер заказа показан', String(thanks.number));
   ok(thanks.greeting === 'Анна, спасибо за заказ!', 'приветствие с именем', String(thanks.greeting));
   ok(Boolean(thanks.date), 'дата показана', String(thanks.date));
   ok(thanks.items.length === 2, 'в составе заказа две строки', String(thanks.items.length));

@@ -317,6 +317,17 @@ function initSection(section) {
     return;
   }
 
+  /* Начальное состояние переключателей. В разметке aria-pressed не стоит:
+     чипсы свёрстаны статически, и раньше атрибут появлялся только после
+     первого клика — до него скринридер не знал, что кнопка переключает
+     выбор. Ставим сразу, по классу: он уже проставлен, если фильтр
+     раскрыт с выбором. */
+  $$('.filters__chip, .filters__color', form).forEach((el) => {
+    if (!el.hasAttribute('aria-pressed')) {
+      el.setAttribute('aria-pressed', String(el.classList.contains('is-active')));
+    }
+  });
+
   // Чипс типа, возраста или цены: выбор снимается повторным нажатием
   delegate(form, 'click', '.filters__chip', (event, chip) => {
     event.preventDefault();

@@ -86,10 +86,21 @@ eq(checkout.validate({ name: 'Анна', phone: '+79001234567' }, ['name']), {},
 
 // ── номер заказа ─────────────────────────────────────────────────────
 
-const date = new Date(2026, 9, 7, 18, 32); // 7 октября 2026, 18:32
-eq(checkout.makeOrderNumber(date), '202610071832', 'номер заказа собирается из даты и времени');
-eq(checkout.makeOrderNumber(new Date(2026, 0, 1, 0, 5)), '202601010005',
-  'номер заказа дополняет часы и минуты нулями');
+const date = new Date(2026, 9, 7, 18, 32, 45); // 7 октября 2026, 18:32:45
+const fixedRandom = () => 0.4821;
+
+eq(checkout.makeOrderNumber(date, fixedRandom), '20261007183245-5338',
+  'номер заказа собирается из даты, времени с секундами и хвоста');
+eq(checkout.makeOrderNumber(new Date(2026, 0, 1, 0, 5, 3), fixedRandom), '20260101000503-5338',
+  'номер заказа дополняет нулями часы, минуты и секунды');
+
+/* Уникальность: два заказа в одну секунду получают разные номера за счёт
+   хвоста, а не только за счёт времени */
+const номер1 = checkout.makeOrderNumber(date, () => 0.1);
+const номер2 = checkout.makeOrderNumber(date, () => 0.7);
+ok(номер1 !== номер2, 'два заказа в одну секунду не совпадают номерами');
+eq(номер1.slice(0, 14), номер2.slice(0, 14), 'до секунды номера совпадают — время одно');
+ok(/^\d{14}-\d{4}$/.test(номер1), 'формат номера: 14 цифр времени, дефис, 4 цифры хвоста');
 
 // ── сборка заказа ────────────────────────────────────────────────────
 
@@ -97,7 +108,8 @@ reset();
 cart.addItem('goods-women-01', { qty: 2 });      // 7699 × 2 = 15398
 const order = checkout.buildOrder(good, { terms: TERMS, date });
 
-eq(order.number, '202610071832', 'в заказе номер из даты');
+ok(order.number.startsWith('20261007183245-'), 'в заказе номер из даты оформления',
+  order.number);
 eq(order.customer.name, 'Анна', 'в заказе имя покупателя');
 eq(order.customer.phone, '+7 900 123-45-67', 'в заказе телефон');
 eq(order.items.length, 1, 'в заказе одна позиция');
@@ -181,7 +193,8 @@ eq(oneClick.items[0].sum, 12199, 'сумма позиции равна цене 
 eq(oneClick.totals, {
   products: 12199, service: 0, serviceFree: false, serviceQty: 0, total: 12199, count: 1,
 }, 'итоги заказа: без услуги, без кратности');
-eq(oneClick.number, checkout.makeOrderNumber(date), 'номер заказа из даты покупки');
+ok(oneClick.number.startsWith('20261007183245-'),
+  'номер заказа из даты покупки', oneClick.number);
 eq(oneClick.createdAt, date.toISOString(), 'время покупки из даты');
 eq(oneClick.customer.name, '', 'имени нет: форма не заполнялась');
 

@@ -18,7 +18,8 @@
  */
 
 import { readFileSync, existsSync } from 'node:fs';
-import { PRINTS, PRINT_PRICE, PRINT_AUTHOR, getPrint, printLabel } from '../assets/js/prints.js';
+import { PRINTS, PRINT_PRICE, PRINT_SIZE, PRINT_AUTHOR, getPrint, printLabel } from '../assets/js/prints.js';
+import { imageSize } from './lib/images.mjs';
 
 let passed = 0;
 const failures = [];
@@ -305,6 +306,36 @@ ok(/\.prints__image \{[\s\S]{0,300}?border-radius: var\(--radius-sm\)/.test(PRIN
   'превью скруглены на --radius-sm, как картинки карточек');
 ok(!/--radius-lg|--radius-xl/.test(PRINTS_CSS),
   'выпадающих из шкалы скруглений на странице нет');
+
+// ─────────────── размеры принтов: разметка, данные и файлы ─────────────
+
+/* В карточке были width="1024" height="1024", а файлы — 700×700:
+   пропорции совпадали, поэтому глазами не видно, но браузер резервировал
+   неверное место, а атрибутам нельзя было верить. Теперь размер берётся
+   из PRINT_SIZE, и это проверяется с трёх сторон */
+
+eq(PRINT_SIZE, 700, 'сторона квадрата принта — 700 px');
+
+const RENDER_PRINTS = read('assets/js/render-prints.js');
+ok(/width="\$\{PRINT_SIZE\}"/.test(RENDER_PRINTS) && /height="\$\{PRINT_SIZE\}"/.test(RENDER_PRINTS),
+  'карточка берёт размеры из PRINT_SIZE, а не пишет число');
+ok(!/width="1024"/.test(RENDER_PRINTS) && !/height="1024"/.test(RENDER_PRINTS),
+  'числа 1024 в разметке карточки не осталось');
+
+/* Файлы всех принтов и их тёмных версий должны совпадать с PRINT_SIZE */
+const wrongFiles = [];
+for (const print of PRINTS) {
+  for (const rel of [print.image, print.inverted]) {
+    const file = new URL(`../${rel}`, import.meta.url);
+    if (!existsSync(file)) { wrongFiles.push(`${rel}: файла нет`); continue; }
+    const size = imageSize(readFileSync(file));
+    if (!size) { wrongFiles.push(`${rel}: формат не распознан`); continue; }
+    if (size.width !== PRINT_SIZE || size.height !== PRINT_SIZE) {
+      wrongFiles.push(`${rel}: ${size.width}×${size.height}`);
+    }
+  }
+}
+eq(wrongFiles, [], 'все 34 файла принтов — ровно PRINT_SIZE');
 
 // ─────────────── итог ───────────────
 

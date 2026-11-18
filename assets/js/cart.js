@@ -359,8 +359,17 @@ export function addItem(id, { qty = 1, size = '', file = '' } = {}) {
  */
 export function setQty(id, qty, size = '') {
   const key = variantKey(id, size);
-  const items = getItems().map((line) =>
-    (variantKey(line.id, line.size) === key ? { ...line, qty: Math.round(qty) } : line));
+
+  /* Свой макет — заявка, а не товар: одна заявка на один файл. Кнопки
+     количества в корзине у него не рисуются, но число могло прийти
+     и другим путём, поэтому проверка живёт здесь, а не только в разметке */
+  const next = Math.max(0, Math.round(qty));
+
+  const items = getItems().map((line) => {
+    if (variantKey(line.id, line.size) !== key) return line;
+    /* Ноль — это «удалить»: так же ведёт себя любая позиция */
+    return { ...line, qty: id === CUSTOM_PRINT_ID ? Math.min(1, next) : next };
+  });
 
   return commit(items.filter((line) => line.qty > 0));
 }

@@ -480,8 +480,12 @@ const pagesWithoutYear = PRODUCT_PAGES.filter((name) => {
 eq(pagesWithoutYear, [], 'у всех страниц товаров в подписи подвала есть год');
 ok(PRODUCT_PAGES.length >= 10, 'страниц товаров не меньше десяти', String(PRODUCT_PAGES.length));
 
-/* На главной и в принтах подпись короче — только год основания */
-ok(!YEAR_TAG.test(html), 'на главной в подписи по-прежнему только «© 2023»');
+/* Подпись одна на весь сайт: с маркером года её обновляет footer-year.js,
+   и год не устаревает ни на главной, ни в каталоге принтов */
+ok(YEAR_TAG.test(html), 'на главной в подписи подвала есть год с маркером');
+
+const PRINTS_PAGE = readFileSync(new URL('../prints.html', import.meta.url), 'utf8');
+ok(YEAR_TAG.test(PRINTS_PAGE), 'в каталоге принтов год тоже с маркером');
 
 const FOOTER_YEAR_JS = readFileSync(new URL('../assets/js/footer-year.js', import.meta.url), 'utf8');
 ok(/export function initFooterYear/.test(FOOTER_YEAR_JS),

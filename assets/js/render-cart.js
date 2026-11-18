@@ -10,7 +10,7 @@
  * и на странице благодарности, поэтому разметка здесь одна на всех.
  */
 
-import { formatPrice, plural, assetUrl } from './utils.js';
+import { formatPrice, plural, assetUrl, escapeHtml } from './utils.js';
 import { SERVICE_ID, CUSTOM_PRINT_ID, lineKey } from './cart.js';
 import { getPrint, PRINT_PRICE } from './prints.js';
 
@@ -75,17 +75,17 @@ export function renderCartItem(line, { print = null, freeFrom = 15000 } = {}) {
   })();
 
   return `
-      <li class="cart__item" data-cart-line="${line.id}" data-cart-size="${size}">
+      <li class="cart__item" data-cart-line="${escapeHtml(line.id)}" data-cart-size="${escapeHtml(size)}">
         ${picture}
 
         <div class="cart__info">
-          <p class="cart__title">${product.title}</p>
-          ${meta ? `<p class="cart__meta">${meta}</p>` : ''}
+          <p class="cart__title">${escapeHtml(product.title)}</p>
+          ${meta ? `<p class="cart__meta">${escapeHtml(meta)}</p>` : ''}
           <p class="cart__price">${price}</p>
           ${note}
         </div>
 
-        <div class="quantity">
+        ${isCustom ? '' : `<div class="quantity">
           <button
             class="quantity__button"
             type="button"
@@ -99,7 +99,7 @@ export function renderCartItem(line, { print = null, freeFrom = 15000 } = {}) {
             data-cart-step="1"
             aria-label="Увеличить количество"
           >+</button>
-        </div>
+        </div>`}
 
         <button class="cart__remove" type="button" data-cart-remove>Удалить</button>
       </li>`;
@@ -305,8 +305,8 @@ export function renderOrderLines(lines, total) {
         ${lines.map((line) => `
         <li class="cart__item">
           <div class="cart__info">
-            <p class="cart__title">${line.product.title} × ${line.qty}</p>
-            ${line.size ? `<p class="cart__meta">Размер: ${line.size}</p>` : ''}
+            <p class="cart__title">${escapeHtml(line.product.title)} × ${Number(line.qty) || 0}</p>
+            ${line.size ? `<p class="cart__meta">Размер: ${escapeHtml(line.size)}</p>` : ''}
           </div>
           <p class="cart__price">${price(line)}</p>
         </li>`).join('\n')}

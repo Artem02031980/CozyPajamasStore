@@ -10,7 +10,10 @@
   </head>
 
   <body class="page" data-page="thanks-feedback">
-    <main class="thanks">
+      <!-- Первая ссылка на странице: с клавиатуры она позволяет перейти к содержимому,
+           минуя шапку и меню. Видна только при фокусе -->
+        <a class="visually-hidden visually-hidden--focusable" href="#main">Перейти к содержимому</a>
+    <main class="thanks" id="main" tabindex="-1">
       <div class="thanks__inner container">
         <p class="thanks__overline">Вопрос отправлен</p>
         <h1 class="thanks__title">Спасибо за вопрос!</h1>

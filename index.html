@@ -52,6 +52,9 @@
   <!-- data-page — какой набор скриптов запускать. У главной он же нужен
        для оформления: голубой подвал включается по body[data-page='home'] -->
   <body data-page="home">
+      <!-- Первая ссылка на странице: с клавиатуры она позволяет перейти к содержимому,
+           минуя шапку и меню. Видна только при фокусе -->
+        <a class="visually-hidden visually-hidden--focusable" href="#main">Перейти к содержимому</a>
     <div class="root">
       <!-- Секция 0. Шапка: меню, корзина, соцсети, бургер.
            Раскрытие меню на мобильном делает JS позже (data-burger / data-nav),
@@ -96,7 +99,7 @@
           <button class="header__cart" type="button" data-cart-open>
             <span class="header__cart-text">
               <span class="header__cart-label">Корзина</span>
-              <span class="header__cart-count" data-cart-counter>0</span>
+              <span class="header__cart-count" data-cart-counter aria-live="polite" aria-atomic="true">0</span>
             </span>
           </button>
 
@@ -122,7 +125,7 @@
         </div>
       </header>
 
-      <main class="main">
+      <main class="main" id="main" tabindex="-1">
         <!-- Секция 1. Hero:  -->
         <section class="hero">
           <div class="hero__inner container">
@@ -735,7 +738,7 @@
 
       <footer class="footer" data-stars-trigger>
         <div class="footer__inner container">
-          <p class="footer__copyright">ООО «Магазин уютных пижам» © 2023</p>
+          <p class="footer__copyright">ООО «Магазин уютных пижам» © 2023 - <span data-copyright-year>2026</span></p>
         </div>
       </footer>
     </div>

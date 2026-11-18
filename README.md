@@ -109,10 +109,11 @@ CozyPajamasStore/
 │       │   ├── new/         # товары «Новой коллекции»
 │       │   ├── women/       # женская коллекция
 │       │   ├── men/         # мужская коллекция
-│       │   └── other/       # «Другие товары»
-│       ├── print/           # футболка «Дай пять» для блока «Принт»
-│       ├── pillows/         # подушки (карусель — позже)
-│       ├── shared/          # og-preview.jpg (превью для соцсетей), фоновые текстуры секций
+│       │   └── other/       # «Другие товары», по папке на тип (Pillows, SoftToys, …)
+│       ├── goods-print/     # футболка «Дай пять» и декор блока «Принт»
+│       ├── product-page/    # фоны страниц товаров: bg_women, bg_men, bg_other
+│       ├── icons/           # иконки интерфейса (SVG) и звёздочка
+│       ├── shared/          # og-preview.jpg (превью для соцсетей)
 
 ### Картинки: WebP и ленивая загрузка
 
@@ -988,13 +989,13 @@ max-height 520px это 173px ширины), а у «Нежного счасть
 остался верный тон.
 
 Фон включается с 768px: за карточкой во всю ширину его не видно, а каждый
-файл весит около 1.4 МБ. Проверить другой вид товара можно, не делая
+файл весит 39–59 КБ (WebP). Проверить другой вид товара можно, не делая
 страницу: поменять `data-section` в инспекторе.
 
 **Фон закреплён слоем, а не через `background-attachment: fixed`.** Раньше
 картинку держал сам `body` с `background-attachment: fixed`. В Chrome
 на Windows такой фон перерисовывается целиком на каждом кадре прокрутки,
-и на картинке в 1.4 МБ это видно как мигание экрана. Теперь картинку рисует
+и на большой картинке это видно как мигание экрана. Теперь картинку рисует
 `body::before` с `position: fixed; inset: 0; z-index: -1`: она так же
 стоит на месте, пока содержимое едет, но композитор держит её отдельным
 слоем и не перерисовывает. `pointer-events: none` — чтобы слой не ловил
@@ -1055,8 +1056,9 @@ fixed` не вернулся.
 
 ```powershell
 node checks/filters.mjs     # отбор, сортировка, каталог: 95 проверок
-node checks/cart.mjs        # корзина, печать принтов, свой макет: 102 проверки
-node checks/checkout.mjs    # правила полей, форма, один клик: 74 проверки
+node checks/cart.mjs        # корзина, печать принтов, свой макет: 106 проверок
+node checks/render-cart.mjs # разметка корзины: экранирование, макет, итоги: 23 проверки
+node checks/checkout.mjs    # правила полей, форма, один клик: 77 проверок
 node checks/feedback.mjs    # форма обратной связи: 57 проверок
 node checks/product.mjs     # страница товара (женская): 216 проверок
 node checks/product-men.mjs # страница товара (мужская): 34 проверки
@@ -1080,11 +1082,11 @@ node checks/product-belaya-klassika.mjs # страница товара «Бел
 node checks/product-pionovyy-rassvet.mjs # страница товара «Пионовый рассвет» (халатик): 44 проверки
 node checks/product-alyy-kokon.mjs # страница товара «Алый кокон» (комбинезон): 44 проверки
 node checks/header.mjs      # шапка и меню-наложение: 25 проверок
-node checks/prints.mjs      # секция принтов и prints.html: 106 проверок
-node checks/integrity.mjs   # все href/src и якоря: 3 проверки
+node checks/prints.mjs      # секция принтов и prints.html: 110 проверок
+node checks/integrity.mjs   # href/src, якоря, ссылка «к содержимому»: 7 проверок
 node checks/hero.mjs        # первый экран: стрелка, цвета, ширина, зазоры: 32 проверки
 node checks/stars.mjs       # полёт звёзд секции обратной связи: 26 проверок
-node checks/links.mjs       # связи страниц и позиция «Свой макет»: 110 проверок
+node checks/links.mjs       # связи страниц и позиция «Свой макет»: 481 проверка
 node checks/size-picker.mjs # выбор размера перед корзиной: 80 проверок
 node checks/size-guard.mjs  # «без размера не покупаем»: 32 проверки
 ```
@@ -1097,6 +1099,7 @@ node checks/size-guard.mjs  # «без размера не покупаем»: 3
 node checks/req-checkout.mjs http://127.0.0.1:8000/            # оформление и один клик: 45
 node checks/req-checkout-product.mjs http://127.0.0.1:8000     # оформление со страницы товара: 9
 node checks/req-print-free.mjs http://127.0.0.1:8000           # бесплатные принты: 18
+node checks/req-skip-link.mjs http://127.0.0.1:8000            # ссылка «к содержимому» с клавиатуры: 7
 node checks/sweep.mjs http://127.0.0.1:8000               # обход всех 145 страниц: консоль, запросы, доступность
 node checks/req-feedback-flow.mjs http://127.0.0.1:8000/       # форма вопроса: 22
 node checks/req-pagination-persist.mjs http://127.0.0.1:8000/  # страница каталога после перезагрузки: 15
