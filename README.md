@@ -2,7 +2,7 @@
 
 # Интернет-магазин уютных пижам — CozyPajamasStore
 
-**Учебно-боевой проект: 145 страниц по макету Figma, БЭМ, чистый JavaScript — без сборки и фреймворков**
+**Учебный проект: 145 страниц по макету Figma, БЭМ, чистый JavaScript — без сборки и фреймворков**
 
 [![Live Demo](https://img.shields.io/badge/Демо-GitHub%20Pages-E45438?style=for-the-badge&logo=githubpages&logoColor=white)](https://artem02031980.github.io/CozyPajamasStore/)
 <br />
