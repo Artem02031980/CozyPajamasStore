@@ -6,9 +6,7 @@
 
 [![Live Demo](https://img.shields.io/badge/Демо-GitHub%20Pages-E45438?style=for-the-badge&logo=githubpages&logoColor=white)](https://artem02031980.github.io/CozyPajamasStore/)
 <br />
-[![Figma](https://img.shields.io/badge/Макет-Figma-D3BF7B?style=for-the-badge&logo=figma&logoColor=2A374A)](https://www.figma.com/design/NYh4Bgyd6GBd0dPmIDbEep/%D0%9C%D0%B0%D0%B3%D0%B0%D0%B7%D0%B8%D0%BD-%D1%83%D1%8E%D1%82%D0%BD%D1%8B%D1%85-%D0%BF%D0%B8%D0%B6%D0%B0%D0%BC?node-id=0-1&t=lAWEv44BxhNTtnpQ-1)
-<br />
-[![GitHub](https://img.shields.io/badge/Код-Репозиторий-4C4C4C?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Artem02031980/CozyPajamasStore)
+[![Figma](https://img.shields.io/badge/Макет-Figma-4C4C4C?style=for-the-badge&logo=figma&logoColor=white&labelColor=3A3A3A)](https://www.figma.com/design/NYh4Bgyd6GBd0dPmIDbEep/%D0%9C%D0%B0%D0%B3%D0%B0%D0%B7%D0%B8%D0%BD-%D1%83%D1%8E%D1%82%D0%BD%D1%8B%D1%85-%D0%BF%D0%B8%D0%B6%D0%B0%D0%BC?node-id=0-1&t=lAWEv44BxhNTtnpQ-1)
 
 <br />
 
@@ -85,18 +83,18 @@
 Палитра вынесена в токены `assets/css/base/variables.css` — в разметке
 нет ни одного «своего» цвета:
 
-| Токен | Значение | Где работает |
-| ----- | -------- | ------------ |
-| `--color-dark` | `#4c4c4c` | Основной текст, тёмные кнопки при наведении |
-| `--color-pink` | `#cd74a2` | Названия товаров, кнопка «В корзину» |
-| `--color-pink-light` | `#f4d9e8` | Фоны секций женской коллекции |
-| `--color-blue` | `#93b3d6` | Кнопки мужской коллекции, первый экран |
-| `--color-blue-light` | `#dae2e4` | Подвал главной, секции |
-| `--color-grey-blue` | `#dfeaee` | Блок обратной связи |
-| `--color-beige` | `#dbcbb2` | Рамки, разделители, плашка цены |
-| `--color-beige-light` | `#e9e2d0` | Фоны секций «Других товаров» |
-| `--color-yellow` | `#fff4a4` | Акцент блока принта |
-| `--color-white` | `#ffffff` | Фоны карточек и окон |
+| Токен | Цвет | Значение | Где работает |
+| ----- | :--: | -------- | ------------ |
+| `--color-dark` | <img src="https://img.shields.io/badge/-4c4c4c?style=flat-square&labelColor=4c4c4c&color=4c4c4c" width="14" height="14" alt="#4c4c4c" /> | `#4c4c4c` | Основной текст, тёмные кнопки при наведении |
+| `--color-pink` | <img src="https://img.shields.io/badge/-cd74a2?style=flat-square&labelColor=cd74a2&color=cd74a2" width="14" height="14" alt="#cd74a2" /> | `#cd74a2` | Названия товаров, кнопка «В корзину» |
+| `--color-pink-light` | <img src="https://img.shields.io/badge/-f4d9e8?style=flat-square&labelColor=f4d9e8&color=f4d9e8" width="14" height="14" alt="#f4d9e8" /> | `#f4d9e8` | Фоны секций женской коллекции |
+| `--color-blue` | <img src="https://img.shields.io/badge/-93b3d6?style=flat-square&labelColor=93b3d6&color=93b3d6" width="14" height="14" alt="#93b3d6" /> | `#93b3d6` | Кнопки мужской коллекции, первый экран |
+| `--color-blue-light` | <img src="https://img.shields.io/badge/-dae2e4?style=flat-square&labelColor=dae2e4&color=dae2e4" width="14" height="14" alt="#dae2e4" /> | `#dae2e4` | Подвал главной, секции |
+| `--color-grey-blue` | <img src="https://img.shields.io/badge/-dfeaee?style=flat-square&labelColor=dfeaee&color=dfeaee" width="14" height="14" alt="#dfeaee" /> | `#dfeaee` | Блок обратной связи |
+| `--color-beige` | <img src="https://img.shields.io/badge/-dbcbb2?style=flat-square&labelColor=dbcbb2&color=dbcbb2" width="14" height="14" alt="#dbcbb2" /> | `#dbcbb2` | Рамки, разделители, плашка цены |
+| `--color-beige-light` | <img src="https://img.shields.io/badge/-e9e2d0?style=flat-square&labelColor=e9e2d0&color=e9e2d0" width="14" height="14" alt="#e9e2d0" /> | `#e9e2d0` | Фоны секций «Других товаров» |
+| `--color-yellow` | <img src="https://img.shields.io/badge/-fff4a4?style=flat-square&labelColor=fff4a4&color=fff4a4" width="14" height="14" alt="#fff4a4" /> | `#fff4a4` | Акцент блока принта |
+| `--color-white` | <img src="https://img.shields.io/badge/-ffffff?style=flat-square&labelColor=ffffff&color=ffffff" width="14" height="14" alt="#ffffff" /> | `#ffffff` | Фоны карточек и окон |
 
 Типографика — одна гарнитура с двумя ролями: **Roboto Slab 400/700**
 (Google Fonts, `display=swap`). Заголовки набираются ею же, поэтому
