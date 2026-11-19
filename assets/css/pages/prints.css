@@ -126,7 +126,7 @@
   gap: var(--space-16);
   padding: var(--space-20);
   background-color: var(--color-white);
-  border: var(--border-width) dashed var(--color-beige);
+  border: var(--border-width) dashed var(--color-dark);
   border-radius: var(--radius-md);
 }
 
