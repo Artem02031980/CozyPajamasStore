@@ -94,7 +94,10 @@
 | `--color-beige` | <img src="https://img.shields.io/badge/-dbcbb2?style=flat-square&labelColor=dbcbb2&color=dbcbb2" width="14" height="14" alt="#dbcbb2" /> | `#dbcbb2` | Рамки, разделители, плашка цены |
 | `--color-beige-light` | <img src="https://img.shields.io/badge/-e9e2d0?style=flat-square&labelColor=e9e2d0&color=e9e2d0" width="14" height="14" alt="#e9e2d0" /> | `#e9e2d0` | Фоны секций «Других товаров» |
 | `--color-yellow` | <img src="https://img.shields.io/badge/-fff4a4?style=flat-square&labelColor=fff4a4&color=fff4a4" width="14" height="14" alt="#fff4a4" /> | `#fff4a4` | Акцент блока принта |
-| `--color-white` | <img src="https://img.shields.io/badge/-ffffff?style=flat-square&labelColor=ffffff&color=ffffff" width="14" height="14" alt="#ffffff" /> | `#ffffff` | Фоны карточек и окон |
+| `--color-white` | <img src="https://img.shields.io/badge/-dcdcdc?style=flat-square&labelColor=dcdcdc&color=dcdcdc" width="14" height="14" alt="белый (плашка серая, чтобы её было видно)" /> белый | `#ffffff` | Фоны карточек и окон |
+
+Плашка у `--color-white` серая намеренно: белый квадрат на белом фоне
+таблицы не виден, а рамку GitHub у картинок вырезает.
 
 Типографика — одна гарнитура с двумя ролями: **Roboto Slab 400/700**
 (Google Fonts, `display=swap`). Заголовки набираются ею же, поэтому
